@@ -692,6 +692,96 @@ export function CtaSection({ scrollTo }: { scrollTo: (id: string) => void }) {
   );
 }
 
+// ─── LeadForm ─────────────────────────────────────────────────────────────────
+function LeadForm() {
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [goods, setGoods] = useState('Любой товар');
+  const [comment, setComment] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle');
+
+  const submit = async () => {
+    if (!phone.trim()) return;
+    setStatus('loading');
+    try {
+      const res = await fetch('https://functions.poehali.dev/2e3b43ba-4ed5-4ef0-aefa-97c5165afe18', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, goods, comment }),
+      });
+      setStatus(res.ok ? 'ok' : 'error');
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  if (status === 'ok') {
+    return (
+      <div className="rounded-2xl p-8 border border-gray-200 flex flex-col items-center justify-center text-center min-h-[360px]" style={{ background: '#F8F9FC' }}>
+        <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ background: '#DCFCE7' }}>
+          <Icon name="CheckCircle" size={32} className="text-green-500" />
+        </div>
+        <h3 className="font-oswald text-2xl font-bold mb-2 text-gray-900">Заявка отправлена!</h3>
+        <p className="text-gray-500 text-sm">Менеджер свяжется с вами в течение 15 минут</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-2xl p-8 border border-gray-200" style={{ background: '#F8F9FC' }}>
+      <h3 className="font-oswald text-2xl font-bold mb-6 text-gray-900">Оставить заявку</h3>
+      <div className="space-y-4">
+        <div>
+          <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Ваше имя</label>
+          <input type="text" placeholder="Иван Иванов" value={name} onChange={e => setName(e.target.value)}
+            className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder-gray-300 text-sm focus:outline-none transition-colors"
+            onFocus={e => e.target.style.borderColor = WB}
+            onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
+        </div>
+        <div>
+          <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Телефон *</label>
+          <input type="tel" placeholder="+7 (900) 000-00-00" value={phone} onChange={e => setPhone(e.target.value)}
+            className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder-gray-300 text-sm focus:outline-none transition-colors"
+            onFocus={e => e.target.style.borderColor = WB}
+            onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
+        </div>
+        <div>
+          <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Тип товара</label>
+          <select value={goods} onChange={e => setGoods(e.target.value)}
+            className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-700 text-sm focus:outline-none transition-colors"
+            onFocus={e => e.target.style.borderColor = WB}
+            onBlur={e => e.target.style.borderColor = '#e5e7eb'}>
+            <option>Любой товар</option>
+            <option>Стандартный габарит</option>
+            <option>Крупногабаритный товар</option>
+            <option>Хрупкий товар</option>
+            <option>Другое</option>
+          </select>
+        </div>
+        <div>
+          <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Комментарий</label>
+          <textarea rows={3} placeholder="Расскажите о вашем товаре и объёмах..." value={comment} onChange={e => setComment(e.target.value)}
+            className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder-gray-300 text-sm focus:outline-none transition-colors resize-none"
+            onFocus={e => e.target.style.borderColor = WB}
+            onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
+        </div>
+        {status === 'error' && (
+          <div className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm text-red-600 bg-red-50 border border-red-100">
+            <Icon name="AlertCircle" size={15} />
+            Ошибка отправки. Позвоните нам: +7 (917) 101-01-63
+          </div>
+        )}
+        <button onClick={submit} disabled={status === 'loading' || !phone.trim()}
+          className="w-full py-4 rounded-xl font-bold text-white transition-all hover:scale-[1.01] active:scale-95 shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
+          style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})`, boxShadow: '0 8px 25px rgba(203,17,171,0.3)' }}>
+          {status === 'loading' ? 'Отправляем...' : 'Отправить заявку'}
+        </button>
+        <p className="text-xs text-gray-400 text-center">Нажимая, вы соглашаетесь с политикой конфиденциальности</p>
+      </div>
+    </div>
+  );
+}
+
 // ─── ContactsSection ──────────────────────────────────────────────────────────
 export function ContactsSection() {
   return (
@@ -707,47 +797,7 @@ export function ContactsSection() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <FadeIn>
-            <div className="rounded-2xl p-8 border border-gray-200" style={{ background: '#F8F9FC' }}>
-              <h3 className="font-oswald text-2xl font-bold mb-6 text-gray-900">Оставить заявку</h3>
-              <div className="space-y-4">
-                {[
-                  { label: 'Ваше имя', type: 'text', placeholder: 'Иван Иванов' },
-                  { label: 'Телефон',  type: 'tel',  placeholder: '+7 (900) 000-00-00' },
-                ].map(f => (
-                  <div key={f.label}>
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">{f.label}</label>
-                    <input type={f.type} placeholder={f.placeholder}
-                      className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder-gray-300 text-sm focus:outline-none transition-colors"
-                      onFocus={e => e.target.style.borderColor = WB}
-                      onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
-                  </div>
-                ))}
-                <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Тип товара</label>
-                  <select className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-700 text-sm focus:outline-none transition-colors"
-                    onFocus={e => e.target.style.borderColor = WB}
-                    onBlur={e => e.target.style.borderColor = '#e5e7eb'}>
-                    <option>Любой товар</option>
-                    <option>Стандартный габарит</option>
-                    <option>Крупногабаритный товар</option>
-                    <option>Хрупкий товар</option>
-                    <option>Другое</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Комментарий</label>
-                  <textarea rows={3} placeholder="Расскажите о вашем товаре и объёмах..."
-                    className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder-gray-300 text-sm focus:outline-none transition-colors resize-none"
-                    onFocus={e => e.target.style.borderColor = WB}
-                    onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
-                </div>
-                <button className="w-full py-4 rounded-xl font-bold text-white transition-all hover:scale-[1.01] active:scale-95 shadow-lg"
-                  style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})`, boxShadow: '0 8px 25px rgba(203,17,171,0.3)' }}>
-                  Отправить заявку
-                </button>
-                <p className="text-xs text-gray-400 text-center">Нажимая, вы соглашаетесь с политикой конфиденциальности</p>
-              </div>
-            </div>
+            <LeadForm />
           </FadeIn>
 
           <FadeIn delay={0.12}>
