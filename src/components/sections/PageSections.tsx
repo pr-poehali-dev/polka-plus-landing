@@ -573,6 +573,81 @@ export function AboutSection() {
   );
 }
 
+// ─── WarehouseGallery ─────────────────────────────────────────────────────────
+const GALLERY_PHOTOS = [
+  { url: 'https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/1422f297-e84d-43a8-bfc2-7dbeccf42015.jpg', alt: 'Склад Полка+' },
+  { url: 'https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/a0ad0f8d-7982-4553-a659-b74dfc23a7c3.jpg', alt: 'Хранение товаров' },
+  { url: 'https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/0ae93c90-38f1-4405-aae9-c30cee5837ab.jpg', alt: 'Стеллажи склада' },
+  { url: 'https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/de7b62c8-933e-46c1-80c3-9ded29b19d1d.jpg', alt: 'Упаковка заказов' },
+  { url: 'https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/f1cac6f9-2e47-4dbb-9631-f51dd64b4504.jpg', alt: 'Товары на складе' },
+];
+
+function WarehouseGallery() {
+  const doubled = [...GALLERY_PHOTOS, ...GALLERY_PHOTOS, ...GALLERY_PHOTOS];
+  return (
+    <div className="py-16 overflow-hidden" style={{ background: '#F4F6FA' }}>
+      <style>{`
+        @keyframes arcScroll {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-33.333%); }
+        }
+        .arc-track {
+          animation: arcScroll 22s linear infinite;
+          will-change: transform;
+        }
+        .arc-track:hover { animation-play-state: paused; }
+      `}</style>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-8">
+        <FadeIn>
+          <Tag label="Наш склад" />
+          <h2 className="font-oswald text-3xl md:text-4xl font-bold text-gray-900">
+            Работаем <Accent>в деле</Accent>
+          </h2>
+        </FadeIn>
+      </div>
+
+      <div className="relative" style={{ perspective: '800px' }}>
+        <div className="flex gap-5 arc-track" style={{ width: 'max-content' }}>
+          {doubled.map((photo, i) => {
+            const pos = i % GALLERY_PHOTOS.length;
+            const rotations = [-4, -2, 0, 2, 4];
+            const rot = rotations[pos % rotations.length];
+            const scales = [0.96, 0.98, 1, 0.98, 0.96];
+            const scale = scales[pos % scales.length];
+            const translateY = Math.abs(rot) * 4;
+            return (
+              <div
+                key={i}
+                className="shrink-0 rounded-2xl overflow-hidden shadow-xl"
+                style={{
+                  width: 280,
+                  height: 360,
+                  transform: `rotate(${rot}deg) scale(${scale}) translateY(${translateY}px)`,
+                  transition: 'transform 0.3s ease',
+                  boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+                }}
+              >
+                <img
+                  src={photo.url}
+                  alt={photo.alt}
+                  className="w-full h-full object-cover"
+                  style={{ display: 'block' }}
+                />
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="absolute inset-y-0 left-0 w-24 pointer-events-none"
+          style={{ background: 'linear-gradient(to right, #F4F6FA, transparent)' }} />
+        <div className="absolute inset-y-0 right-0 w-24 pointer-events-none"
+          style={{ background: 'linear-gradient(to left, #F4F6FA, transparent)' }} />
+      </div>
+    </div>
+  );
+}
+
 // ─── ReviewsSection ───────────────────────────────────────────────────────────
 export function ReviewsSection() {
   const reviews = [
@@ -582,6 +657,8 @@ export function ReviewsSection() {
   ];
 
   return (
+    <>
+    <WarehouseGallery />
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <FadeIn>
@@ -639,6 +716,7 @@ export function ReviewsSection() {
         </FadeIn>
       </div>
     </section>
+    </>
   );
 }
 
