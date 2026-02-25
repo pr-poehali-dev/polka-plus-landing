@@ -735,218 +735,263 @@ function SectionLabel({ tag }: { tag: string }) {
 }
 
 function Calculator() {
-  const [pallets, setPallets] = useState(10);
-  const [orders, setOrders] = useState(100);
-  const [services, setServices] = useState({
-    acceptance: true,
-    storage: true,
-    packing: true,
-    marking: false,
-    assembly: false,
-  });
-  const [category, setCategory] = useState<'standard' | 'kgt'>('standard');
+  // --- Приёмка ---
+  const [boxes, setBoxes] = useState(50);
+  const [acceptCount, setAcceptCount] = useState(false);
+  const [acceptDefect, setAcceptDefect] = useState(false);
+  const [acceptPhoto, setAcceptPhoto] = useState(false);
+  const [photoQty, setPhotoQty] = useState(10);
 
-  const rates = {
-    acceptance: category === 'kgt' ? 180 : 80,
-    storage: category === 'kgt' ? 750 : 450,
-    packing: category === 'kgt' ? 220 : 90,
-    marking: 25,
-    assembly: 60,
-  };
+  // --- Хранение ---
+  const [storageDays, setStorageDays] = useState(30);
+  const [storagePallets, setStoragePallets] = useState(5);
+  const [storageBoxes, setStorageBoxes] = useState(20);
 
-  const labels: Record<string, string> = {
-    acceptance: 'Приёмка товара',
-    storage: 'Хранение (паллетомест/мес)',
-    packing: 'Упаковка заказа',
-    marking: 'Маркировка',
-    assembly: 'Комплектация',
-  };
+  // --- Комплектация ---
+  const [orders, setOrders] = useState(150);
+  const [needAssembly, setNeedAssembly] = useState(true);
 
-  const unitLabels: Record<string, string> = {
-    acceptance: '₽/паллет',
-    storage: '₽/паллетомест',
-    packing: '₽/заказ',
-    marking: '₽/заказ',
-    assembly: '₽/заказ',
-  };
+  // --- Упаковка ---
+  const [packType, setPackType] = useState<'bag'|'small'|'medium'|'large'|'bubble'>('small');
+  const [needPack, setNeedPack] = useState(true);
 
-  const total = Object.entries(services).reduce((sum, [key, enabled]) => {
-    if (!enabled) return sum;
-    const rate = rates[key as keyof typeof rates];
-    if (key === 'acceptance') return sum + rate * pallets;
-    if (key === 'storage') return sum + rate * pallets;
-    return sum + rate * orders;
-  }, 0);
+  // --- Маркетплейсы ---
+  const [needLabel, setNeedLabel] = useState(true);
+  const [needSticker, setNeedSticker] = useState(false);
+  const [needSupply, setNeedSupply] = useState(true);
+  const [supplyPallets, setSupplyPallets] = useState(2);
 
-  const discount = total > 50000 ? 0.1 : total > 25000 ? 0.05 : 0;
-  const totalWithDiscount = Math.round(total * (1 - discount));
+  // --- Доп услуги ---
+  const [needReturn, setNeedReturn] = useState(false);
+  const [returnQty, setReturnQty] = useState(10);
+  const [needLeaflet, setNeedLeaflet] = useState(false);
+  const [urgentShip, setUrgentShip] = useState(false);
+
+  const packPrices = { bag: 8, small: 18, medium: 25, large: 35, bubble: 10 };
+  const packNames = { bag: 'Пакет', small: 'Короб малый', medium: 'Короб средний', large: 'Короб крупный', bubble: 'Пупырка' };
+
+  const assemblyRate = orders <= 100 ? 45 : orders <= 500 ? 40 : orders <= 1000 ? 35 : 30;
+
+  const storageDaysBillable = Math.max(0, storageDays - 3);
+
+  const lines: { label: string; amount: number; hint: string }[] = [];
+
+  // Приёмка
+  lines.push({ label: 'Приёмка коробов', amount: boxes * 25, hint: `${boxes} × 25 ₽` });
+  if (acceptCount) lines.push({ label: 'Пересчёт единиц', amount: boxes * 4, hint: `${boxes} ед × 4 ₽` });
+  if (acceptDefect) lines.push({ label: 'Проверка на брак', amount: boxes * 5, hint: `${boxes} ед × 5 ₽` });
+  if (acceptPhoto) lines.push({ label: 'Фотофиксация', amount: photoQty * 10, hint: `${photoQty} фото × 10 ₽` });
+
+  // Хранение
+  if (storageDaysBillable > 0) {
+    lines.push({ label: 'Хранение паллет', amount: storagePallets * 45 * storageDaysBillable, hint: `${storagePallets} пал × 45 ₽ × ${storageDaysBillable} дн` });
+    lines.push({ label: 'Хранение коробов', amount: storageBoxes * 15 * storageDaysBillable, hint: `${storageBoxes} кор × 15 ₽ × ${storageDaysBillable} дн` });
+  } else {
+    lines.push({ label: 'Хранение', amount: 0, hint: '3 дня бесплатно' });
+  }
+
+  // Комплектация
+  if (needAssembly) lines.push({ label: `Комплектация заказов (${assemblyRate} ₽/шт)`, amount: orders * assemblyRate, hint: `${orders} заказов × ${assemblyRate} ₽` });
+
+  // Упаковка
+  if (needPack) lines.push({ label: `Упаковка: ${packNames[packType]}`, amount: orders * packPrices[packType], hint: `${orders} × ${packPrices[packType]} ₽` });
+
+  // Маркетплейсы
+  if (needLabel) lines.push({ label: 'Печать + наклейка этикетки', amount: orders * 8, hint: `${orders} × 8 ₽ (3+5)` });
+  if (needSticker) lines.push({ label: 'Стикеровка товара', amount: orders * 6, hint: `${orders} × 6 ₽` });
+  if (needSupply) {
+    lines.push({ label: 'Формирование поставки', amount: 250, hint: '250 ₽ / поставка' });
+    lines.push({ label: 'Паллетирование', amount: supplyPallets * 350, hint: `${supplyPallets} пал × 350 ₽` });
+  }
+
+  // Доп
+  if (needLeaflet) lines.push({ label: 'Вложение листовки', amount: orders * 3, hint: `${orders} × 3 ₽` });
+  if (needReturn) lines.push({ label: 'Обработка возвратов', amount: returnQty * 25, hint: `${returnQty} × 25 ₽` });
+
+  // Отгрузка
+  const shipBase = needSupply ? 500 : 150;
+  const shipAmount = urgentShip ? Math.round(shipBase * 1.3) : shipBase;
+  lines.push({ label: urgentShip ? 'Срочная отгрузка (+30%)' : 'Отгрузка', amount: shipAmount, hint: urgentShip ? `${shipBase} × 1.3` : '150–500 ₽' });
+
+  const total = lines.reduce((s, l) => s + l.amount, 0);
 
   return (
     <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
       <div className="grid grid-cols-1 lg:grid-cols-5">
-        {/* Left — inputs */}
-        <div className="lg:col-span-3 p-8 border-b lg:border-b-0 lg:border-r border-gray-100">
 
-          {/* Category */}
-          <div className="mb-7">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 block">Тип товара</label>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { id: 'standard', label: 'Стандартный', icon: 'Box', desc: 'до 30 кг, до 1м' },
-                { id: 'kgt', label: 'Крупногабарит', icon: 'Package2', desc: 'мебель, двери, КГТ' },
-              ].map((cat) => (
-                <button key={cat.id} onClick={() => setCategory(cat.id as 'standard' | 'kgt')}
-                  className="flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all duration-200"
-                  style={category === cat.id
-                    ? { borderColor: WB, background: WB_LIGHT }
-                    : { borderColor: '#F3F4F6', background: '#FAFAFA' }}>
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ background: category === cat.id ? WB_MID : '#F3F4F6' }}>
-                    <Icon name={cat.icon} size={18} style={{ color: category === cat.id ? WB : '#9CA3AF' }} />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-sm text-gray-900">{cat.label}</div>
-                    <div className="text-xs text-gray-400">{cat.desc}</div>
-                  </div>
-                </button>
-              ))}
+        {/* ===== LEFT: inputs ===== */}
+        <div className="lg:col-span-3 p-7 border-b lg:border-b-0 lg:border-r border-gray-100 space-y-6 overflow-y-auto">
+
+          {/* ПРИЁМКА */}
+          <CalcSection icon="PackageCheck" title="Приёмка товара">
+            <SliderRow label="Количество коробов" value={boxes} min={1} max={500} onChange={setBoxes} unit="кор" />
+            <CheckRow label="Пересчёт единиц" hint="4 ₽/ед" checked={acceptCount} onChange={setAcceptCount} />
+            <CheckRow label="Проверка на брак" hint="5 ₽/ед" checked={acceptDefect} onChange={setAcceptDefect} />
+            <CheckRow label="Фотофиксация" hint="10 ₽/фото" checked={acceptPhoto} onChange={setAcceptPhoto} />
+            {acceptPhoto && <SliderRow label="Количество фото" value={photoQty} min={1} max={200} onChange={setPhotoQty} unit="фото" />}
+          </CalcSection>
+
+          {/* ХРАНЕНИЕ */}
+          <CalcSection icon="Warehouse" title="Хранение">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium mb-1" style={{ background: '#DCFCE7', color: '#16A34A' }}>
+              <Icon name="Gift" size={13} />
+              Первые 3 дня бесплатно
             </div>
-          </div>
+            <SliderRow label="Дней хранения в месяц" value={storageDays} min={1} max={31} onChange={setStorageDays} unit="дн" />
+            <SliderRow label="Паллетомест" value={storagePallets} min={0} max={100} onChange={setStoragePallets} unit="пал × 45 ₽/сут" />
+            <SliderRow label="Коробов" value={storageBoxes} min={0} max={500} onChange={setStorageBoxes} unit="кор × 15 ₽/сут" />
+          </CalcSection>
 
-          {/* Pallets slider */}
-          <div className="mb-7">
-            <div className="flex items-center justify-between mb-3">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Кол-во паллетомест</label>
-              <div className="flex items-center gap-2">
-                <button onClick={() => setPallets(Math.max(1, pallets - 1))}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center border border-gray-200 text-gray-500 hover:border-gray-300 transition-colors text-base leading-none">−</button>
-                <span className="font-bold text-gray-900 w-10 text-center">{pallets}</span>
-                <button onClick={() => setPallets(Math.min(500, pallets + 1))}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center border border-gray-200 text-gray-500 hover:border-gray-300 transition-colors text-base leading-none">+</button>
+          {/* КОМПЛЕКТАЦИЯ */}
+          <CalcSection icon="ListChecks" title="Комплектация заказов">
+            <CheckRow label="Нужна комплектация" hint={`${assemblyRate} ₽/заказ`} checked={needAssembly} onChange={setNeedAssembly} />
+            {needAssembly && (
+              <>
+                <SliderRow label="Заказов в месяц" value={orders} min={10} max={5000} step={10} onChange={setOrders} unit="шт" />
+                <div className="text-xs text-gray-400 px-1">
+                  Тариф: до 100 — 45 ₽ · 100–500 — 40 ₽ · 500–1000 — 35 ₽ · 1000+ — 30 ₽<br />
+                  Включает: подбор, упаковку, маркировку
+                </div>
+              </>
+            )}
+          </CalcSection>
+
+          {/* УПАКОВКА */}
+          <CalcSection icon="Box" title="Упаковка">
+            <CheckRow label="Нужна дополнительная упаковка" hint="" checked={needPack} onChange={setNeedPack} />
+            {needPack && (
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                {(Object.entries(packNames) as [keyof typeof packNames, string][]).map(([k, name]) => (
+                  <button key={k} onClick={() => setPackType(k)}
+                    className="flex items-center justify-between px-3 py-2.5 rounded-xl border-2 text-left transition-all"
+                    style={packType === k ? { borderColor: WB, background: WB_LIGHT } : { borderColor: '#F3F4F6', background: '#FAFAFA' }}>
+                    <span className="text-sm font-medium text-gray-800">{name}</span>
+                    <span className="text-xs font-bold shrink-0" style={{ color: WB }}>{packPrices[k]} ₽</span>
+                  </button>
+                ))}
               </div>
-            </div>
-            <input type="range" min={1} max={500} value={pallets} onChange={e => setPallets(+e.target.value)}
-              className="w-full h-2 rounded-full appearance-none cursor-pointer"
-              style={{ accentColor: WB }} />
-            <div className="flex justify-between text-xs text-gray-300 mt-1"><span>1</span><span>500</span></div>
-          </div>
+            )}
+          </CalcSection>
 
-          {/* Orders slider */}
-          <div className="mb-7">
-            <div className="flex items-center justify-between mb-3">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Кол-во заказов в месяц</label>
-              <div className="flex items-center gap-2">
-                <button onClick={() => setOrders(Math.max(1, orders - 10))}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center border border-gray-200 text-gray-500 hover:border-gray-300 transition-colors text-base leading-none">−</button>
-                <span className="font-bold text-gray-900 w-14 text-center">{orders}</span>
-                <button onClick={() => setOrders(Math.min(10000, orders + 10))}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center border border-gray-200 text-gray-500 hover:border-gray-300 transition-colors text-base leading-none">+</button>
-              </div>
-            </div>
-            <input type="range" min={10} max={10000} step={10} value={orders} onChange={e => setOrders(+e.target.value)}
-              className="w-full h-2 rounded-full appearance-none cursor-pointer"
-              style={{ accentColor: WB }} />
-            <div className="flex justify-between text-xs text-gray-300 mt-1"><span>10</span><span>10 000</span></div>
-          </div>
+          {/* МАРКЕТПЛЕЙСЫ */}
+          <CalcSection icon="Tag" title="Маркетплейсы">
+            <CheckRow label="Печать + наклейка этикетки" hint="8 ₽/шт (3+5)" checked={needLabel} onChange={setNeedLabel} />
+            <CheckRow label="Стикеровка товара" hint="6 ₽/шт" checked={needSticker} onChange={setNeedSticker} />
+            <CheckRow label="Формирование поставки + паллетирование" hint="250 + 350 ₽/пал" checked={needSupply} onChange={setNeedSupply} />
+            {needSupply && <SliderRow label="Паллет в поставке" value={supplyPallets} min={1} max={50} onChange={setSupplyPallets} unit="пал × 350 ₽" />}
+          </CalcSection>
 
-          {/* Services checkboxes */}
-          <div>
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 block">Услуги</label>
-            <div className="space-y-2">
-              {(Object.keys(services) as (keyof typeof services)[]).map((key) => (
-                <button key={key} onClick={() => setServices(s => ({ ...s, [key]: !s[key] }))}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-200"
-                  style={services[key]
-                    ? { borderColor: WB_MID, background: WB_LIGHT }
-                    : { borderColor: '#F3F4F6', background: '#FAFAFA' }}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all"
-                      style={services[key] ? { borderColor: WB, background: WB } : { borderColor: '#D1D5DB', background: 'white' }}>
-                      {services[key] && <Icon name="Check" size={12} className="text-white" />}
-                    </div>
-                    <span className="text-sm font-medium text-gray-700">{labels[key]}</span>
-                  </div>
-                  <span className="text-xs font-semibold" style={{ color: WB }}>
-                    {rates[key as keyof typeof rates].toLocaleString('ru')} {unitLabels[key]}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
+          {/* ДОП УСЛУГИ */}
+          <CalcSection icon="Plus" title="Дополнительные услуги">
+            <CheckRow label="Вложение листовки" hint="3 ₽/шт" checked={needLeaflet} onChange={setNeedLeaflet} />
+            <CheckRow label="Обработка возвратов" hint="25 ₽/шт" checked={needReturn} onChange={setNeedReturn} />
+            {needReturn && <SliderRow label="Кол-во возвратов" value={returnQty} min={1} max={500} onChange={setReturnQty} unit="шт" />}
+            <CheckRow label="Срочная отгрузка (+30%)" hint="" checked={urgentShip} onChange={setUrgentShip} />
+          </CalcSection>
         </div>
 
-        {/* Right — result */}
-        <div className="lg:col-span-2 p-8 flex flex-col" style={{ background: `linear-gradient(160deg, ${WB_LIGHT} 0%, #fff 100%)` }}>
+        {/* ===== RIGHT: result ===== */}
+        <div className="lg:col-span-2 p-7 flex flex-col" style={{ background: `linear-gradient(160deg, ${WB_LIGHT} 0%, #fff 100%)` }}>
           <div className="flex-1">
-            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-6">Итоговый расчёт</div>
+            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-5">Ваш расчёт</div>
 
-            <div className="space-y-3 mb-6">
-              {(Object.keys(services) as (keyof typeof services)[]).filter(k => services[k]).map((key) => {
-                const rate = rates[key as keyof typeof rates];
-                const amount = key === 'acceptance' || key === 'storage' ? rate * pallets : rate * orders;
-                const qty = key === 'acceptance' || key === 'storage' ? pallets : orders;
-                return (
-                  <div key={key} className="flex items-start justify-between gap-2">
-                    <div className="text-sm text-gray-600 flex-1">{labels[key]}</div>
-                    <div className="text-right shrink-0">
-                      <div className="text-sm font-semibold text-gray-900">{amount.toLocaleString('ru')} ₽</div>
-                      <div className="text-xs text-gray-400">{qty} × {rate} ₽</div>
+            <div className="space-y-2.5 mb-5 max-h-80 overflow-y-auto pr-1">
+              {lines.map((line, i) => (
+                <div key={i} className="flex items-start justify-between gap-2">
+                  <div className="text-sm text-gray-600 flex-1 leading-snug">{line.label}</div>
+                  <div className="text-right shrink-0">
+                    <div className="text-sm font-semibold text-gray-900">
+                      {line.amount === 0 ? <span className="text-green-600 text-xs font-bold">бесплатно</span> : `${line.amount.toLocaleString('ru')} ₽`}
                     </div>
+                    <div className="text-xs text-gray-400">{line.hint}</div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
-
-            {(Object.values(services).every(v => !v)) && (
-              <div className="text-sm text-gray-400 text-center py-4">Выберите хотя бы одну услугу</div>
-            )}
 
             <div className="border-t border-gray-200 pt-4 mb-4">
-              {discount > 0 && (
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-500">Скидка за объём</span>
-                  <span className="text-sm font-semibold text-green-600">−{(discount * 100).toFixed(0)}%</span>
-                </div>
-              )}
-              {discount > 0 && (
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm text-gray-400 line-through">{total.toLocaleString('ru')} ₽</span>
-                </div>
-              )}
               <div className="flex justify-between items-end">
                 <span className="text-sm font-semibold text-gray-600">Итого в месяц</span>
-                <div className="text-right">
-                  <div className="font-oswald text-4xl font-bold" style={{ color: WB }}>
-                    {totalWithDiscount.toLocaleString('ru')}
-                    <span className="text-2xl"> ₽</span>
-                  </div>
+                <div className="font-oswald text-4xl font-bold" style={{ color: WB }}>
+                  {total.toLocaleString('ru')}<span className="text-2xl"> ₽</span>
                 </div>
               </div>
             </div>
 
-            {discount > 0 && (
-              <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl mb-4"
-                style={{ background: '#DCFCE7' }}>
-                <Icon name="BadgeCheck" size={16} className="text-green-600 shrink-0" />
-                <span className="text-xs font-semibold text-green-700">
-                  Скидка {(discount * 100).toFixed(0)}% за объём — экономия {(total - totalWithDiscount).toLocaleString('ru')} ₽/мес
-                </span>
+            {orders >= 1000 && (
+              <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl mb-4" style={{ background: '#DCFCE7' }}>
+                <Icon name="BadgeCheck" size={15} className="text-green-600 shrink-0" />
+                <span className="text-xs font-semibold text-green-700">Тариф 30 ₽/заказ — максимальная скидка за объём</span>
               </div>
             )}
 
-            <div className="text-xs text-gray-400 bg-white/60 rounded-xl p-3 mb-6">
-              Расчёт ориентировочный. Точную стоимость уточните у менеджера с учётом специфики товара.
+            <div className="text-xs text-gray-400 bg-white/70 rounded-xl p-3 mb-5 leading-relaxed">
+              Расчёт ориентировочный. Точная стоимость согласовывается с менеджером.
             </div>
           </div>
 
           <button
             className="w-full py-4 rounded-xl font-bold text-white text-base transition-all hover:scale-[1.02] active:scale-95 shadow-lg"
-            style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})`, boxShadow: `0 8px 25px rgba(203,17,171,0.3)` }}
+            style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})`, boxShadow: '0 8px 25px rgba(203,17,171,0.3)' }}
             onClick={() => document.getElementById('contacts')?.scrollIntoView({ behavior: 'smooth' })}>
             Получить точный расчёт
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function CalcSection({ icon, title, children }: { icon: string; title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: WB_MID }}>
+          <Icon name={icon} size={14} style={{ color: WB }} />
+        </div>
+        <span className="text-sm font-bold text-gray-800 uppercase tracking-wide">{title}</span>
+      </div>
+      <div className="space-y-2.5 pl-9">{children}</div>
+    </div>
+  );
+}
+
+function CheckRow({ label, hint, checked, onChange }: { label: string; hint: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <button onClick={() => onChange(!checked)}
+      className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all duration-150 text-left"
+      style={checked ? { borderColor: WB_MID, background: WB_LIGHT } : { borderColor: '#F3F4F6', background: '#FAFAFA' }}>
+      <div className="flex items-center gap-2.5">
+        <div className="w-4.5 h-4.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all"
+          style={checked ? { borderColor: WB, background: WB } : { borderColor: '#D1D5DB', background: 'white' }}>
+          {checked && <Icon name="Check" size={11} className="text-white" />}
+        </div>
+        <span className="text-sm font-medium text-gray-700">{label}</span>
+      </div>
+      {hint && <span className="text-xs font-semibold shrink-0 ml-2" style={{ color: WB }}>{hint}</span>}
+    </button>
+  );
+}
+
+function SliderRow({ label, value, min, max, step = 1, onChange, unit }: {
+  label: string; value: number; min: number; max: number; step?: number; onChange: (v: number) => void; unit: string;
+}) {
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1.5">
+        <span className="text-xs text-gray-500">{label}</span>
+        <div className="flex items-center gap-1.5">
+          <button onClick={() => onChange(Math.max(min, value - step))}
+            className="w-6 h-6 rounded-md flex items-center justify-center border border-gray-200 text-gray-500 hover:border-gray-300 text-sm leading-none transition-colors">−</button>
+          <span className="font-bold text-gray-900 text-sm min-w-[2.5rem] text-center">{value}</span>
+          <button onClick={() => onChange(Math.min(max, value + step))}
+            className="w-6 h-6 rounded-md flex items-center justify-center border border-gray-200 text-gray-500 hover:border-gray-300 text-sm leading-none transition-colors">+</button>
+        </div>
+      </div>
+      <input type="range" min={min} max={max} step={step} value={value} onChange={e => onChange(+e.target.value)}
+        className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+        style={{ accentColor: WB }} />
+      <div className="text-right text-xs text-gray-300 mt-0.5">{unit}</div>
     </div>
   );
 }
