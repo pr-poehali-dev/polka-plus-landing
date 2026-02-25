@@ -593,7 +593,7 @@ export function ReviewsSection() {
               </h2>
               <p className="text-gray-400 text-lg">Реальные отзывы наших клиентов</p>
             </div>
-            <a href="https://yandex.ru/maps/org/polka_plus/--/reviews/" target="_blank" rel="noopener noreferrer"
+            <a href="https://yandex.com/maps/51/samara/?ll=50.107323%2C53.182748&mode=poi&poi%5Bpoint%5D=50.107078%2C53.182559&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D146029990299&source=serp_navig&tab=reviews&z=19.03" target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border font-semibold text-sm hover:shadow-md transition-all shrink-0"
               style={{ borderColor: WB_MID, color: WB, background: WB_LIGHT }}>
               <Icon name="ExternalLink" size={14} />
@@ -631,7 +631,7 @@ export function ReviewsSection() {
         </div>
         <FadeIn delay={0.2}>
           <div className="mt-6 text-center">
-            <a href="https://yandex.ru/maps/org/polka_plus/--/reviews/" target="_blank" rel="noopener noreferrer"
+            <a href="https://yandex.com/maps/51/samara/?ll=50.107323%2C53.182748&mode=poi&poi%5Bpoint%5D=50.107078%2C53.182559&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D146029990299&source=serp_navig&tab=reviews&z=19.03" target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm font-semibold hover:underline transition-all" style={{ color: WB }}>
               Все отзывы на Яндекс Картах <Icon name="ArrowRight" size={14} />
             </a>
