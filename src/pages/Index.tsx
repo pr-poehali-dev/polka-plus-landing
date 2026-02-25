@@ -14,6 +14,7 @@ import {
   CtaSection,
   ContactsSection,
   SiteFooter,
+  TelegramPopup,
 } from '@/components/sections/PageSections';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
@@ -101,6 +102,7 @@ export default function Index() {
       <CtaSection scrollTo={scrollTo} />
       <ContactsSection />
       <SiteFooter scrollTo={scrollTo} navLinks={navLinks} />
+      <TelegramPopup />
     </div>
   );
 }

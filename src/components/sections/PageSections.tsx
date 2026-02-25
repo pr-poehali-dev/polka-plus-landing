@@ -841,6 +841,96 @@ export function ContactsSection() {
   );
 }
 
+// ─── TelegramPopup ────────────────────────────────────────────────────────────
+export function TelegramPopup() {
+  const [visible, setVisible] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+
+  useEffect(() => {
+    if (sessionStorage.getItem('tg_popup_dismissed')) return;
+    const t = setTimeout(() => setVisible(true), 12000);
+    return () => clearTimeout(t);
+  }, []);
+
+  const close = () => {
+    setVisible(false);
+    setDismissed(true);
+    sessionStorage.setItem('tg_popup_dismissed', '1');
+  };
+
+  if (dismissed || !visible) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
+      onClick={close}>
+      <div
+        className="relative w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl"
+        style={{ background: '#17212B' }}
+        onClick={e => e.stopPropagation()}>
+
+        {/* Header — TG style */}
+        <div className="relative px-6 pt-7 pb-5 text-center"
+          style={{ background: 'linear-gradient(180deg, #1c2f3f 0%, #17212B 100%)' }}>
+          <button onClick={close}
+            className="absolute top-4 right-4 w-7 h-7 rounded-full flex items-center justify-center transition-colors"
+            style={{ background: 'rgba(255,255,255,0.08)' }}>
+            <Icon name="X" size={14} className="text-white/60" />
+          </button>
+
+          {/* TG logo circle */}
+          <div className="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center shadow-xl"
+            style={{ background: 'linear-gradient(135deg, #2AABEE, #229ED9)' }}>
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="white">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/>
+            </svg>
+          </div>
+
+          <h3 className="font-bold text-white text-lg leading-tight mb-1">Полка+ в Telegram</h3>
+          <p className="text-sm" style={{ color: '#8DA8C0' }}>@Polka_plus</p>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 py-5">
+          <p className="text-sm leading-relaxed mb-5 text-center" style={{ color: '#AAC4DB' }}>
+            Советы по продажам на маркетплейсах, новости фулфилмента и эксклюзивные предложения — подпишитесь, чтобы не пропустить
+          </p>
+
+          {/* Fake message bubbles */}
+          <div className="space-y-2 mb-5">
+            {[
+              { text: '📦 Как снизить стоимость хранения на 30%', time: '10:14' },
+              { text: '🚀 Топ-5 ошибок при выходе на WB', time: '11:32' },
+            ].map((msg, i) => (
+              <div key={i} className="flex items-end gap-2">
+                <div className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-[10px] font-bold text-white"
+                  style={{ background: 'linear-gradient(135deg, #2AABEE, #229ED9)' }}>П</div>
+                <div className="flex-1 rounded-2xl rounded-bl-sm px-3 py-2.5 text-xs"
+                  style={{ background: '#232E3C', color: '#E8F4FD' }}>
+                  {msg.text}
+                  <span className="ml-2 text-[10px]" style={{ color: '#5A7A8C' }}>{msg.time}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <a href="https://t.me/Polka_plus" target="_blank" rel="noopener noreferrer"
+            onClick={close}
+            className="block w-full py-3.5 rounded-2xl font-bold text-white text-center text-sm transition-all hover:opacity-90 active:scale-95 shadow-lg"
+            style={{ background: 'linear-gradient(135deg, #2AABEE, #229ED9)', boxShadow: '0 8px 24px rgba(42,171,238,0.35)' }}>
+            Подписаться на канал
+          </a>
+          <button onClick={close}
+            className="w-full mt-2 py-2 text-xs text-center transition-colors"
+            style={{ color: '#5A7A8C' }}>
+            Нет, спасибо
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── SiteFooter ───────────────────────────────────────────────────────────────
 export function SiteFooter({ scrollTo, navLinks }: SectionProps) {
   return (
