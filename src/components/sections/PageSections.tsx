@@ -1,5 +1,5 @@
 import Icon from '@/components/ui/icon';
-import { WB, WB_DARK, WB_LIGHT, WB_MID, LEGO_IMG, FadeIn, Tag, Accent, AnimatedCounter, FaqList } from '@/components/shared/ui-helpers';
+import { WB, WB_DARK, WB_LIGHT, WB_MID, FadeIn, Tag, Accent, AnimatedCounter, FaqList } from '@/components/shared/ui-helpers';
 import Calculator from '@/components/sections/Calculator';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -261,24 +261,13 @@ export function ServicesSection({ services }: { services: { icon: string; title:
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
           {services.map((s, i) => (
             <FadeIn key={s.title} delay={i * 0.07}>
-              <div className="bg-white rounded-2xl border border-gray-200 hover:border-[#CB11AB]/30 hover:shadow-lg transition-all duration-300 group h-full overflow-hidden flex flex-col">
-                <div className="relative overflow-hidden flex justify-center pt-4 pb-0" style={{ background: WB_LIGHT, minHeight: 160 }}>
-                  <div className="w-36 h-36 shrink-0 group-hover:scale-110 transition-transform duration-300"
-                    style={{
-                      backgroundImage: `url(${LEGO_IMG})`,
-                      backgroundSize: '300% 300%',
-                      backgroundPosition: s.lego,
-                      backgroundRepeat: 'no-repeat',
-                    }}
-                  />
+              <div className="bg-white rounded-2xl p-6 border border-gray-200 hover:border-[#CB11AB]/30 hover:shadow-md transition-all duration-300 group h-full flex gap-4">
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"
+                  style={{ background: WB_LIGHT }}>
+                  <Icon name={s.icon} size={20} style={{ color: WB }} />
                 </div>
-                <div className="p-5 flex-1 flex flex-col">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: WB_LIGHT }}>
-                      <Icon name={s.icon} size={16} style={{ color: WB }} />
-                    </div>
-                    <h3 className="font-semibold text-gray-900">{s.title}</h3>
-                  </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">{s.title}</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
                 </div>
               </div>
@@ -495,11 +484,6 @@ export function ReviewsSection() {
             <FadeIn key={r.name} delay={i * 0.1}>
               <div className="rounded-2xl border border-gray-200 flex flex-col h-full hover:border-[#CB11AB]/25 hover:shadow-md transition-all overflow-hidden group"
                 style={{ background: '#F8F9FC' }}>
-                <div className="flex justify-center items-end pt-4 pb-0" style={{ background: WB_LIGHT, minHeight: 140 }}>
-                  <div className="w-28 h-28 group-hover:scale-110 transition-transform duration-300"
-                    style={{ backgroundImage: `url(${LEGO_IMG})`, backgroundSize: '300% 300%', backgroundPosition: r.lego, backgroundRepeat: 'no-repeat' }}
-                  />
-                </div>
                 <div className="p-6 flex flex-col flex-1">
                   <div className="flex items-center gap-0.5 mb-3">
                     {Array.from({ length: r.rating }).map((_, j) => (
@@ -566,17 +550,8 @@ export function CtaSection({ scrollTo }: { scrollTo: (id: string) => void }) {
               style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
             <div className="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none"
               style={{ background: 'radial-gradient(circle, rgba(203,17,171,0.2) 0%, transparent 65%)', transform: 'translate(30%,-30%)' }} />
-            <div className="relative flex flex-col md:flex-row items-center gap-8">
-              <div className="w-48 h-48 shrink-0"
-                style={{
-                  backgroundImage: `url(${LEGO_IMG})`,
-                  backgroundSize: '300% 300%',
-                  backgroundPosition: '100% 50%',
-                  backgroundRepeat: 'no-repeat',
-                  filter: 'drop-shadow(0 10px 30px rgba(203,17,171,0.4))',
-                }}
-              />
-              <div className="text-center md:text-left">
+            <div className="relative">
+              <div className="text-center">
                 <h2 className="font-oswald text-4xl sm:text-5xl font-bold text-white mb-4">
                   ГОТОВЫ МАСШТАБИРОВАТЬ<br />ВАШ БИЗНЕС?
                 </h2>
