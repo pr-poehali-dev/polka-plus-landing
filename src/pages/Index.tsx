@@ -79,12 +79,12 @@ export default function Index() {
   ];
 
   const services = [
-    { icon: 'Truck',        title: 'Приёмка товара',    desc: 'Разгрузка, проверка, фото, постановка на учёт' },
-    { icon: 'Warehouse',    title: 'Хранение',           desc: 'Адресное хранение, климат-контроль для чувствительных товаров' },
-    { icon: 'PackageOpen',  title: 'Упаковка',           desc: 'По требованиям WB, Ozon, ЯМ. Защита при транспортировке' },
-    { icon: 'Tag',          title: 'Маркировка',         desc: 'Штрихкоды, честный знак, этикетки по всем стандартам' },
-    { icon: 'ListChecks',   title: 'Комплектация',       desc: 'Сборка заказов, подарочная упаковка, вложения' },
-    { icon: 'Send',         title: 'Отгрузка',           desc: 'Синхронизация с API маркетплейсов в реальном времени' },
+    { icon: 'Truck',        title: 'Приёмка товара',    desc: 'Разгрузка, проверка, фото, постановка на учёт',               lego: '0% 100%' },
+    { icon: 'Warehouse',    title: 'Хранение',           desc: 'Адресное хранение, климат-контроль для чувствительных товаров', lego: '50% 0%' },
+    { icon: 'PackageOpen',  title: 'Упаковка',           desc: 'По требованиям WB, Ozon, ЯМ. Защита при транспортировке',      lego: '0% 0%' },
+    { icon: 'Tag',          title: 'Маркировка',         desc: 'Штрихкоды, честный знак, этикетки по всем стандартам',         lego: '100% 0%' },
+    { icon: 'ListChecks',   title: 'Комплектация',       desc: 'Сборка заказов, подарочная упаковка, вложения',                lego: '50% 50%' },
+    { icon: 'Send',         title: 'Отгрузка',           desc: 'Синхронизация с API маркетплейсов в реальном времени',         lego: '100% 100%' },
   ];
 
   const steps = [
@@ -362,13 +362,24 @@ export default function Index() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
             {services.map((s, i) => (
               <FadeIn key={s.title} delay={i * 0.07}>
-                <div className="bg-white rounded-2xl p-6 border border-gray-200 hover:border-[#CB11AB]/30 hover:shadow-md transition-all duration-300 group h-full flex gap-4">
-                  <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"
-                    style={{ background: WB_LIGHT }}>
-                    <Icon name={s.icon} size={20} style={{ color: WB }} />
+                <div className="bg-white rounded-2xl border border-gray-200 hover:border-[#CB11AB]/30 hover:shadow-lg transition-all duration-300 group h-full overflow-hidden flex flex-col">
+                  <div className="relative overflow-hidden flex justify-center pt-4 pb-0" style={{ background: WB_LIGHT, minHeight: 160 }}>
+                    <div className="w-36 h-36 shrink-0 group-hover:scale-110 transition-transform duration-300"
+                      style={{
+                        backgroundImage: `url(https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/9a24b0fa-8ab2-4b6b-abf0-c3ca59a3b6e8.png)`,
+                        backgroundSize: '300% 300%',
+                        backgroundPosition: s.lego,
+                        backgroundRepeat: 'no-repeat',
+                      }}
+                    />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">{s.title}</h3>
+                  <div className="p-5 flex-1 flex flex-col">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: WB_LIGHT }}>
+                        <Icon name={s.icon} size={16} style={{ color: WB }} />
+                      </div>
+                      <h3 className="font-semibold text-gray-900">{s.title}</h3>
+                    </div>
                     <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
                   </div>
                 </div>
@@ -566,28 +577,40 @@ export default function Index() {
           </FadeIn>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
-              { name: 'Александр К.', date: 'Январь 2026', rating: 5, text: 'Работаем с Полка+ уже 8 месяцев. Цены честные, без сюрпризов. Всё прописано в договоре. Приёмка быстрая, потерь не было ни разу. Рекомендую.', platform: 'Яндекс Карты' },
-              { name: 'Марина С.', date: 'Февраль 2026', rating: 5, text: 'Перешли от другого фулфилмента — разница колоссальная. Здесь реально дешевле и работают аккуратно. Менеджер всегда на связи, вопросы решают быстро.', platform: 'Яндекс Карты' },
-              { name: 'Дмитрий Л.', date: 'Декабрь 2025', rating: 5, text: 'Занимаемся продажами на WB. Склад в Самаре очень удобен. Приёмка с фото, всё прозрачно. Отгрузки в срок. Работаем уже год — всем доволен.', platform: 'Яндекс Карты' },
+              { name: 'Александр К.', date: 'Январь 2026', rating: 5, text: 'Работаем с Полка+ уже 8 месяцев. Цены честные, без сюрпризов. Всё прописано в договоре. Приёмка быстрая, потерь не было ни разу. Рекомендую.', platform: 'Яндекс Карты', lego: '50% 100%' },
+              { name: 'Марина С.', date: 'Февраль 2026', rating: 5, text: 'Перешли от другого фулфилмента — разница колоссальная. Здесь реально дешевле и работают аккуратно. Менеджер всегда на связи, вопросы решают быстро.', platform: 'Яндекс Карты', lego: '0% 50%' },
+              { name: 'Дмитрий Л.', date: 'Декабрь 2025', rating: 5, text: 'Занимаемся продажами на WB. Склад в Самаре очень удобен. Приёмка с фото, всё прозрачно. Отгрузки в срок. Работаем уже год — всем доволен.', platform: 'Яндекс Карты', lego: '100% 100%' },
             ].map((r, i) => (
               <FadeIn key={r.name} delay={i * 0.1}>
-                <div className="rounded-2xl p-6 border border-gray-200 flex flex-col h-full hover:border-[#CB11AB]/25 hover:shadow-md transition-all"
+                <div className="rounded-2xl border border-gray-200 flex flex-col h-full hover:border-[#CB11AB]/25 hover:shadow-md transition-all overflow-hidden group"
                   style={{ background: '#F8F9FC' }}>
-                  <div className="flex items-center gap-0.5 mb-4">
-                    {Array.from({ length: r.rating }).map((_, j) => (
-                      <Icon key={j} name="Star" size={14} className="text-yellow-400 fill-yellow-400" />
-                    ))}
+                  <div className="flex justify-center items-end pt-4 pb-0" style={{ background: WB_LIGHT, minHeight: 140 }}>
+                    <div className="w-28 h-28 group-hover:scale-110 transition-transform duration-300"
+                      style={{
+                        backgroundImage: `url(https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/9a24b0fa-8ab2-4b6b-abf0-c3ca59a3b6e8.png)`,
+                        backgroundSize: '300% 300%',
+                        backgroundPosition: r.lego,
+                        backgroundRepeat: 'no-repeat',
+                      }}
+                    />
                   </div>
-                  <p className="text-sm text-gray-600 leading-relaxed flex-1 mb-5">«{r.text}»</p>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="font-semibold text-gray-900 text-sm">{r.name}</div>
-                      <div className="text-xs text-gray-400">{r.date}</div>
+                  <div className="p-6 flex flex-col flex-1">
+                    <div className="flex items-center gap-0.5 mb-3">
+                      {Array.from({ length: r.rating }).map((_, j) => (
+                        <Icon key={j} name="Star" size={14} className="text-yellow-400 fill-yellow-400" />
+                      ))}
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold"
-                      style={{ background: '#FFF7E6', color: '#F59E0B' }}>
-                      <Icon name="MapPin" size={11} />
-                      {r.platform}
+                    <p className="text-sm text-gray-600 leading-relaxed flex-1 mb-5">«{r.text}»</p>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-semibold text-gray-900 text-sm">{r.name}</div>
+                        <div className="text-xs text-gray-400">{r.date}</div>
+                      </div>
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold"
+                        style={{ background: '#FFF7E6', color: '#F59E0B' }}>
+                        <Icon name="MapPin" size={11} />
+                        {r.platform}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -630,16 +653,27 @@ export default function Index() {
                 style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
               <div className="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none"
                 style={{ background: 'radial-gradient(circle, rgba(203,17,171,0.2) 0%, transparent 65%)', transform: 'translate(30%,-30%)' }} />
-              <div className="relative">
-                <h2 className="font-oswald text-4xl sm:text-5xl font-bold text-white mb-4">
-                  ГОТОВЫ МАСШТАБИРОВАТЬ<br />ВАШ БИЗНЕС?
-                </h2>
-                <p className="text-white/50 text-lg mb-9">Оставьте заявку — менеджер свяжется в течение 15 минут</p>
-                <button onClick={() => scrollTo('contacts')}
-                  className="px-10 py-4 rounded-xl font-bold text-base bg-white hover:scale-105 active:scale-95 transition-all shadow-2xl"
-                  style={{ color: WB }}>
-                  Оставить заявку
-                </button>
+              <div className="relative flex flex-col md:flex-row items-center gap-8">
+                <div className="w-48 h-48 shrink-0"
+                  style={{
+                    backgroundImage: `url(https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/9a24b0fa-8ab2-4b6b-abf0-c3ca59a3b6e8.png)`,
+                    backgroundSize: '300% 300%',
+                    backgroundPosition: '100% 50%',
+                    backgroundRepeat: 'no-repeat',
+                    filter: 'drop-shadow(0 10px 30px rgba(203,17,171,0.4))',
+                  }}
+                />
+                <div className="text-center md:text-left">
+                  <h2 className="font-oswald text-4xl sm:text-5xl font-bold text-white mb-4">
+                    ГОТОВЫ МАСШТАБИРОВАТЬ<br />ВАШ БИЗНЕС?
+                  </h2>
+                  <p className="text-white/50 text-lg mb-9">Оставьте заявку — менеджер свяжется в течение 15 минут</p>
+                  <button onClick={() => scrollTo('contacts')}
+                    className="px-10 py-4 rounded-xl font-bold text-base bg-white hover:scale-105 active:scale-95 transition-all shadow-2xl"
+                    style={{ color: WB }}>
+                    Оставить заявку
+                  </button>
+                </div>
               </div>
             </div>
           </FadeIn>
