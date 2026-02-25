@@ -70,21 +70,12 @@ export default function Index() {
   };
 
   const advantages = [
-    { icon: 'Package2',   title: 'Работаем с крупногабаритом',  desc: 'Мебель, двери, кабели — любые нестандартные товары без ограничений по габаритам' },
-    { icon: 'MapPin',     title: 'Адресное хранение',            desc: 'Цифровая карта склада — каждый товар на своём месте, ни одной потери' },
-    { icon: 'ShieldCheck',title: 'Контроль качества',            desc: 'Фотофиксация при приёмке, проверка каждой единицы, отчёт онлайн' },
-    { icon: 'Layers',     title: 'Усиленная упаковка',           desc: 'Специальные материалы для хрупких и крупных товаров' },
-    { icon: 'Zap',        title: 'Быстрая отгрузка',             desc: 'Отправляем на маркетплейс в течение 24 часов с момента заказа' },
-    { icon: 'BarChart3',  title: 'Прозрачная отчётность',        desc: 'Личный кабинет с аналитикой, остатками и историей операций' },
-  ];
-
-  const categories = [
-    { icon: 'Armchair',  label: 'Мебель',              desc: 'Диваны, шкафы, кровати — любые габариты' },
-    { icon: 'DoorOpen',  label: 'Двери',                desc: 'Межкомнатные и входные, спецупаковка' },
-    { icon: 'Cable',     label: 'Кабельная продукция',  desc: 'Барабаны, бухты, кабель-каналы' },
-    { icon: 'Dumbbell',  label: 'Спорттовары',          desc: 'Тренажёры, велосипеды, самокаты' },
-    { icon: 'Hammer',    label: 'Металлоконструкции',   desc: 'Профили, уголки, нестандартные изделия' },
-    { icon: 'Wrench',    label: 'Нестандартные грузы',  desc: 'Если отказали другие — мы возьмём' },
+    { icon: 'BadgeCheck',  title: 'Цены ниже рынка на 10–20%',   desc: 'Фиксируем стоимость в договоре — никаких скрытых платежей и сюрпризов' },
+    { icon: 'MapPin',      title: 'Адресное хранение',             desc: 'Цифровая карта склада — каждый товар на своём месте, ни одной потери' },
+    { icon: 'ShieldCheck', title: 'Гарантия приёмки 99,5%',       desc: 'Принимаем и фиксируем каждую поставку, цены закреплены в договоре' },
+    { icon: 'Layers',      title: 'Качественная упаковка',         desc: 'По стандартам WB, Ozon, Яндекс.Маркет — защита на каждом этапе' },
+    { icon: 'Zap',         title: 'Быстрая отгрузка',              desc: 'Отправляем на маркетплейс в течение 24 часов с момента заказа' },
+    { icon: 'BarChart3',   title: 'Прозрачная отчётность',         desc: 'Личный кабинет с аналитикой, остатками и историей операций' },
   ];
 
   const services = [
@@ -105,16 +96,21 @@ export default function Index() {
   ];
 
   const stats = [
-    { value: 12000, suffix: ' м²', label: 'площадь склада' },
-    { value: 3500,  suffix: '+',   label: 'паллетомест' },
-    { value: 200,   suffix: '+',   label: 'клиентов' },
-    { value: 15000, suffix: '+',   label: 'отправок в месяц' },
+    { value: 1000,  suffix: '+',   label: 'Довольных клиентов' },
+    { value: 2500,  suffix: 'К+',  label: 'Обработано заказов' },
+    { value: 24,    suffix: '/7',  label: 'Поддержка' },
+    { value: 99,    suffix: ',5%', label: 'Успешных приёмок' },
   ];
 
-  const blogPosts = [
-    { tag: 'Маркетплейсы',  date: '18 фев 2026', title: 'Как выбрать фулфилмент для крупногабарита: 7 вопросов',        desc: 'Разбираем ошибки селлеров при выборе склада' },
-    { tag: 'API интеграции', date: '10 фев 2026', title: 'API Wildberries 2026: новые требования',                       desc: 'Обновлённый протокол синхронизации остатков и маркировки' },
-    { tag: 'Кейс',           date: '3 фев 2026',  title: 'Рост отгрузок 300% за 3 месяца — мебельный бизнес',           desc: 'Как производитель диванов масштабировал продажи на WB' },
+  const faq = [
+    { q: 'Как начать работать с Полка+?', a: 'Оставьте заявку на сайте или позвоните нам. Менеджер свяжется в течение 15 минут, обсудим объёмы, согласуем тарифы и подпишем договор. Уже на следующий день можете привозить товар.' },
+    { q: 'С какими маркетплейсами вы работаете?', a: 'Мы работаем с Wildberries, Ozon и Яндекс.Маркет. Поддерживаем API-синхронизацию в реальном времени — остатки и статусы обновляются автоматически.' },
+    { q: 'Какой минимальный объём для начала работы?', a: 'Минимального порога нет. Работаем как с небольшими партиями от 10 единиц, так и с крупными поставками на тысячи позиций.' },
+    { q: 'Как рассчитывается стоимость хранения?', a: 'Первые 3 дня хранения бесплатно. Далее: паллетоместо — 45 ₽/сутки, короб — 15 ₽/сутки. Все цены фиксируются в договоре.' },
+    { q: 'Гарантируете ли вы сохранность товара?', a: 'Да. Мы принимаем 99,5% поставок с полной фиксацией и фотоотчётом. Адресное хранение исключает потери. Материальная ответственность прописана в договоре.' },
+    { q: 'Можно ли приехать на склад?', a: 'Конечно. Самара: ул. Братьев Корастелевых 3к2. Смоленск: Краснинское шоссе 19а. Запишитесь заранее по телефону +7 (917) 101-01-63.' },
+    { q: 'Как быстро вы отгружаете товар на маркетплейс?', a: 'Стандартная отгрузка — в течение 24 часов. Срочная отгрузка — в тот же день (наценка 30%). График поставок согласовываем заранее.' },
+    { q: 'Что входит в услугу «под ключ»?', a: 'Приёмка, хранение, упаковка по стандартам маркетплейса, маркировка, комплектация заказов, формирование поставки и отгрузка. Вам остаётся только продавать.' },
   ];
 
   // ── nav links ──
@@ -143,10 +139,10 @@ export default function Index() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            <a href="tel:+79001234567"
+            <a href="tel:+79171010163"
               className="flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-gray-900 transition-colors">
               <Icon name="Phone" size={14} style={{ color: WB }} />
-              +7 (900) 123-45-67
+              +7 (917) 101-01-63
             </a>
             <button onClick={() => scrollTo('contacts')}
               className="px-5 py-2.5 rounded-xl text-sm font-bold text-white shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all"
@@ -195,24 +191,46 @@ export default function Index() {
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-7 border"
                   style={{ background: 'rgba(203,17,171,0.15)', borderColor: 'rgba(203,17,171,0.35)', color: '#E878D0' }}>
                   <span className="w-1.5 h-1.5 rounded-full bg-[#E878D0] animate-pulse" />
-                  Фулфилмент-центр для маркетплейсов
+                  Выгодно · Честно · Под ключ
                 </div>
               </FadeIn>
 
               <FadeIn delay={0.1}>
                 <h1 className="font-oswald text-5xl sm:text-6xl font-bold leading-[1.0] mb-6 text-white">
-                  РАБОТАЕМ<br />С ТЕМ, ОТ ЧЕГО<br />
+                  ФУЛФИЛМЕНТ<br />
                   <span style={{ background: `linear-gradient(90deg, ${WB}, #E878D0)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                    ОТКАЗЫВАЮТ
-                  </span><br />
-                  <span className="text-white">ДРУГИЕ</span>
+                    ПОЛКА+
+                  </span>
                 </h1>
               </FadeIn>
 
+              <FadeIn delay={0.15}>
+                <div className="flex flex-col gap-2 mb-7">
+                  <div className="flex items-center gap-2.5 text-white/80 text-base font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: WB }} />
+                    Выгодно — цены ниже рынка на 10–20%
+                  </div>
+                  <div className="flex items-center gap-2.5 text-white/80 text-base font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: WB }} />
+                    Честно — фиксируем цены в договоре
+                  </div>
+                  <div className="flex items-center gap-2.5 text-white/80 text-base font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: WB }} />
+                    Под ключ — от приёмки до доставки
+                  </div>
+                </div>
+              </FadeIn>
+
               <FadeIn delay={0.2}>
-                <p className="text-lg text-white/55 mb-9 max-w-lg leading-relaxed">
-                  Полный цикл работы с маркетплейсами — приёмка, хранение, упаковка, отгрузка. Мебель, двери, кабели, металлоконструкции.
-                </p>
+                <div className="rounded-2xl px-5 py-4 mb-8 border"
+                  style={{ background: 'rgba(203,17,171,0.12)', borderColor: 'rgba(203,17,171,0.3)' }}>
+                  <div className="flex items-start gap-3">
+                    <Icon name="ShieldCheck" size={18} className="shrink-0 mt-0.5" style={{ color: '#E878D0' }} />
+                    <p className="text-sm text-white/70 leading-relaxed">
+                      <span className="font-bold text-white">Гарантируем приёмку 99,5% поставок</span> и фиксируем цены в договоре — никаких сюрпризов.
+                    </p>
+                  </div>
+                </div>
               </FadeIn>
 
               <FadeIn delay={0.3}>
@@ -346,31 +364,47 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ════════════════ CATEGORIES ════════════════ */}
-      <section className="py-24 bg-white">
+      {/* ════════════════ HELP BLOCK ════════════════ */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <FadeIn>
-            <Tag label="Категории товаров" />
-            <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-2 text-gray-900">
-              С чем мы <Accent>работаем</Accent>
-            </h2>
-            <p className="text-gray-400 text-lg mb-12 max-w-xl">Специализация на нестандартных и крупногабаритных товарах</p>
-          </FadeIn>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {categories.map((c, i) => (
-              <FadeIn key={c.label} delay={i * 0.07}>
-                <div className="rounded-2xl p-6 border border-gray-200 hover:border-[#CB11AB]/30 hover:shadow-md transition-all duration-300 group h-full"
-                  style={{ background: '#F8F9FC' }}>
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"
-                    style={{ background: WB_MID }}>
-                    <Icon name={c.icon} size={22} style={{ color: WB }} />
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-1">{c.label}</h3>
-                  <p className="text-sm text-gray-500">{c.desc}</p>
+            <div className="relative rounded-3xl overflow-hidden px-8 md:px-16 py-14 flex flex-col md:flex-row md:items-center gap-10"
+              style={{ background: 'linear-gradient(135deg, #1A1228 0%, #2D1640 100%)' }}>
+              <div className="absolute inset-0 opacity-[0.03]"
+                style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+              <div className="absolute top-0 right-0 w-72 h-72 rounded-full pointer-events-none"
+                style={{ background: 'radial-gradient(circle, rgba(203,17,171,0.2) 0%, transparent 65%)', transform: 'translate(30%,-30%)' }} />
+              <div className="relative flex-1">
+                <div className="font-oswald text-4xl md:text-5xl font-bold text-white leading-tight mb-3">
+                  Мы поможем вам<br />
+                  <span style={{ background: `linear-gradient(90deg, ${WB}, #E878D0)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    повысить эффективность
+                  </span><br />
+                  вашего бизнеса
                 </div>
-              </FadeIn>
-            ))}
-          </div>
+                <p className="text-white/50 text-lg">Полная поддержка на каждом этапе — от приёмки до доставки на любой склад.</p>
+              </div>
+              <div className="relative shrink-0 flex flex-col gap-3">
+                {[
+                  { icon: 'PackageCheck', text: 'Приёмка и хранение' },
+                  { icon: 'Tag',          text: 'Упаковка и маркировка' },
+                  { icon: 'Send',         text: 'Отгрузка на маркетплейс' },
+                ].map(item => (
+                  <div key={item.text} className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-white/5">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(203,17,171,0.3)' }}>
+                      <Icon name={item.icon} size={15} className="text-white" />
+                    </div>
+                    <span className="text-sm font-medium text-white/80">{item.text}</span>
+                  </div>
+                ))}
+                <button onClick={() => scrollTo('contacts')}
+                  className="mt-2 w-full py-3.5 rounded-xl font-bold text-white transition-all hover:scale-[1.02] active:scale-95"
+                  style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})` }}>
+                  Начать работу
+                </button>
+              </div>
+            </div>
+          </FadeIn>
         </div>
       </section>
 
@@ -507,23 +541,41 @@ export default function Index() {
             <FadeIn>
               <Tag label="О компании" />
               <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-5 text-gray-900">
-                Полка+ — будущая<br /><Accent>федеральная сеть</Accent>
+                Полка+ — <Accent>надёжный</Accent><br />партнёр для вашего бизнеса
               </h2>
               <p className="text-gray-500 text-lg leading-relaxed mb-4">
-                Мы строим инфраструктуру нового поколения для российских продавцов на маркетплейсах.
+                Фулфилмент-оператор полного цикла для продавцов на WB, Ozon и Яндекс.Маркет.
               </p>
               <p className="text-gray-400 leading-relaxed mb-8">
-                Каждый клиент получает технологического партнёра с полной цифровой интеграцией — от первых 100 до 100 000 отправок в месяц.
+                Работаем без скрытых платежей — цены фиксируем в договоре. Каждый клиент получает личного менеджера и доступ к аналитике в реальном времени.
               </p>
-              <div className="flex flex-wrap gap-2">
-                {[['Москва',true],['Санкт-Петербург',false],['Казань',false],['Новосибирск',false],['Екатеринбург',false]].map(([city, active]) => (
-                  <div key={city as string} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium"
-                    style={active ? { background: WB_LIGHT, borderColor: WB_MID, color: WB } : { background: 'white', borderColor: '#E5E7EB', color: '#9CA3AF' }}>
-                    <div className="w-1.5 h-1.5 rounded-full" style={{ background: active ? WB : '#D1D5DB' }} />
-                    {city as string}
-                    {!active && <span className="text-[10px] text-gray-300 uppercase tracking-wider">скоро</span>}
+              <div className="space-y-3">
+                <div className="flex items-start gap-3 p-4 rounded-2xl border border-gray-200 bg-white hover:border-[#CB11AB]/25 hover:shadow-sm transition-all">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: WB_LIGHT }}>
+                    <Icon name="Warehouse" size={18} style={{ color: WB }} />
                   </div>
-                ))}
+                  <div>
+                    <div className="font-semibold text-gray-900 mb-0.5">Склад в Самаре</div>
+                    <div className="text-sm text-gray-500">ул. Братьев Корастелевых 3к2</div>
+                  </div>
+                  <div className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold shrink-0"
+                    style={{ background: '#DCFCE7', color: '#16A34A' }}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />Работает
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-4 rounded-2xl border border-gray-200 bg-white hover:border-[#CB11AB]/25 hover:shadow-sm transition-all">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: WB_LIGHT }}>
+                    <Icon name="Warehouse" size={18} style={{ color: WB }} />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 mb-0.5">Склад в Смоленске</div>
+                    <div className="text-sm text-gray-500">Краснинское шоссе 19а</div>
+                  </div>
+                  <div className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold shrink-0"
+                    style={{ background: '#DCFCE7', color: '#16A34A' }}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />Работает
+                  </div>
+                </div>
               </div>
             </FadeIn>
 
@@ -551,34 +603,79 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ════════════════ BLOG ════════════════ */}
+      {/* ════════════════ REVIEWS ════════════════ */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <FadeIn>
-            <Tag label="Блог и новости" />
-            <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-2 text-gray-900">
-              Экспертиза <Accent>в деталях</Accent>
-            </h2>
-            <p className="text-gray-400 text-lg mb-12 max-w-xl">Актуальные материалы о фулфилменте и маркетплейсах</p>
+            <Tag label="Отзывы клиентов" />
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+              <div>
+                <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-2 text-gray-900">
+                  Нам <Accent>доверяют</Accent>
+                </h2>
+                <p className="text-gray-400 text-lg">Реальные отзывы наших клиентов</p>
+              </div>
+              <a href="https://yandex.ru/maps/org/polka_plus/--/reviews/" target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border font-semibold text-sm hover:shadow-md transition-all shrink-0"
+                style={{ borderColor: WB_MID, color: WB, background: WB_LIGHT }}>
+                <Icon name="ExternalLink" size={14} />
+                Посмотреть на Яндекс Картах
+              </a>
+            </div>
           </FadeIn>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {blogPosts.map((p, i) => (
-              <FadeIn key={p.title} delay={i * 0.1}>
-                <div className="rounded-2xl p-7 border border-gray-200 hover:border-[#CB11AB]/30 hover:shadow-lg transition-all duration-300 cursor-pointer group flex flex-col h-full"
+            {[
+              { name: 'Александр К.', date: 'Январь 2026', rating: 5, text: 'Работаем с Полка+ уже 8 месяцев. Цены честные, без сюрпризов. Всё прописано в договоре. Приёмка быстрая, потерь не было ни разу. Рекомендую.', platform: 'Яндекс Карты' },
+              { name: 'Марина С.', date: 'Февраль 2026', rating: 5, text: 'Перешли от другого фулфилмента — разница колоссальная. Здесь реально дешевле и работают аккуратно. Менеджер всегда на связи, вопросы решают быстро.', platform: 'Яндекс Карты' },
+              { name: 'Дмитрий Л.', date: 'Декабрь 2025', rating: 5, text: 'Занимаемся продажами на WB. Склад в Самаре очень удобен. Приёмка с фото, всё прозрачно. Отгрузки в срок. Работаем уже год — всем доволен.', platform: 'Яндекс Карты' },
+            ].map((r, i) => (
+              <FadeIn key={r.name} delay={i * 0.1}>
+                <div className="rounded-2xl p-6 border border-gray-200 flex flex-col h-full hover:border-[#CB11AB]/25 hover:shadow-md transition-all"
                   style={{ background: '#F8F9FC' }}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="px-3 py-1.5 rounded-lg text-xs font-bold" style={{ background: WB_LIGHT, color: WB }}>{p.tag}</span>
-                    <span className="text-xs text-gray-400">{p.date}</span>
+                  <div className="flex items-center gap-0.5 mb-4">
+                    {Array.from({ length: r.rating }).map((_, j) => (
+                      <Icon key={j} name="Star" size={14} className="text-yellow-400 fill-yellow-400" />
+                    ))}
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-3 leading-snug group-hover:text-[#CB11AB] transition-colors">{p.title}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed flex-1">{p.desc}</p>
-                  <div className="flex items-center gap-1.5 mt-5 text-xs font-bold group-hover:gap-2.5 transition-all" style={{ color: WB }}>
-                    Читать далее <Icon name="ArrowRight" size={12} />
+                  <p className="text-sm text-gray-600 leading-relaxed flex-1 mb-5">«{r.text}»</p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-semibold text-gray-900 text-sm">{r.name}</div>
+                      <div className="text-xs text-gray-400">{r.date}</div>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold"
+                      style={{ background: '#FFF7E6', color: '#F59E0B' }}>
+                      <Icon name="MapPin" size={11} />
+                      {r.platform}
+                    </div>
                   </div>
                 </div>
               </FadeIn>
             ))}
           </div>
+          <FadeIn delay={0.2}>
+            <div className="mt-6 text-center">
+              <a href="https://yandex.ru/maps/org/polka_plus/--/reviews/" target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-semibold hover:underline transition-all"
+                style={{ color: WB }}>
+                Все отзывы на Яндекс Картах <Icon name="ArrowRight" size={14} />
+              </a>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ════════════════ FAQ ════════════════ */}
+      <section className="py-24" style={{ background: '#F4F6FA' }}>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <FadeIn>
+            <Tag label="Частые вопросы" />
+            <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-2 text-gray-900">
+              Ответы на <Accent>вопросы</Accent>
+            </h2>
+            <p className="text-gray-400 text-lg mb-12">Всё, что вы хотели узнать о фулфилменте</p>
+          </FadeIn>
+          <FaqList faq={faq} />
         </div>
       </section>
 
@@ -642,10 +739,10 @@ export default function Index() {
                     <select className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-700 text-sm focus:outline-none transition-colors"
                       onFocus={e => e.target.style.borderColor = WB}
                       onBlur={e => e.target.style.borderColor = '#e5e7eb'}>
-                      <option>Мебель и КГТ</option>
-                      <option>Двери</option>
-                      <option>Кабельная продукция</option>
-                      <option>Спорттовары</option>
+                      <option>Любой товар</option>
+                      <option>Стандартный габарит</option>
+                      <option>Крупногабаритный товар</option>
+                      <option>Хрупкий товар</option>
                       <option>Другое</option>
                     </select>
                   </div>
@@ -669,10 +766,11 @@ export default function Index() {
             <FadeIn delay={0.12}>
               <div className="space-y-3">
                 {[
-                  { icon: 'Phone',  label: 'Телефон', value: '+7 (900) 123-45-67',    sub: 'Пн–Вс, 09:00–21:00',          href: 'tel:+79001234567' },
-                  { icon: 'Send',   label: 'Telegram', value: '@polkaplus',             sub: 'Ответим в течение 15 минут',   href: 'https://t.me/polkaplus' },
-                  { icon: 'Mail',   label: 'Email',    value: 'info@polkaplus.ru',       sub: 'Для документов и КП',          href: 'mailto:info@polkaplus.ru' },
-                  { icon: 'MapPin', label: 'Адрес',    value: 'г. Москва, Складской проезд, 1', sub: 'Схема проезда',       href: '#' },
+                  { icon: 'Phone',  label: 'Телефон', value: '+7 (917) 101-01-63',           sub: 'Пн–Вс, 09:00–21:00',        href: 'tel:+79171010163' },
+                  { icon: 'Send',   label: 'Telegram', value: '@polkaplus',                   sub: 'Ответим в течение 15 минут', href: 'https://t.me/polkaplus' },
+                  { icon: 'Mail',   label: 'Email',    value: 'info@polkaplus.ru',             sub: 'Для документов и КП',        href: 'mailto:info@polkaplus.ru' },
+                  { icon: 'MapPin', label: 'Самара',   value: 'ул. Братьев Корастелевых 3к2', sub: 'Основной склад',             href: '#' },
+                  { icon: 'MapPin', label: 'Смоленск', value: 'Краснинское шоссе 19а',        sub: 'Склад №2',                   href: '#' },
                 ].map(c => (
                   <a key={c.label} href={c.href}
                     className="flex items-center gap-4 p-5 rounded-2xl border border-gray-200 bg-white hover:border-[#CB11AB]/25 hover:shadow-md transition-all group">
@@ -719,6 +817,35 @@ export default function Index() {
           <p className="text-xs text-gray-300">© 2026 Полка+. Все права защищены.</p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+// ─── FaqList ──────────────────────────────────────────────────────────────────
+function FaqList({ faq }: { faq: { q: string; a: string }[] }) {
+  const [open, setOpen] = useState<number | null>(null);
+  return (
+    <div className="space-y-2">
+      {faq.map((item, i) => (
+        <FadeIn key={i} delay={i * 0.04}>
+          <div className="rounded-2xl border overflow-hidden transition-all duration-300"
+            style={{ borderColor: open === i ? WB_MID : '#E5E7EB', background: open === i ? WB_LIGHT : 'white' }}>
+            <button onClick={() => setOpen(open === i ? null : i)}
+              className="w-full flex items-center justify-between gap-4 px-6 py-4 text-left">
+              <span className="font-semibold text-gray-900 text-sm leading-snug">{item.q}</span>
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all"
+                style={{ background: open === i ? WB : '#F3F4F6', transform: open === i ? 'rotate(45deg)' : 'rotate(0)' }}>
+                <Icon name="Plus" size={14} className={open === i ? 'text-white' : 'text-gray-500'} />
+              </div>
+            </button>
+            {open === i && (
+              <div className="px-6 pb-5">
+                <p className="text-sm text-gray-600 leading-relaxed">{item.a}</p>
+              </div>
+            )}
+          </div>
+        </FadeIn>
+      ))}
     </div>
   );
 }
