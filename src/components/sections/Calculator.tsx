@@ -183,52 +183,50 @@ export default function Calculator() {
         </div>
 
         {/* RIGHT — результат */}
-        <div className="lg:col-span-2 p-7 flex flex-col justify-between" style={{ background: 'linear-gradient(160deg, #1A1228 0%, #2D1640 100%)' }}>
-          <div>
-            <div className="text-xs font-bold text-white/40 uppercase tracking-widest mb-5">Ваш расчёт</div>
+        <div className="lg:col-span-2 p-7" style={{ background: 'linear-gradient(160deg, #1A1228 0%, #2D1640 100%)' }}>
+          <div className="text-xs font-bold text-white/40 uppercase tracking-widest mb-4">Ваш расчёт</div>
 
-            <div className="space-y-2 mb-4 max-h-52 overflow-y-auto pr-1">
-              {lines.map((line, i) => (
-                <div key={i} className="flex items-start justify-between gap-2 py-1.5 border-b border-white/5">
-                  <div className="text-xs text-white/60 flex-1 leading-snug">{line.label}</div>
-                  <div className="text-right shrink-0">
-                    {line.amount === 0
-                      ? <span className="text-xs font-bold text-green-400">бесплатно</span>
-                      : <span className="text-sm font-bold text-white">{line.amount.toLocaleString('ru')} ₽</span>
-                    }
-                    <div className="text-[10px] text-white/30">{line.hint}</div>
-                  </div>
+          <div className="space-y-2 mb-4 max-h-44 overflow-y-auto pr-1">
+            {lines.map((line, i) => (
+              <div key={i} className="flex items-start justify-between gap-2 py-1.5 border-b border-white/5">
+                <div className="text-xs text-white/60 flex-1 leading-snug">{line.label}</div>
+                <div className="text-right shrink-0">
+                  {line.amount === 0
+                    ? <span className="text-xs font-bold text-green-400">бесплатно</span>
+                    : <span className="text-sm font-bold text-white">{line.amount.toLocaleString('ru')} ₽</span>
+                  }
+                  <div className="text-[10px] text-white/30">{line.hint}</div>
                 </div>
-              ))}
-            </div>
-
-            <div className="rounded-2xl p-5 mb-4" style={{ background: 'rgba(203,17,171,0.15)', border: '1px solid rgba(203,17,171,0.3)' }}>
-              <div className="text-xs text-white/40 mb-1">Итого в месяц</div>
-              <div className="font-oswald text-5xl font-bold"
-                style={{ background: `linear-gradient(90deg, ${WB}, #E878D0)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                {total.toLocaleString('ru')} <span className="text-3xl">₽</span>
               </div>
+            ))}
+          </div>
+
+          <div className="rounded-2xl p-5 mb-3" style={{ background: 'rgba(203,17,171,0.15)', border: '1px solid rgba(203,17,171,0.3)' }}>
+            <div className="text-xs text-white/40 mb-1">Итого в месяц</div>
+            <div className="font-oswald text-5xl font-bold"
+              style={{ background: `linear-gradient(90deg, ${WB}, #E878D0)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              {total.toLocaleString('ru')} <span className="text-3xl">₽</span>
             </div>
-
-            {orders >= 1000 && (
-              <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl mb-4"
-                style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.2)' }}>
-                <Icon name="BadgeCheck" size={15} className="text-green-400 shrink-0" />
-                <span className="text-xs font-semibold text-green-400">Тариф 30 ₽/заказ — максимальная скидка</span>
-              </div>
-            )}
-
-            <p className="text-xs text-white/25 leading-relaxed mb-6">
-              Расчёт ориентировочный. Точная стоимость согласовывается с менеджером.
-            </p>
           </div>
 
           <button
-            className="w-full py-4 rounded-xl font-bold text-base text-white transition-all hover:scale-[1.02] active:scale-95 shadow-xl"
+            className="w-full py-4 rounded-xl font-bold text-base text-white transition-all hover:scale-[1.02] active:scale-95 shadow-xl mb-3"
             style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})`, boxShadow: '0 8px 30px rgba(203,17,171,0.5)' }}
             onClick={() => document.getElementById('contacts')?.scrollIntoView({ behavior: 'smooth' })}>
             Получить точный расчёт
           </button>
+
+          {orders >= 1000 && (
+            <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl mb-3"
+              style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.2)' }}>
+              <Icon name="BadgeCheck" size={15} className="text-green-400 shrink-0" />
+              <span className="text-xs font-semibold text-green-400">Тариф 30 ₽/заказ — максимальная скидка</span>
+            </div>
+          )}
+
+          <p className="text-xs text-white/25 leading-relaxed">
+            Расчёт ориентировочный. Точная стоимость согласовывается с менеджером.
+          </p>
         </div>
       </div>
     </div>
