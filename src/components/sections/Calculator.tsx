@@ -61,24 +61,24 @@ function SliderRow({ label, value, min, max, step = 1, onChange, unit }: {
 
 // ─── Calculator ───────────────────────────────────────────────────────────────
 export default function Calculator() {
-  const [boxes, setBoxes] = useState(50);
+  const [boxes, setBoxes] = useState(0);
   const [acceptCount, setAcceptCount] = useState(false);
   const [acceptDefect, setAcceptDefect] = useState(false);
   const [acceptPhoto, setAcceptPhoto] = useState(false);
-  const [photoQty, setPhotoQty] = useState(10);
-  const [storageDays, setStorageDays] = useState(30);
-  const [storagePallets, setStoragePallets] = useState(5);
-  const [storageBoxes, setStorageBoxes] = useState(20);
-  const [orders, setOrders] = useState(150);
-  const [needAssembly, setNeedAssembly] = useState(true);
+  const [photoQty, setPhotoQty] = useState(0);
+  const [storageDays, setStorageDays] = useState(0);
+  const [storagePallets, setStoragePallets] = useState(0);
+  const [storageBoxes, setStorageBoxes] = useState(0);
+  const [orders, setOrders] = useState(0);
+  const [needAssembly, setNeedAssembly] = useState(false);
   const [packType, setPackType] = useState<'bag'|'small'|'medium'|'large'|'bubble'>('small');
-  const [needPack, setNeedPack] = useState(true);
-  const [needLabel, setNeedLabel] = useState(true);
+  const [needPack, setNeedPack] = useState(false);
+  const [needLabel, setNeedLabel] = useState(false);
   const [needSticker, setNeedSticker] = useState(false);
-  const [needSupply, setNeedSupply] = useState(true);
-  const [supplyPallets, setSupplyPallets] = useState(2);
+  const [needSupply, setNeedSupply] = useState(false);
+  const [supplyPallets, setSupplyPallets] = useState(0);
   const [needReturn, setNeedReturn] = useState(false);
-  const [returnQty, setReturnQty] = useState(10);
+  const [returnQty, setReturnQty] = useState(0);
   const [needLeaflet, setNeedLeaflet] = useState(false);
   const [urgentShip, setUrgentShip] = useState(false);
 
