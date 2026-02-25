@@ -119,9 +119,11 @@ export default function Calculator() {
   if (needLeaflet) lines.push({ label: 'Вложение листовки',   amount: orders * 3,     hint: `${orders} × 3 ₽` });
   if (needReturn)  lines.push({ label: 'Обработка возвратов', amount: returnQty * 25,  hint: `${returnQty} × 25 ₽` });
 
-  const shipBase   = needSupply ? 500 : 150;
-  const shipAmount = urgentShip ? Math.round(shipBase * 1.3) : shipBase;
-  lines.push({ label: urgentShip ? 'Срочная отгрузка (+30%)' : 'Отгрузка', amount: shipAmount, hint: urgentShip ? `${shipBase} × 1.3` : '150–500 ₽' });
+  if (needSupply || urgentShip) {
+    const shipBase   = needSupply ? 500 : 150;
+    const shipAmount = urgentShip ? Math.round(shipBase * 1.3) : shipBase;
+    lines.push({ label: urgentShip ? 'Срочная отгрузка (+30%)' : 'Отгрузка', amount: shipAmount, hint: urgentShip ? `${shipBase} × 1.3` : '500 ₽' });
+  }
 
   const total = lines.reduce((s, l) => s + l.amount, 0);
 
