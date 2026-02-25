@@ -95,35 +95,35 @@ export default function Index() {
   ];
 
   const toneColors: Record<string, { bg: string; border: string; icon: string; glow: string }> = {
-    orange: { bg: 'rgba(255,107,43,0.06)', border: 'rgba(255,107,43,0.2)', icon: 'text-[#FF6B2B]', glow: '#FF6B2B' },
-    cyan: { bg: 'rgba(0,229,255,0.04)', border: 'rgba(0,229,255,0.15)', icon: 'text-[#00E5FF]', glow: '#00E5FF' },
-    green: { bg: 'rgba(57,255,20,0.04)', border: 'rgba(57,255,20,0.15)', icon: 'text-[#39FF14]', glow: '#39FF14' },
+    orange: { bg: 'rgba(203,17,171,0.07)', border: 'rgba(203,17,171,0.25)', icon: 'text-[#CB11AB]', glow: '#CB11AB' },
+    cyan: { bg: 'rgba(156,39,176,0.06)', border: 'rgba(156,39,176,0.2)', icon: 'text-[#9C27B0]', glow: '#9C27B0' },
+    green: { bg: 'rgba(230,0,126,0.05)', border: 'rgba(230,0,126,0.18)', icon: 'text-[#E6007E]', glow: '#E6007E' },
   };
 
   return (
-    <div className="min-h-screen bg-[#080810] font-golos text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#0D0818] font-golos text-white overflow-x-hidden">
 
       {/* Background grid */}
       <div className="fixed inset-0 pointer-events-none z-0" style={{
-        backgroundImage: `linear-gradient(rgba(255,107,43,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,107,43,0.025) 1px, transparent 1px)`,
+        backgroundImage: `linear-gradient(rgba(203,17,171,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(203,17,171,0.03) 1px, transparent 1px)`,
         backgroundSize: '60px 60px'
       }} />
 
       {/* Glow orbs */}
       <div className="fixed top-0 left-1/4 w-[700px] h-[700px] rounded-full pointer-events-none z-0"
-        style={{ background: 'radial-gradient(circle, rgba(255,107,43,0.07) 0%, transparent 70%)' }} />
+        style={{ background: 'radial-gradient(circle, rgba(203,17,171,0.1) 0%, transparent 70%)' }} />
       <div className="fixed top-1/3 right-0 w-[500px] h-[500px] rounded-full pointer-events-none z-0"
-        style={{ background: 'radial-gradient(circle, rgba(0,229,255,0.05) 0%, transparent 70%)' }} />
+        style={{ background: 'radial-gradient(circle, rgba(139,0,139,0.08) 0%, transparent 70%)' }} />
 
       {/* ===== HEADER ===== */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#080810]/95 backdrop-blur-xl border-b border-white/5 py-3' : 'py-5'}`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#0D0818]/95 backdrop-blur-xl border-b border-white/5 py-3' : 'py-5'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FF6B2B, #FF3D00)' }}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)' }}>
               <Icon name="Package" size={16} className="text-white" />
             </div>
             <span className="font-oswald text-xl font-semibold tracking-wide">
-              ПОЛКА<span style={{ color: '#FF6B2B' }}>+</span>
+              ПОЛКА<span style={{ color: '#CB11AB' }}>+</span>
             </span>
           </div>
 
@@ -142,7 +142,7 @@ export default function Index() {
             </a>
             <button onClick={() => scrollTo('contacts')}
               className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95"
-              style={{ background: 'linear-gradient(135deg, #FF6B2B, #FF3D00)' }}>
+              style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)' }}>
               Оставить заявку
             </button>
           </div>
@@ -153,7 +153,7 @@ export default function Index() {
         </div>
 
         {menuOpen && (
-          <div className="md:hidden bg-[#0F0F1A]/98 backdrop-blur-xl border-t border-white/5 px-4 py-6 flex flex-col gap-4 animate-fade-in">
+          <div className="md:hidden bg-[#110820]/98 backdrop-blur-xl border-t border-white/5 px-4 py-6 flex flex-col gap-4 animate-fade-in">
             {[['Услуги', 'services'], ['Преимущества', 'advantages'], ['О компании', 'about'], ['Контакты', 'contacts']].map(([label, id]) => (
               <button key={id} onClick={() => scrollTo(id)} className="text-left text-white/70 hover:text-white py-2 border-b border-white/5 text-base">
                 {label}
@@ -161,7 +161,7 @@ export default function Index() {
             ))}
             <button onClick={() => scrollTo('contacts')}
               className="mt-2 px-5 py-3 rounded-xl text-sm font-semibold text-white"
-              style={{ background: 'linear-gradient(135deg, #FF6B2B, #FF3D00)' }}>
+              style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)' }}>
               Оставить заявку
             </button>
           </div>
@@ -172,13 +172,13 @@ export default function Index() {
       <section className="relative min-h-screen flex items-center pt-24 pb-20 overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
           <div className="absolute bottom-0 left-0 right-0 h-2/3"
-            style={{ background: 'linear-gradient(to top, rgba(8,8,16,1) 0%, transparent 100%)' }} />
+            style={{ background: 'linear-gradient(to top, rgba(13,8,24,1) 0%, transparent 100%)' }} />
           <div className="absolute inset-0 flex items-center justify-end opacity-[0.06] pr-8 pt-24">
             <svg viewBox="0 0 600 700" className="h-[80vh] max-h-[700px]" fill="none">
               {Array.from({ length: 5 }).map((_, col) =>
                 Array.from({ length: 6 }).map((_, row) => (
                   <rect key={`${col}-${row}`} x={col * 110 + 8} y={row * 110 + 8} width={95} height={95} rx={6}
-                    fill={`rgba(255,107,43,${0.3 + Math.random() * 0.7})`} />
+                    fill={`rgba(203,17,171,${0.3 + Math.random() * 0.7})`} />
                 ))
               )}
             </svg>
@@ -188,7 +188,7 @@ export default function Index() {
               style={{
                 width: `${2 + (i % 3) * 2}px`, height: `${2 + (i % 3) * 2}px`,
                 left: `${(i * 37) % 100}%`, top: `${(i * 53) % 100}%`,
-                background: i % 3 === 0 ? '#FF6B2B' : i % 3 === 1 ? '#00E5FF' : '#39FF14',
+                background: i % 3 === 0 ? '#CB11AB' : i % 3 === 1 ? '#9C27B0' : '#E6007E',
                 opacity: 0.25 + (i % 4) * 0.1,
                 animationDelay: `${(i * 0.7) % 4}s`,
                 animationDuration: `${3 + (i % 3)}s`
@@ -198,22 +198,22 @@ export default function Index() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full">
           <div className="max-w-4xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#FF6B2B]/30 bg-[#FF6B2B]/10 mb-8 animate-fade-in"
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#CB11AB]/30 bg-[#CB11AB]/10 mb-8 animate-fade-in"
               style={{ animationDelay: '0.1s', opacity: 0 }}>
-              <div className="w-2 h-2 rounded-full bg-[#FF6B2B] animate-pulse" />
-              <span className="text-sm text-[#FF6B2B] font-medium">Работаем с тем, от чего отказывают другие</span>
+              <div className="w-2 h-2 rounded-full bg-[#CB11AB] animate-pulse" />
+              <span className="text-sm text-[#CB11AB] font-medium">Работаем с тем, от чего отказывают другие</span>
             </div>
 
             <h1 className="font-oswald text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[0.95] mb-6 animate-fade-in"
               style={{ animationDelay: '0.2s', opacity: 0 }}>
               ФУЛФИЛМЕНТ<br />
-              <span style={{ background: 'linear-gradient(135deg, #FF6B2B 0%, #FF8C42 50%, #FFB347 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              <span style={{ background: 'linear-gradient(135deg, #CB11AB 0%, #9C27B0 50%, #E6007E 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 НОВОГО
               </span>{' '}
               <span className="relative inline-block">
                 ПОКОЛЕНИЯ
                 <span className="absolute -bottom-2 left-0 right-0 h-[3px] rounded-full"
-                  style={{ background: 'linear-gradient(90deg, #FF6B2B, #FF3D00)', boxShadow: '0 0 8px #FF6B2B' }} />
+                  style={{ background: 'linear-gradient(90deg, #CB11AB, #8B008B)', boxShadow: '0 0 8px #CB11AB' }} />
               </span>
             </h1>
 
@@ -226,7 +226,7 @@ export default function Index() {
             <div className="flex flex-wrap gap-4 mb-16 animate-fade-in" style={{ animationDelay: '0.5s', opacity: 0 }}>
               <button onClick={() => scrollTo('contacts')}
                 className="px-8 py-4 rounded-2xl text-base font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95"
-                style={{ background: 'linear-gradient(135deg, #FF6B2B, #FF3D00)', boxShadow: '0 0 40px rgba(255,107,43,0.4)' }}>
+                style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)', boxShadow: '0 0 40px rgba(203,17,171,0.4)' }}>
                 Рассчитать стоимость
               </button>
               <button onClick={() => scrollTo('contacts')}
@@ -242,8 +242,8 @@ export default function Index() {
                   {mp}
                 </div>
               ))}
-              <div className="px-3 py-2 rounded-xl border border-[#00E5FF]/25 bg-[#00E5FF]/8 text-sm text-[#00E5FF]/80 font-medium flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#00E5FF] animate-pulse" />
+              <div className="px-3 py-2 rounded-xl border border-[#CB11AB]/25 bg-[#CB11AB]/8 text-sm text-[#CB11AB]/80 font-medium flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#CB11AB] animate-pulse" />
                 API реального времени
               </div>
             </div>
@@ -258,12 +258,12 @@ export default function Index() {
 
       {/* ===== MARQUEE ===== */}
       <div className="relative overflow-hidden py-5 border-y border-white/5"
-        style={{ background: 'linear-gradient(90deg, rgba(255,107,43,0.04), rgba(255,107,43,0.08), rgba(255,107,43,0.04))' }}>
+        style={{ background: 'linear-gradient(90deg, rgba(203,17,171,0.04), rgba(203,17,171,0.09), rgba(203,17,171,0.04))' }}>
         <div className="flex gap-10 animate-marquee whitespace-nowrap">
           {[...Array(2)].map((_, i) =>
             ['КГТ-ФУЛФИЛМЕНТ', 'WILDBERRIES', 'OZON', 'ЯНДЕКС.МАРКЕТ', 'КРУПНОГАБАРИТ', 'МЕБЕЛЬ', 'ДВЕРИ', 'КАБЕЛИ', 'API ИНТЕГРАЦИИ', 'АДРЕСНОЕ ХРАНЕНИЕ'].map((item) => (
               <span key={`${i}-${item}`} className="font-oswald text-xs font-medium tracking-[0.3em] text-white/25 uppercase flex items-center gap-10">
-                {item} <span style={{ color: '#FF6B2B' }}>◆</span>
+                {item} <span style={{ color: '#CB11AB' }}>◆</span>
               </span>
             ))
           )}
@@ -275,16 +275,16 @@ export default function Index() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <SectionHeader
             tag="Преимущества"
-            title={<>Почему выбирают <span style={{ color: '#FF6B2B' }}>Полку+</span></>}
+            title={<>Почему выбирают <span style={{ color: '#CB11AB' }}>Полку+</span></>}
             subtitle="Специализируемся на том, что другие фулфилмент-центры считают слишком сложным"
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {advantages.map((adv, i) => (
               <FadeInCard key={adv.label} delay={i * 0.08}>
-                <div className="p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:border-[#FF6B2B]/30 hover:bg-white/[0.05] transition-all duration-300 group h-full">
+                <div className="p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:border-[#CB11AB]/30 hover:bg-white/[0.05] transition-all duration-300 group h-full">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
-                    style={{ background: 'rgba(255,107,43,0.12)', border: '1px solid rgba(255,107,43,0.2)' }}>
-                    <Icon name={adv.icon} size={22} className="text-[#FF6B2B]" />
+                    style={{ background: 'rgba(203,17,171,0.12)', border: '1px solid rgba(203,17,171,0.2)' }}>
+                    <Icon name={adv.icon} size={22} className="text-[#CB11AB]" />
                   </div>
                   <h3 className="font-oswald text-lg font-semibold mb-2 tracking-wide">{adv.label}</h3>
                   <p className="text-sm text-white/45 leading-relaxed">{adv.desc}</p>
@@ -300,7 +300,7 @@ export default function Index() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <SectionHeader
             tag="Категории"
-            title={<>С кем мы <span style={{ color: '#FF6B2B' }}>работаем</span></>}
+            title={<>С кем мы <span style={{ color: '#CB11AB' }}>работаем</span></>}
             subtitle="Специализация на нестандартных и крупногабаритных товарах"
           />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -323,10 +323,10 @@ export default function Index() {
               );
             })}
             <FadeInCard delay={0.55}>
-              <div className="p-7 rounded-2xl border border-dashed border-white/12 flex flex-col items-center justify-center text-center hover:border-[#FF6B2B]/30 transition-colors duration-300 cursor-pointer group min-h-[200px]"
+              <div className="p-7 rounded-2xl border border-dashed border-white/12 flex flex-col items-center justify-center text-center hover:border-[#CB11AB]/30 transition-colors duration-300 cursor-pointer group min-h-[200px]"
                 onClick={() => scrollTo('contacts')}>
-                <div className="w-12 h-12 rounded-full border border-dashed border-white/20 flex items-center justify-center mb-3 group-hover:border-[#FF6B2B]/40 transition-colors">
-                  <Icon name="Plus" size={20} className="text-white/30 group-hover:text-[#FF6B2B]/60 transition-colors" />
+                <div className="w-12 h-12 rounded-full border border-dashed border-white/20 flex items-center justify-center mb-3 group-hover:border-[#CB11AB]/40 transition-colors">
+                  <Icon name="Plus" size={20} className="text-white/30 group-hover:text-[#CB11AB]/60 transition-colors" />
                 </div>
                 <p className="text-sm text-white/30 group-hover:text-white/50 transition-colors">Ваш товар здесь?<br />Напишите нам</p>
               </div>
@@ -340,17 +340,17 @@ export default function Index() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <SectionHeader
             tag="Услуги"
-            title={<>Полный цикл <span style={{ color: '#FF6B2B' }}>работ</span></>}
+            title={<>Полный цикл <span style={{ color: '#CB11AB' }}>работ</span></>}
             subtitle="От приёмки до отгрузки — всё под одной крышей"
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
             {services.map((svc, i) => (
               <FadeInCard key={svc.title} delay={i * 0.08}>
-                <div className="p-6 rounded-2xl border border-white/8 bg-gradient-to-br from-white/[0.04] to-transparent hover:from-white/[0.06] hover:border-[#FF6B2B]/25 transition-all duration-300 group h-full">
+                <div className="p-6 rounded-2xl border border-white/8 bg-gradient-to-br from-white/[0.04] to-transparent hover:from-white/[0.06] hover:border-[#CB11AB]/25 transition-all duration-300 group h-full">
                   <div className="flex items-start gap-4">
                     <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
-                      style={{ background: 'rgba(255,107,43,0.1)', border: '1px solid rgba(255,107,43,0.2)' }}>
-                      <Icon name={svc.icon} size={20} className="text-[#FF6B2B]" />
+                      style={{ background: 'rgba(203,17,171,0.1)', border: '1px solid rgba(203,17,171,0.2)' }}>
+                      <Icon name={svc.icon} size={20} className="text-[#CB11AB]" />
                     </div>
                     <div>
                       <h3 className="font-oswald text-base font-semibold mb-2 tracking-wide">{svc.title}</h3>
@@ -363,26 +363,26 @@ export default function Index() {
           </div>
 
           <FadeInCard delay={0.1}>
-            <div className="p-8 rounded-2xl border border-[#00E5FF]/20 relative overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, rgba(0,229,255,0.05), rgba(0,229,255,0.02))' }}>
+            <div className="p-8 rounded-2xl border border-[#E040FB]/20 relative overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, rgba(224,64,251,0.05), rgba(224,64,251,0.02))' }}>
               <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl -mr-20 -mt-20"
-                style={{ background: '#00E5FF' }} />
+                style={{ background: '#E040FB' }} />
               <div className="relative flex flex-col md:flex-row md:items-center gap-6">
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
-                  style={{ background: 'rgba(0,229,255,0.1)', border: '1px solid rgba(0,229,255,0.25)' }}>
-                  <Icon name="Wifi" size={26} className="text-[#00E5FF]" />
+                  style={{ background: 'rgba(224,64,251,0.1)', border: '1px solid rgba(224,64,251,0.25)' }}>
+                  <Icon name="Wifi" size={26} className="text-[#E040FB]" />
                 </div>
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <h3 className="font-oswald text-xl font-semibold tracking-wide">API-синхронизация в реальном времени</h3>
-                    <span className="px-2 py-0.5 rounded-md text-xs font-bold" style={{ background: 'rgba(0,229,255,0.15)', color: '#00E5FF', border: '1px solid rgba(0,229,255,0.2)' }}>LIVE</span>
+                    <span className="px-2 py-0.5 rounded-md text-xs font-bold" style={{ background: 'rgba(224,64,251,0.15)', color: '#E040FB', border: '1px solid rgba(224,64,251,0.2)' }}>LIVE</span>
                   </div>
                   <p className="text-sm text-white/45">Двусторонняя синхронизация остатков, заказов и статусов с Wildberries, Ozon и Яндекс.Маркет. Обновление каждые 60 секунд. Нулевые расхождения в данных.</p>
                 </div>
                 <div className="flex gap-2 shrink-0">
                   {['WB', 'Ozon', 'ЯМ'].map((mp) => (
                     <div key={mp} className="w-10 h-10 rounded-xl flex items-center justify-center text-xs font-bold"
-                      style={{ background: 'rgba(0,229,255,0.08)', border: '1px solid rgba(0,229,255,0.15)', color: '#00E5FF' }}>
+                      style={{ background: 'rgba(224,64,251,0.08)', border: '1px solid rgba(224,64,251,0.15)', color: '#E040FB' }}>
                       {mp}
                     </div>
                   ))}
@@ -398,17 +398,17 @@ export default function Index() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <SectionHeader
             tag="Процесс"
-            title={<>Как это <span style={{ color: '#FF6B2B' }}>работает</span></>}
+            title={<>Как это <span style={{ color: '#CB11AB' }}>работает</span></>}
             subtitle="Прозрачный процесс от первого звонка до прибыли на счёте"
           />
           <div className="relative space-y-4">
             <div className="absolute left-[27px] top-0 bottom-0 w-px"
-              style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,107,43,0.3) 10%, rgba(255,107,43,0.3) 90%, transparent)' }} />
+              style={{ background: 'linear-gradient(to bottom, transparent, rgba(203,17,171,0.3) 10%, rgba(203,17,171,0.3) 90%, transparent)' }} />
             {steps.map((step, i) => (
               <FadeInCard key={step.num} delay={i * 0.1}>
                 <div className="flex gap-6 items-start">
                   <div className="w-14 h-14 rounded-full flex items-center justify-center font-oswald font-bold text-sm shrink-0 z-10"
-                    style={{ background: 'linear-gradient(135deg, #FF6B2B, #FF3D00)', boxShadow: '0 0 20px rgba(255,107,43,0.35)' }}>
+                    style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)', boxShadow: '0 0 20px rgba(203,17,171,0.35)' }}>
                     {step.num}
                   </div>
                   <div className="flex-1 pb-2 pt-3">
@@ -416,7 +416,7 @@ export default function Index() {
                     <p className="text-sm text-white/45 leading-relaxed">{step.desc}</p>
                   </div>
                   {i === steps.length - 1 && (
-                    <div className="shrink-0 self-center hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl border border-[#39FF14]/25 bg-[#39FF14]/8 text-sm font-medium" style={{ color: '#39FF14' }}>
+                    <div className="shrink-0 self-center hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl border border-[#CE93D8]/25 bg-[#CE93D8]/8 text-sm font-medium" style={{ color: '#CE93D8' }}>
                       <Icon name="TrendingUp" size={14} />
                       Прибыль
                     </div>
@@ -432,15 +432,15 @@ export default function Index() {
       <section className="py-24 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="rounded-3xl border border-white/8 overflow-hidden relative"
-            style={{ background: 'linear-gradient(135deg, rgba(255,107,43,0.08), rgba(15,15,26,0.95) 50%, rgba(0,229,255,0.04))' }}>
+            style={{ background: 'linear-gradient(135deg, rgba(203,17,171,0.08), rgba(13,8,24,0.95) 50%, rgba(139,0,139,0.04))' }}>
             <div className="absolute top-0 left-0 w-80 h-80 rounded-full blur-3xl opacity-20 pointer-events-none"
-              style={{ background: 'radial-gradient(circle, #FF6B2B, transparent)' }} />
+              style={{ background: 'radial-gradient(circle, #CB11AB, transparent)' }} />
             <div className="absolute bottom-0 right-0 w-60 h-60 rounded-full blur-3xl opacity-10 pointer-events-none"
-              style={{ background: 'radial-gradient(circle, #00E5FF, transparent)' }} />
+              style={{ background: 'radial-gradient(circle, #E040FB, transparent)' }} />
             <div className="relative grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-white/8">
               {stats.map((stat) => (
                 <div key={stat.label} className="p-8 md:p-12 text-center">
-                  <div className="font-oswald text-4xl md:text-5xl font-bold mb-2" style={{ color: '#FF6B2B' }}>
+                  <div className="font-oswald text-4xl md:text-5xl font-bold mb-2" style={{ color: '#CB11AB' }}>
                     <AnimatedCounter target={stat.value} suffix={stat.suffix} />
                   </div>
                   <div className="text-xs text-white/35 uppercase tracking-widest font-medium">{stat.label}</div>
@@ -457,13 +457,13 @@ export default function Index() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
             <FadeInCard>
               <div>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#FF6B2B]/30 bg-[#FF6B2B]/10 mb-6">
-                  <Icon name="Globe" size={14} className="text-[#FF6B2B]" />
-                  <span className="text-sm text-[#FF6B2B] font-medium uppercase tracking-widest">Федеральная сеть</span>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#CB11AB]/30 bg-[#CB11AB]/10 mb-6">
+                  <Icon name="Globe" size={14} className="text-[#CB11AB]" />
+                  <span className="text-sm text-[#CB11AB] font-medium uppercase tracking-widest">Федеральная сеть</span>
                 </div>
                 <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-wide">
                   ПОЛКА+ —<br />
-                  <span style={{ background: 'linear-gradient(135deg, #FF6B2B, #FFB347)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  <span style={{ background: 'linear-gradient(135deg, #CB11AB, #FFB347)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                     БУДУЩАЯ ФЕДЕРАЛЬНАЯ
                   </span><br />
                   СЕТЬ
@@ -477,7 +477,7 @@ export default function Index() {
                 <div className="flex flex-wrap gap-3">
                   {[['Москва', true], ['Санкт-Петербург', false], ['Казань', false], ['Новосибирск', false], ['Екатеринбург', false]].map(([city, active]) => (
                     <div key={city as string} className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-white/5 text-sm">
-                      <div className={`w-2 h-2 rounded-full ${active ? 'bg-[#FF6B2B]' : 'bg-white/15'}`} />
+                      <div className={`w-2 h-2 rounded-full ${active ? 'bg-[#CB11AB]' : 'bg-white/15'}`} />
                       <span className={active ? 'text-white/80' : 'text-white/30'}>{city as string}</span>
                       {!active && <span className="text-[9px] text-white/20 uppercase tracking-wider">скоро</span>}
                     </div>
@@ -494,10 +494,10 @@ export default function Index() {
                   { icon: 'Clock', label: '24/7', sub: 'поддержка и операции' },
                   { icon: 'Award', label: 'ТОП-10', sub: 'КГТ-фулфилмент в России' },
                 ].map((item) => (
-                  <div key={item.label} className="p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:border-[#FF6B2B]/25 transition-all duration-300">
+                  <div key={item.label} className="p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:border-[#CB11AB]/25 transition-all duration-300">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
-                      style={{ background: 'rgba(255,107,43,0.1)', border: '1px solid rgba(255,107,43,0.15)' }}>
-                      <Icon name={item.icon} size={18} className="text-[#FF6B2B]" />
+                      style={{ background: 'rgba(203,17,171,0.1)', border: '1px solid rgba(203,17,171,0.15)' }}>
+                      <Icon name={item.icon} size={18} className="text-[#CB11AB]" />
                     </div>
                     <div className="font-oswald text-xl font-bold mb-1">{item.label}</div>
                     <div className="text-xs text-white/35 leading-relaxed">{item.sub}</div>
@@ -514,25 +514,25 @@ export default function Index() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <SectionHeader
             tag="Блог и новости"
-            title={<>Экспертиза <span style={{ color: '#FF6B2B' }}>в деталях</span></>}
+            title={<>Экспертиза <span style={{ color: '#CB11AB' }}>в деталях</span></>}
             subtitle="Актуальные материалы о фулфилменте, маркетплейсах и росте бизнеса"
           />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {blogPosts.map((post, i) => (
               <FadeInCard key={post.title} delay={i * 0.1}>
-                <div className="p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:border-[#FF6B2B]/25 hover:bg-white/[0.05] transition-all duration-300 cursor-pointer group h-full flex flex-col">
+                <div className="p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:border-[#CB11AB]/25 hover:bg-white/[0.05] transition-all duration-300 cursor-pointer group h-full flex flex-col">
                   <div className="flex items-center gap-3 mb-4">
                     <span className="px-3 py-1 rounded-lg text-xs font-medium"
-                      style={{ background: 'rgba(255,107,43,0.12)', color: '#FF6B2B', border: '1px solid rgba(255,107,43,0.2)' }}>
+                      style={{ background: 'rgba(203,17,171,0.12)', color: '#CB11AB', border: '1px solid rgba(203,17,171,0.2)' }}>
                       {post.tag}
                     </span>
                     <span className="text-xs text-white/25">{post.date}</span>
                   </div>
-                  <h3 className="font-oswald text-base font-semibold mb-3 leading-snug tracking-wide group-hover:text-[#FF6B2B] transition-colors duration-200">
+                  <h3 className="font-oswald text-base font-semibold mb-3 leading-snug tracking-wide group-hover:text-[#CB11AB] transition-colors duration-200">
                     {post.title}
                   </h3>
                   <p className="text-sm text-white/35 leading-relaxed flex-1">{post.desc}</p>
-                  <div className="flex items-center gap-1.5 mt-5 text-xs text-[#FF6B2B]/50 group-hover:text-[#FF6B2B] transition-colors duration-200 font-medium">
+                  <div className="flex items-center gap-1.5 mt-5 text-xs text-[#CB11AB]/50 group-hover:text-[#CB11AB] transition-colors duration-200 font-medium">
                     Читать далее <Icon name="ArrowRight" size={12} />
                   </div>
                 </div>
@@ -546,14 +546,14 @@ export default function Index() {
       <section className="py-24 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <FadeInCard>
-            <div className="relative rounded-3xl border border-[#FF6B2B]/20 overflow-hidden text-center py-20 px-6"
-              style={{ background: 'linear-gradient(135deg, rgba(255,107,43,0.1), rgba(255,61,0,0.05), rgba(15,15,26,0.85))' }}>
+            <div className="relative rounded-3xl border border-[#CB11AB]/20 overflow-hidden text-center py-20 px-6"
+              style={{ background: 'linear-gradient(135deg, rgba(203,17,171,0.1), rgba(255,61,0,0.05), rgba(15,15,26,0.85))' }}>
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full blur-3xl opacity-20 pointer-events-none"
-                style={{ background: 'radial-gradient(circle, #FF6B2B, transparent)' }} />
+                style={{ background: 'radial-gradient(circle, #CB11AB, transparent)' }} />
               <div className="relative">
                 <h2 className="font-oswald text-4xl sm:text-5xl md:text-6xl font-bold mb-4 tracking-wide">
                   ГОТОВЫ МАСШТАБИРОВАТЬ<br />
-                  <span style={{ background: 'linear-gradient(135deg, #FF6B2B, #FFB347)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  <span style={{ background: 'linear-gradient(135deg, #CB11AB, #FFB347)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                     ВАШ БИЗНЕС?
                   </span>
                 </h2>
@@ -562,7 +562,7 @@ export default function Index() {
                 </p>
                 <button onClick={() => scrollTo('contacts')}
                   className="px-12 py-5 rounded-2xl text-lg font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95"
-                  style={{ background: 'linear-gradient(135deg, #FF6B2B, #FF3D00)', boxShadow: '0 0 60px rgba(255,107,43,0.5)' }}>
+                  style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)', boxShadow: '0 0 60px rgba(203,17,171,0.5)' }}>
                   Оставить заявку
                 </button>
               </div>
@@ -576,7 +576,7 @@ export default function Index() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <SectionHeader
             tag="Контакты"
-            title={<>Свяжитесь <span style={{ color: '#FF6B2B' }}>с нами</span></>}
+            title={<>Свяжитесь <span style={{ color: '#CB11AB' }}>с нами</span></>}
             subtitle="Работаем 24/7. Ответим быстро."
           />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -587,16 +587,16 @@ export default function Index() {
                   <div>
                     <label className="text-xs text-white/35 uppercase tracking-widest mb-2 block">Ваше имя</label>
                     <input type="text" placeholder="Иван Иванов"
-                      className="w-full px-4 py-3.5 rounded-xl border border-white/10 bg-white/5 text-white placeholder-white/20 text-sm focus:outline-none focus:border-[#FF6B2B]/50 transition-colors duration-200" />
+                      className="w-full px-4 py-3.5 rounded-xl border border-white/10 bg-white/5 text-white placeholder-white/20 text-sm focus:outline-none focus:border-[#CB11AB]/50 transition-colors duration-200" />
                   </div>
                   <div>
                     <label className="text-xs text-white/35 uppercase tracking-widest mb-2 block">Телефон</label>
                     <input type="tel" placeholder="+7 (900) 000-00-00"
-                      className="w-full px-4 py-3.5 rounded-xl border border-white/10 bg-white/5 text-white placeholder-white/20 text-sm focus:outline-none focus:border-[#FF6B2B]/50 transition-colors duration-200" />
+                      className="w-full px-4 py-3.5 rounded-xl border border-white/10 bg-white/5 text-white placeholder-white/20 text-sm focus:outline-none focus:border-[#CB11AB]/50 transition-colors duration-200" />
                   </div>
                   <div>
                     <label className="text-xs text-white/35 uppercase tracking-widest mb-2 block">Тип товара</label>
-                    <select className="w-full px-4 py-3.5 rounded-xl border border-white/10 bg-[#0F0F1A] text-white/65 text-sm focus:outline-none focus:border-[#FF6B2B]/50 transition-colors duration-200">
+                    <select className="w-full px-4 py-3.5 rounded-xl border border-white/10 bg-[#0F0F1A] text-white/65 text-sm focus:outline-none focus:border-[#CB11AB]/50 transition-colors duration-200">
                       <option>Мебель и КГТ</option>
                       <option>Двери</option>
                       <option>Кабельная продукция</option>
@@ -607,10 +607,10 @@ export default function Index() {
                   <div>
                     <label className="text-xs text-white/35 uppercase tracking-widest mb-2 block">Комментарий</label>
                     <textarea rows={3} placeholder="Расскажите о вашем товаре и объёмах..."
-                      className="w-full px-4 py-3.5 rounded-xl border border-white/10 bg-white/5 text-white placeholder-white/20 text-sm focus:outline-none focus:border-[#FF6B2B]/50 transition-colors duration-200 resize-none" />
+                      className="w-full px-4 py-3.5 rounded-xl border border-white/10 bg-white/5 text-white placeholder-white/20 text-sm focus:outline-none focus:border-[#CB11AB]/50 transition-colors duration-200 resize-none" />
                   </div>
                   <button className="w-full py-4 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-95 mt-2"
-                    style={{ background: 'linear-gradient(135deg, #FF6B2B, #FF3D00)', boxShadow: '0 0 30px rgba(255,107,43,0.3)' }}>
+                    style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)', boxShadow: '0 0 30px rgba(203,17,171,0.3)' }}>
                     Отправить заявку
                   </button>
                   <p className="text-xs text-white/20 text-center">Нажимая, вы соглашаетесь с политикой конфиденциальности</p>
@@ -627,10 +627,10 @@ export default function Index() {
                   { icon: 'MapPin', label: 'Адрес', value: 'г. Москва, Складской проезд, 1', sub: 'Координаты на карте', href: '#' },
                 ].map((contact) => (
                   <a key={contact.label} href={contact.href}
-                    className="flex items-center gap-5 p-5 rounded-2xl border border-white/8 bg-white/[0.03] hover:border-[#FF6B2B]/25 hover:bg-white/[0.05] transition-all duration-300 group">
+                    className="flex items-center gap-5 p-5 rounded-2xl border border-white/8 bg-white/[0.03] hover:border-[#CB11AB]/25 hover:bg-white/[0.05] transition-all duration-300 group">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
-                      style={{ background: 'rgba(255,107,43,0.1)', border: '1px solid rgba(255,107,43,0.2)' }}>
-                      <Icon name={contact.icon} size={20} className="text-[#FF6B2B]" />
+                      style={{ background: 'rgba(203,17,171,0.1)', border: '1px solid rgba(203,17,171,0.2)' }}>
+                      <Icon name={contact.icon} size={20} className="text-[#CB11AB]" />
                     </div>
                     <div>
                       <div className="text-xs text-white/30 uppercase tracking-widest mb-0.5">{contact.label}</div>
@@ -640,18 +640,18 @@ export default function Index() {
                   </a>
                 ))}
 
-                <div className="p-0 rounded-2xl border border-white/8 overflow-hidden h-44 relative cursor-pointer hover:border-[#FF6B2B]/25 transition-all duration-300 group">
+                <div className="p-0 rounded-2xl border border-white/8 overflow-hidden h-44 relative cursor-pointer hover:border-[#CB11AB]/25 transition-all duration-300 group">
                   <div className="absolute inset-0 flex items-center justify-center"
                     style={{ background: 'linear-gradient(135deg, rgba(12,12,24,0.9), rgba(18,18,32,0.9))' }}>
                     <div className="grid grid-cols-12 gap-0.5 opacity-15 absolute inset-2">
                       {Array.from({ length: 144 }).map((_, i) => (
-                        <div key={i} className="rounded-sm h-3" style={{ background: i % 7 === 0 ? '#FF6B2B' : 'rgba(255,255,255,0.08)' }} />
+                        <div key={i} className="rounded-sm h-3" style={{ background: i % 7 === 0 ? '#CB11AB' : 'rgba(255,255,255,0.08)' }} />
                       ))}
                     </div>
                     <div className="relative text-center">
                       <div className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2"
-                        style={{ background: 'rgba(255,107,43,0.2)', border: '1px solid rgba(255,107,43,0.4)' }}>
-                        <Icon name="MapPin" size={18} className="text-[#FF6B2B]" />
+                        style={{ background: 'rgba(203,17,171,0.2)', border: '1px solid rgba(203,17,171,0.4)' }}>
+                        <Icon name="MapPin" size={18} className="text-[#CB11AB]" />
                       </div>
                       <p className="text-sm text-white/45 group-hover:text-white/60 transition-colors">Открыть на карте</p>
                     </div>
@@ -667,11 +667,11 @@ export default function Index() {
       <footer className="border-t border-white/5 py-10 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FF6B2B, #FF3D00)' }}>
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)' }}>
               <Icon name="Package" size={14} className="text-white" />
             </div>
             <span className="font-oswald text-lg font-semibold tracking-wide">
-              ПОЛКА<span style={{ color: '#FF6B2B' }}>+</span>
+              ПОЛКА<span style={{ color: '#CB11AB' }}>+</span>
             </span>
           </div>
           <div className="flex flex-wrap gap-6 justify-center">
@@ -693,8 +693,8 @@ function SectionHeader({ tag, title, subtitle }: { tag: string; title: React.Rea
   return (
     <div ref={ref} className="mb-14 transition-all duration-700"
       style={{ opacity: inView ? 1 : 0, transform: inView ? 'translateY(0)' : 'translateY(24px)' }}>
-      <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#FF6B2B]/25 bg-[#FF6B2B]/8 mb-4">
-        <span className="text-xs text-[#FF6B2B] font-medium uppercase tracking-[0.15em]">{tag}</span>
+      <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#CB11AB]/25 bg-[#CB11AB]/8 mb-4">
+        <span className="text-xs text-[#CB11AB] font-medium uppercase tracking-[0.15em]">{tag}</span>
       </div>
       <h2 className="font-oswald text-3xl sm:text-4xl md:text-5xl font-bold mb-3 leading-tight tracking-wide">{title}</h2>
       <p className="text-white/40 text-base md:text-lg max-w-xl leading-relaxed">{subtitle}</p>
