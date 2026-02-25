@@ -872,11 +872,11 @@ function Calculator() {
         </div>
 
         {/* RIGHT — результат */}
-        <div className="lg:col-span-2 p-7 flex flex-col" style={{ background: 'linear-gradient(160deg, #1A1228 0%, #2D1640 100%)' }}>
-          <div className="flex-1">
+        <div className="lg:col-span-2 p-7 flex flex-col justify-between" style={{ background: 'linear-gradient(160deg, #1A1228 0%, #2D1640 100%)' }}>
+          <div>
             <div className="text-xs font-bold text-white/40 uppercase tracking-widest mb-5">Ваш расчёт</div>
 
-            <div className="space-y-2.5 mb-5 max-h-72 overflow-y-auto pr-1 scrollbar-thin">
+            <div className="space-y-2 mb-4 max-h-52 overflow-y-auto pr-1">
               {lines.map((line, i) => (
                 <div key={i} className="flex items-start justify-between gap-2 py-1.5 border-b border-white/5">
                   <div className="text-xs text-white/60 flex-1 leading-snug">{line.label}</div>
