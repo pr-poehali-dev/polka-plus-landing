@@ -266,68 +266,7 @@ export default function Index() {
               </FadeIn>
             </div>
 
-            {/* Right — dashboard card */}
-            <FadeIn delay={0.25} className="hidden lg:block">
-              <div className="relative">
-                <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
-                  style={{ background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(20px)' }}>
-                  {/* card header */}
-                  <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(203,17,171,0.3)' }}>
-                        <Icon name="Warehouse" size={16} className="text-white" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-semibold text-white">Склад Полка+</div>
-                        <div className="text-xs text-white/40">Москва, Складской пр., 1</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
-                      style={{ background: 'rgba(34,197,94,0.2)', color: '#4ade80' }}>
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                      Работаем
-                    </div>
-                  </div>
-                  {/* metrics */}
-                  <div className="grid grid-cols-3 gap-px bg-white/5 mx-6 my-5 rounded-xl overflow-hidden">
-                    {[['Package2','247','Приёмка'],['Box','3.2к','Хранение'],['Send','189','Отгрузки']].map(([ic, val, lbl]) => (
-                      <div key={lbl} className="py-4 text-center" style={{ background: 'rgba(255,255,255,0.04)' }}>
-                        <Icon name={ic} size={18} className="mx-auto mb-1.5" style={{ color: '#E878D0' }} />
-                        <div className="font-oswald font-bold text-white text-xl">{val}</div>
-                        <div className="text-xs text-white/40">{lbl}</div>
-                      </div>
-                    ))}
-                  </div>
-                  {/* orders list */}
-                  <div className="px-6 pb-5 space-y-2">
-                    {[
-                      ['Диван угловой 3-местный',     'WB',   'Принят',       'rgba(34,197,94,0.15)',        '#4ade80'],
-                      ['Дверь межкомнатная 2000×900', 'Ozon', 'На хранении',  'rgba(234,179,8,0.15)',        '#facc15'],
-                      ['Кабель ВВГ 2×2,5 100м',       'ЯМ',   'Отгружен',     'rgba(203,17,171,0.2)',        '#E878D0'],
-                    ].map(([lbl,mp,st,bg,tc]) => (
-                      <div key={lbl} className="flex items-center gap-3 px-3 py-2.5 rounded-xl"
-                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                        <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: tc }} />
-                        <span className="text-xs text-white/70 flex-1 truncate">{lbl}</span>
-                        <span className="text-xs font-bold px-2 py-1 rounded-lg shrink-0"
-                          style={{ background: 'rgba(203,17,171,0.2)', color: '#E878D0' }}>{mp}</span>
-                        <span className="text-xs font-semibold px-2 py-1 rounded-lg shrink-0"
-                          style={{ background: bg, color: tc }}>{st}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                {/* floating badges */}
-                <div className="absolute -top-4 -right-4 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-2 border border-gray-100">
-                  <Icon name="TrendingUp" size={16} style={{ color: WB }} />
-                  <div><div className="font-bold text-gray-900 text-sm">+300%</div><div className="text-xs text-gray-400">рост за год</div></div>
-                </div>
-                <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-2 border border-gray-100">
-                  <Icon name="Clock" size={16} className="text-green-500" />
-                  <div><div className="font-bold text-gray-900 text-sm">24 часа</div><div className="text-xs text-gray-400">до отгрузки</div></div>
-                </div>
-              </div>
-            </FadeIn>
+
           </div>
         </div>
 
