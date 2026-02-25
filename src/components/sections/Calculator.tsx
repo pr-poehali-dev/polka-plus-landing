@@ -233,10 +233,23 @@ export default function Calculator() {
           </div>
 
           <button
-            className="w-full py-4 rounded-xl font-bold text-base text-white transition-all hover:scale-[1.02] active:scale-95 shadow-xl mb-3"
+            className="w-full py-4 rounded-xl font-bold text-base text-white transition-all hover:scale-[1.02] active:scale-95 shadow-xl mb-3 flex flex-col items-center"
             style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})`, boxShadow: '0 8px 30px rgba(203,17,171,0.5)' }}
-            onClick={() => document.getElementById('contacts')?.scrollIntoView({ behavior: 'smooth' })}>
-            Получить точный расчёт
+            onClick={async () => {
+              const breakdown = lines.map(l => `${l.label}: ${l.amount === 0 ? 'бесплатно' : l.amount.toLocaleString('ru') + ' ₽'}`).join('\n');
+              const discounted = Math.round(total * 0.5);
+              const comment = `🎁 ХОЧЕТ СКИДКУ 50%!\n\nРасчёт клиента:\n${breakdown}\n\nИТОГО без скидки: ${total.toLocaleString('ru')} ₽/мес\nСО СКИДКОЙ 50%: ${discounted.toLocaleString('ru')} ₽/мес\n\nКлиент нажал кнопку "Получить скидку 50%" в калькуляторе`;
+              await fetch(SEND_LEAD_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: '', phone: 'из калькулятора', goods: 'Скидка 50%', comment }),
+              });
+              document.getElementById('contacts')?.scrollIntoView({ behavior: 'smooth' });
+            }}>
+            <span>Получить скидку 50%</span>
+            <span className="text-xs font-normal opacity-75 mt-0.5">
+              {total > 0 ? `вместо ${total.toLocaleString('ru')} ₽ → ${Math.round(total * 0.5).toLocaleString('ru')} ₽` : 'заполните калькулятор выше'}
+            </span>
           </button>
 
           {/* Отправить расчёт на почту */}
