@@ -1,6 +1,10 @@
 User-agent: Googlebot
 Allow: /
 
+User-agent: Yandex
+Allow: /
+Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term
+
 User-agent: Bingbot
 Allow: /
 
@@ -12,3 +16,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://polka-plus.ru/sitemap.xml
