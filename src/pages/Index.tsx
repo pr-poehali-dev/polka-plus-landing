@@ -121,32 +121,34 @@ export default function Index() {
 
       {/* ════════════════ HEADER ════════════════ */}
       <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300
-        ${scrolled ? 'py-2 shadow-md' : 'py-3'}
-        bg-white border-b border-gray-200`}>
+        ${scrolled ? 'py-2 shadow-lg' : 'py-4'}
+        bg-white border-b border-gray-100`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           <div className="cursor-pointer" onClick={() => scrollTo('hero')}>
             <img src="https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/5f2ba43f-9fb6-48a8-9b35-29ca379aebfb.jpg"
-              alt="Полка+" className="h-10 w-auto object-contain" />
+              alt="Полка+" className="h-14 w-auto object-contain drop-shadow-sm" />
           </div>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-0.5">
             {navLinks.map(([label, id]) => (
               <button key={id} onClick={() => scrollTo(id)}
-                className="px-3.5 py-2 rounded-lg text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all">
+                className="px-4 py-2.5 rounded-xl text-base font-semibold text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all">
                 {label}
               </button>
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-4">
             <a href="tel:+79171010163"
-              className="flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-gray-900 transition-colors">
-              <Icon name="Phone" size={14} style={{ color: WB }} />
+              className="flex items-center gap-2 text-base font-bold text-gray-700 hover:text-gray-900 transition-colors">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: WB_LIGHT }}>
+                <Icon name="Phone" size={15} style={{ color: WB }} />
+              </div>
               +7 (917) 101-01-63
             </a>
             <button onClick={() => scrollTo('contacts')}
-              className="px-5 py-2.5 rounded-xl text-sm font-bold text-white shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all"
-              style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})` }}>
+              className="px-6 py-3 rounded-xl text-base font-bold text-white shadow-md hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
+              style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})`, boxShadow: `0 4px 20px rgba(203,17,171,0.3)` }}>
               Оставить заявку
             </button>
           </div>
