@@ -305,18 +305,6 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ===== MARQUEE ===== */}
-      <div className="overflow-hidden border-y border-gray-100 py-4 bg-white">
-        <div className="flex gap-12 animate-marquee whitespace-nowrap">
-          {[...Array(2)].map((_, i) =>
-            ['КГТ-ФУЛФИЛМЕНТ', 'WILDBERRIES', 'OZON', 'ЯНДЕКС.МАРКЕТ', 'КРУПНОГАБАРИТ', 'МЕБЕЛЬ', 'ДВЕРИ', 'КАБЕЛИ', 'API ИНТЕГРАЦИИ', 'АДРЕСНОЕ ХРАНЕНИЕ'].map((item) => (
-              <span key={`${i}-${item}`} className="font-oswald text-xs tracking-[0.25em] text-gray-300 uppercase flex items-center gap-12">
-                {item} <span style={{ color: WB }}>◆</span>
-              </span>
-            ))
-          )}
-        </div>
-      </div>
 
       {/* ===== ADVANTAGES ===== */}
       <section id="advantages" className="py-24 bg-white">
