@@ -4,8 +4,27 @@ import urllib.request
 import urllib.error
 
 
+def send_telegram(text: str):
+    token = os.environ.get('TELEGRAM_BOT_TOKEN', '')
+    chat_id = os.environ.get('TELEGRAM_CHAT_ID', '')
+    if not token or not chat_id:
+        return
+    payload = json.dumps({'chat_id': chat_id, 'text': text, 'parse_mode': 'HTML'}).encode()
+    req = urllib.request.Request(
+        f'https://api.telegram.org/bot{token}/sendMessage',
+        data=payload,
+        headers={'Content-Type': 'application/json'},
+        method='POST',
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            resp.read()
+    except Exception:
+        pass
+
+
 def handler(event: dict, context) -> dict:
-    """Принимает заявку с сайта и отправляет письмо на почту владельца"""
+    """Принимает заявку с сайта, отправляет письмо на почту и уведомление в Telegram"""
 
     if event.get('httpMethod') == 'OPTIONS':
         return {
@@ -31,6 +50,16 @@ def handler(event: dict, context) -> dict:
             'headers': {'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({'error': 'Телефон обязателен'}, ensure_ascii=False),
         }
+
+    tg_text = (
+        f"📦 <b>Новая заявка с сайта Полка+</b>\n\n"
+        f"👤 Имя: {name or '—'}\n"
+        f"📞 Телефон: <b>{phone}</b>\n"
+        f"🛍 Тип товара: {goods or '—'}\n"
+        + (f"💬 Комментарий: {comment}\n" if comment else "")
+        + f"\n⚡️ Свяжитесь в течение 15 минут!"
+    )
+    send_telegram(tg_text)
 
     resend_key = os.environ.get('RESEND_API_KEY', '')
     to_email   = os.environ.get('LEAD_EMAIL', 'polkapluss@yandex.ru')
