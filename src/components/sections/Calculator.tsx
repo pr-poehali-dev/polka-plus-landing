@@ -2,6 +2,8 @@ import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 import { WB, WB_DARK, WB_LIGHT, WB_MID } from '@/components/shared/ui-helpers';
 
+const SEND_LEAD_URL = 'https://functions.poehali.dev/2e3b43ba-4ed5-4ef0-aefa-97c5165afe18';
+
 // ─── CalcSection ──────────────────────────────────────────────────────────────
 function CalcSection({ icon, title, children }: { icon: string; title: string; children: React.ReactNode }) {
   return (
@@ -82,6 +84,12 @@ export default function Calculator() {
   const [needLeaflet, setNeedLeaflet] = useState(false);
   const [urgentShip, setUrgentShip] = useState(false);
 
+  const [email, setEmail] = useState('');
+  const [emailName, setEmailName] = useState('');
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+
   const packPrices = { bag: 8, small: 18, medium: 25, large: 35, bubble: 10 };
   const packNames  = { bag: 'Пакет', small: 'Короб малый', medium: 'Короб средний', large: 'Короб крупный', bubble: 'Пупырка' };
   const assemblyRate = orders <= 100 ? 45 : orders <= 500 ? 40 : orders <= 1000 ? 35 : 30;
@@ -116,6 +124,21 @@ export default function Calculator() {
   lines.push({ label: urgentShip ? 'Срочная отгрузка (+30%)' : 'Отгрузка', amount: shipAmount, hint: urgentShip ? `${shipBase} × 1.3` : '150–500 ₽' });
 
   const total = lines.reduce((s, l) => s + l.amount, 0);
+
+  const handleSendCalc = async () => {
+    if (!email) return;
+    setSending(true);
+    const breakdown = lines.map(l => `${l.label}: ${l.amount === 0 ? 'бесплатно' : l.amount.toLocaleString('ru') + ' ₽'}`).join('\n');
+    const comment = `📊 Расчёт стоимости фулфилмента\n\n${breakdown}\n\nИТОГО: ${total.toLocaleString('ru')} ₽/мес\n\nОтправлено с калькулятора сайта Полка+`;
+    await fetch(SEND_LEAD_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: emailName, phone: email, goods: 'Расчёт с калькулятора', comment }),
+    });
+    setSending(false);
+    setSent(true);
+    setShowForm(false);
+  };
 
   return (
     <div className="rounded-3xl border border-gray-200 overflow-hidden shadow-sm" style={{ background: '#F8F9FC' }}>
@@ -215,6 +238,58 @@ export default function Calculator() {
             onClick={() => document.getElementById('contacts')?.scrollIntoView({ behavior: 'smooth' })}>
             Получить точный расчёт
           </button>
+
+          {/* Отправить расчёт на почту */}
+          {!sent ? (
+            !showForm ? (
+              <button
+                onClick={() => setShowForm(true)}
+                className="w-full py-3 rounded-xl font-semibold text-sm transition-all hover:scale-[1.02] active:scale-95 mb-3 flex items-center justify-center gap-2"
+                style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)' }}>
+                <Icon name="Mail" size={15} />
+                Отправить расчёт на почту
+              </button>
+            ) : (
+              <div className="rounded-xl p-4 mb-3 space-y-2.5"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                <p className="text-xs text-white/50 mb-1">Пришлём расчёт на вашу почту</p>
+                <input
+                  type="text"
+                  placeholder="Ваше имя"
+                  value={emailName}
+                  onChange={e => setEmailName(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-lg text-sm text-white placeholder-white/30 outline-none"
+                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
+                />
+                <input
+                  type="email"
+                  placeholder="E-mail"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-lg text-sm text-white placeholder-white/30 outline-none"
+                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
+                />
+                <div className="flex gap-2">
+                  <button onClick={() => setShowForm(false)}
+                    className="flex-1 py-2 rounded-lg text-sm text-white/40 hover:text-white/60 transition-colors"
+                    style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
+                    Отмена
+                  </button>
+                  <button onClick={handleSendCalc} disabled={!email || sending}
+                    className="flex-1 py-2 rounded-lg text-sm font-bold text-white transition-all disabled:opacity-40"
+                    style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})` }}>
+                    {sending ? 'Отправляю...' : 'Отправить'}
+                  </button>
+                </div>
+              </div>
+            )
+          ) : (
+            <div className="flex items-center gap-2 px-4 py-3 rounded-xl mb-3"
+              style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.2)' }}>
+              <Icon name="CheckCircle" size={15} className="text-green-400 shrink-0" />
+              <span className="text-xs font-semibold text-green-400">Расчёт отправлен на {email}</span>
+            </div>
+          )}
 
           {orders >= 1000 && (
             <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl mb-3"
