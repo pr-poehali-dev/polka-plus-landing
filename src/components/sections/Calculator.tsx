@@ -186,7 +186,7 @@ export default function Calculator() {
         <div className="lg:col-span-2 p-7" style={{ background: 'linear-gradient(160deg, #1A1228 0%, #2D1640 100%)' }}>
           <div className="text-xs font-bold text-white/40 uppercase tracking-widest mb-4">Ваш расчёт</div>
 
-          <div className="space-y-2 mb-4 max-h-44 overflow-y-auto pr-1">
+          <div className="space-y-2 mb-4">
             {lines.map((line, i) => (
               <div key={i} className="flex items-start justify-between gap-2 py-1.5 border-b border-white/5">
                 <div className="text-xs text-white/60 flex-1 leading-snug">{line.label}</div>
