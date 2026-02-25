@@ -33,7 +33,7 @@ def handler(event: dict, context) -> dict:
         }
 
     resend_key = os.environ.get('RESEND_API_KEY', '')
-    to_email   = os.environ.get('LEAD_EMAIL', 'info@polkaplus.ru')
+    to_email   = os.environ.get('LEAD_EMAIL', 'polkapluss@yandex.ru')
 
     html = f"""
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
