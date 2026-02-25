@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 import { WB, WB_DARK, WB_LIGHT, WB_MID, FadeIn, Tag, Accent, AnimatedCounter, FaqList } from '@/components/shared/ui-helpers';
 import Calculator from '@/components/sections/Calculator';
@@ -66,6 +67,122 @@ export function SiteHeader({ scrollTo, navLinks, scrolled, menuOpen, setMenuOpen
         </div>
       )}
     </header>
+  );
+}
+
+// ─── LiveDashboard ────────────────────────────────────────────────────────────
+const ORDERS = [
+  { id: '#WB-48291', goods: 'Товар × 3 шт',      mp: 'WB',   status: 'Принят',      color: '#4ade80' },
+  { id: '#OZ-77103', goods: 'Товар × 1 шт',      mp: 'Ozon', status: 'Упакован',     color: '#60a5fa' },
+  { id: '#YM-33410', goods: 'Товар × 7 шт',      mp: 'ЯМ',   status: 'Отгружен',    color: '#E878D0' },
+  { id: '#WB-50022', goods: 'Товар × 2 шт',      mp: 'WB',   status: 'На хранении', color: '#facc15' },
+  { id: '#OZ-81674', goods: 'Товар × 4 шт',      mp: 'Ozon', status: 'Принят',      color: '#4ade80' },
+];
+
+function LiveDashboard() {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [count, setCount] = useState(15247);
+  const [visible, setVisible] = useState([0, 1, 2]);
+
+  useEffect(() => {
+    const t1 = setInterval(() => {
+      setCount(c => c + Math.floor(Math.random() * 3 + 1));
+    }, 1800);
+    const t2 = setInterval(() => {
+      setActiveIdx(i => (i + 1) % ORDERS.length);
+      setVisible(v => {
+        const next = (v[v.length - 1] + 1) % ORDERS.length;
+        return [...v.slice(1), next];
+      });
+    }, 2200);
+    return () => { clearInterval(t1); clearInterval(t2); };
+  }, []);
+
+  const metrics = [
+    { label: 'Активных заказов', value: '1 248', icon: 'Package2', color: '#E878D0' },
+    { label: 'Обработано сегодня', value: count.toLocaleString('ru'), icon: 'TrendingUp', color: '#4ade80' },
+    { label: 'Складов онлайн', value: '2 / 2', icon: 'Warehouse', color: '#60a5fa' },
+  ];
+
+  return (
+    <div className="hidden lg:block">
+      <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
+        style={{ background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(24px)' }}>
+
+        {/* header */}
+        <div className="px-5 py-3.5 border-b border-white/10 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-red-400/70" />
+              <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/70" />
+              <div className="w-2.5 h-2.5 rounded-full bg-green-400/70" />
+            </div>
+            <span className="text-xs text-white/40 font-mono ml-2">polkaplus.ru — панель управления</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full"
+            style={{ background: 'rgba(74,222,128,0.15)', color: '#4ade80' }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            LIVE
+          </div>
+        </div>
+
+        {/* metrics */}
+        <div className="grid grid-cols-3 gap-px mx-5 mt-5 mb-4 rounded-xl overflow-hidden bg-white/5">
+          {metrics.map(m => (
+            <div key={m.label} className="py-3 px-3 text-center" style={{ background: 'rgba(255,255,255,0.03)' }}>
+              <Icon name={m.icon} size={16} className="mx-auto mb-1" style={{ color: m.color }} />
+              <div className="font-oswald font-bold text-white text-lg leading-none">{m.value}</div>
+              <div className="text-[10px] text-white/30 mt-0.5">{m.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* order feed */}
+        <div className="px-5 pb-5 space-y-2 overflow-hidden" style={{ minHeight: 148 }}>
+          <div className="text-[10px] font-bold text-white/25 uppercase tracking-widest mb-2">Последние поступления</div>
+          {ORDERS.map((o, i) => (
+            <div key={o.id}
+              className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-500"
+              style={{
+                background: visible.includes(i) ? 'rgba(255,255,255,0.06)' : 'transparent',
+                border: `1px solid ${visible.includes(i) ? 'rgba(255,255,255,0.08)' : 'transparent'}`,
+                opacity: visible.includes(i) ? 1 : 0,
+                transform: visible.includes(i) ? 'translateY(0)' : 'translateY(8px)',
+              }}>
+              <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: o.color }} />
+              <span className="text-xs font-mono text-white/50 shrink-0">{o.id}</span>
+              <span className="text-xs text-white/60 flex-1 truncate">{o.goods}</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md shrink-0"
+                style={{ background: 'rgba(203,17,171,0.2)', color: '#E878D0' }}>{o.mp}</span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md shrink-0"
+                style={{ background: `${o.color}22`, color: o.color }}>{o.status}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* progress bar */}
+        <div className="px-5 pb-4">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[10px] text-white/30">Загрузка склада</span>
+            <span className="text-[10px] font-bold text-white/50">78%</span>
+          </div>
+          <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+            <div className="h-full rounded-full animate-pulse"
+              style={{ width: '78%', background: `linear-gradient(90deg, ${WB}, #E878D0)` }} />
+          </div>
+        </div>
+      </div>
+
+      {/* floating badges */}
+      <div className="absolute -top-3 -right-3 bg-white rounded-2xl shadow-xl px-3 py-2.5 flex items-center gap-2 border border-gray-100">
+        <Icon name="Clock" size={14} className="text-green-500" />
+        <div><div className="font-bold text-gray-900 text-xs">24 часа</div><div className="text-[10px] text-gray-400">до отгрузки</div></div>
+      </div>
+      <div className="absolute -bottom-3 -left-3 bg-white rounded-2xl shadow-xl px-3 py-2.5 flex items-center gap-2 border border-gray-100">
+        <Icon name="ShieldCheck" size={14} style={{ color: WB }} />
+        <div><div className="font-bold text-gray-900 text-xs">99,5%</div><div className="text-[10px] text-gray-400">приёмка</div></div>
+      </div>
+    </div>
   );
 }
 
@@ -155,6 +272,11 @@ export function HeroSection({ scrollTo }: { scrollTo: (id: string) => void }) {
               </div>
             </FadeIn>
           </div>
+
+          {/* Right — live dashboard */}
+          <FadeIn delay={0.3} className="relative">
+            <LiveDashboard />
+          </FadeIn>
         </div>
       </div>
 
