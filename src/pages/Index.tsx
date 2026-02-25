@@ -131,7 +131,7 @@ export default function Index() {
           </div>
 
           <nav className="hidden md:flex items-center gap-7">
-            {[['Услуги', 'services'], ['Преимущества', 'advantages'], ['О компании', 'about'], ['Контакты', 'contacts']].map(([label, id]) => (
+            {[['Услуги', 'services'], ['Преимущества', 'advantages'], ['Калькулятор', 'calculator'], ['О компании', 'about'], ['Контакты', 'contacts']].map(([label, id]) => (
               <button key={id} onClick={() => scrollTo(id)}
                 className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
                 {label}
@@ -415,8 +415,22 @@ export default function Index() {
         </div>
       </section>
 
+      {/* ===== CALCULATOR ===== */}
+      <section id="calculator" className="py-24" style={{ background: '#FAFAFA' }}>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <SectionLabel tag="Калькулятор" />
+          <FadeIn>
+            <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-3 text-gray-900">
+              Рассчитайте <span style={{ color: WB }}>стоимость</span>
+            </h2>
+            <p className="text-gray-400 text-lg mb-10 max-w-xl">Укажите параметры — получите ориентировочную стоимость за месяц</p>
+          </FadeIn>
+          <Calculator />
+        </div>
+      </section>
+
       {/* ===== PROCESS ===== */}
-      <section className="py-24" style={{ background: '#FAFAFA' }}>
+      <section className="py-24 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <SectionLabel tag="Как это работает" />
           <FadeIn>
@@ -716,6 +730,223 @@ function SectionLabel({ tag }: { tag: string }) {
     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-[0.15em] mb-4"
       style={{ background: WB_LIGHT, color: WB }}>
       {tag}
+    </div>
+  );
+}
+
+function Calculator() {
+  const [pallets, setPallets] = useState(10);
+  const [orders, setOrders] = useState(100);
+  const [services, setServices] = useState({
+    acceptance: true,
+    storage: true,
+    packing: true,
+    marking: false,
+    assembly: false,
+  });
+  const [category, setCategory] = useState<'standard' | 'kgt'>('standard');
+
+  const rates = {
+    acceptance: category === 'kgt' ? 180 : 80,
+    storage: category === 'kgt' ? 750 : 450,
+    packing: category === 'kgt' ? 220 : 90,
+    marking: 25,
+    assembly: 60,
+  };
+
+  const labels: Record<string, string> = {
+    acceptance: 'Приёмка товара',
+    storage: 'Хранение (паллетомест/мес)',
+    packing: 'Упаковка заказа',
+    marking: 'Маркировка',
+    assembly: 'Комплектация',
+  };
+
+  const unitLabels: Record<string, string> = {
+    acceptance: '₽/паллет',
+    storage: '₽/паллетомест',
+    packing: '₽/заказ',
+    marking: '₽/заказ',
+    assembly: '₽/заказ',
+  };
+
+  const total = Object.entries(services).reduce((sum, [key, enabled]) => {
+    if (!enabled) return sum;
+    const rate = rates[key as keyof typeof rates];
+    if (key === 'acceptance') return sum + rate * pallets;
+    if (key === 'storage') return sum + rate * pallets;
+    return sum + rate * orders;
+  }, 0);
+
+  const discount = total > 50000 ? 0.1 : total > 25000 ? 0.05 : 0;
+  const totalWithDiscount = Math.round(total * (1 - discount));
+
+  return (
+    <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-5">
+        {/* Left — inputs */}
+        <div className="lg:col-span-3 p-8 border-b lg:border-b-0 lg:border-r border-gray-100">
+
+          {/* Category */}
+          <div className="mb-7">
+            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 block">Тип товара</label>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { id: 'standard', label: 'Стандартный', icon: 'Box', desc: 'до 30 кг, до 1м' },
+                { id: 'kgt', label: 'Крупногабарит', icon: 'Package2', desc: 'мебель, двери, КГТ' },
+              ].map((cat) => (
+                <button key={cat.id} onClick={() => setCategory(cat.id as 'standard' | 'kgt')}
+                  className="flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all duration-200"
+                  style={category === cat.id
+                    ? { borderColor: WB, background: WB_LIGHT }
+                    : { borderColor: '#F3F4F6', background: '#FAFAFA' }}>
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: category === cat.id ? WB_MID : '#F3F4F6' }}>
+                    <Icon name={cat.icon} size={18} style={{ color: category === cat.id ? WB : '#9CA3AF' }} />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-sm text-gray-900">{cat.label}</div>
+                    <div className="text-xs text-gray-400">{cat.desc}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Pallets slider */}
+          <div className="mb-7">
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Кол-во паллетомест</label>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setPallets(Math.max(1, pallets - 1))}
+                  className="w-7 h-7 rounded-lg flex items-center justify-center border border-gray-200 text-gray-500 hover:border-gray-300 transition-colors text-base leading-none">−</button>
+                <span className="font-bold text-gray-900 w-10 text-center">{pallets}</span>
+                <button onClick={() => setPallets(Math.min(500, pallets + 1))}
+                  className="w-7 h-7 rounded-lg flex items-center justify-center border border-gray-200 text-gray-500 hover:border-gray-300 transition-colors text-base leading-none">+</button>
+              </div>
+            </div>
+            <input type="range" min={1} max={500} value={pallets} onChange={e => setPallets(+e.target.value)}
+              className="w-full h-2 rounded-full appearance-none cursor-pointer"
+              style={{ accentColor: WB }} />
+            <div className="flex justify-between text-xs text-gray-300 mt-1"><span>1</span><span>500</span></div>
+          </div>
+
+          {/* Orders slider */}
+          <div className="mb-7">
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Кол-во заказов в месяц</label>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setOrders(Math.max(1, orders - 10))}
+                  className="w-7 h-7 rounded-lg flex items-center justify-center border border-gray-200 text-gray-500 hover:border-gray-300 transition-colors text-base leading-none">−</button>
+                <span className="font-bold text-gray-900 w-14 text-center">{orders}</span>
+                <button onClick={() => setOrders(Math.min(10000, orders + 10))}
+                  className="w-7 h-7 rounded-lg flex items-center justify-center border border-gray-200 text-gray-500 hover:border-gray-300 transition-colors text-base leading-none">+</button>
+              </div>
+            </div>
+            <input type="range" min={10} max={10000} step={10} value={orders} onChange={e => setOrders(+e.target.value)}
+              className="w-full h-2 rounded-full appearance-none cursor-pointer"
+              style={{ accentColor: WB }} />
+            <div className="flex justify-between text-xs text-gray-300 mt-1"><span>10</span><span>10 000</span></div>
+          </div>
+
+          {/* Services checkboxes */}
+          <div>
+            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 block">Услуги</label>
+            <div className="space-y-2">
+              {(Object.keys(services) as (keyof typeof services)[]).map((key) => (
+                <button key={key} onClick={() => setServices(s => ({ ...s, [key]: !s[key] }))}
+                  className="w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-200"
+                  style={services[key]
+                    ? { borderColor: WB_MID, background: WB_LIGHT }
+                    : { borderColor: '#F3F4F6', background: '#FAFAFA' }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all"
+                      style={services[key] ? { borderColor: WB, background: WB } : { borderColor: '#D1D5DB', background: 'white' }}>
+                      {services[key] && <Icon name="Check" size={12} className="text-white" />}
+                    </div>
+                    <span className="text-sm font-medium text-gray-700">{labels[key]}</span>
+                  </div>
+                  <span className="text-xs font-semibold" style={{ color: WB }}>
+                    {rates[key as keyof typeof rates].toLocaleString('ru')} {unitLabels[key]}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right — result */}
+        <div className="lg:col-span-2 p-8 flex flex-col" style={{ background: `linear-gradient(160deg, ${WB_LIGHT} 0%, #fff 100%)` }}>
+          <div className="flex-1">
+            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-6">Итоговый расчёт</div>
+
+            <div className="space-y-3 mb-6">
+              {(Object.keys(services) as (keyof typeof services)[]).filter(k => services[k]).map((key) => {
+                const rate = rates[key as keyof typeof rates];
+                const amount = key === 'acceptance' || key === 'storage' ? rate * pallets : rate * orders;
+                const qty = key === 'acceptance' || key === 'storage' ? pallets : orders;
+                return (
+                  <div key={key} className="flex items-start justify-between gap-2">
+                    <div className="text-sm text-gray-600 flex-1">{labels[key]}</div>
+                    <div className="text-right shrink-0">
+                      <div className="text-sm font-semibold text-gray-900">{amount.toLocaleString('ru')} ₽</div>
+                      <div className="text-xs text-gray-400">{qty} × {rate} ₽</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {(Object.values(services).every(v => !v)) && (
+              <div className="text-sm text-gray-400 text-center py-4">Выберите хотя бы одну услугу</div>
+            )}
+
+            <div className="border-t border-gray-200 pt-4 mb-4">
+              {discount > 0 && (
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-gray-500">Скидка за объём</span>
+                  <span className="text-sm font-semibold text-green-600">−{(discount * 100).toFixed(0)}%</span>
+                </div>
+              )}
+              {discount > 0 && (
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-sm text-gray-400 line-through">{total.toLocaleString('ru')} ₽</span>
+                </div>
+              )}
+              <div className="flex justify-between items-end">
+                <span className="text-sm font-semibold text-gray-600">Итого в месяц</span>
+                <div className="text-right">
+                  <div className="font-oswald text-4xl font-bold" style={{ color: WB }}>
+                    {totalWithDiscount.toLocaleString('ru')}
+                    <span className="text-2xl"> ₽</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {discount > 0 && (
+              <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl mb-4"
+                style={{ background: '#DCFCE7' }}>
+                <Icon name="BadgeCheck" size={16} className="text-green-600 shrink-0" />
+                <span className="text-xs font-semibold text-green-700">
+                  Скидка {(discount * 100).toFixed(0)}% за объём — экономия {(total - totalWithDiscount).toLocaleString('ru')} ₽/мес
+                </span>
+              </div>
+            )}
+
+            <div className="text-xs text-gray-400 bg-white/60 rounded-xl p-3 mb-6">
+              Расчёт ориентировочный. Точную стоимость уточните у менеджера с учётом специфики товара.
+            </div>
+          </div>
+
+          <button
+            className="w-full py-4 rounded-xl font-bold text-white text-base transition-all hover:scale-[1.02] active:scale-95 shadow-lg"
+            style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})`, boxShadow: `0 8px 25px rgba(203,17,171,0.3)` }}
+            onClick={() => document.getElementById('contacts')?.scrollIntoView({ behavior: 'smooth' })}>
+            Получить точный расчёт
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
