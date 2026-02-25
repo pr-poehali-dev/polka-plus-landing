@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 
-const useInView = (threshold = 0.15) => {
+const useInView = (threshold = 0.12) => {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
@@ -19,8 +19,7 @@ const AnimatedCounter = ({ target, suffix = '' }: { target: number; suffix?: str
   const { ref, inView } = useInView(0.3);
   useEffect(() => {
     if (!inView) return;
-    const duration = 2000;
-    const step = target / (duration / 16);
+    const step = target / (2000 / 16);
     let current = 0;
     const timer = setInterval(() => {
       current += step;
@@ -32,14 +31,33 @@ const AnimatedCounter = ({ target, suffix = '' }: { target: number; suffix?: str
   return <span ref={ref}>{count.toLocaleString('ru')}{suffix}</span>;
 };
 
+function FadeIn({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
+  const { ref, inView } = useInView();
+  return (
+    <div ref={ref} className={className} style={{
+      opacity: inView ? 1 : 0,
+      transform: inView ? 'translateY(0)' : 'translateY(24px)',
+      transition: `opacity 0.6s ease ${delay}s, transform 0.6s ease ${delay}s`
+    }}>
+      {children}
+    </div>
+  );
+}
+
+// WB palette
+const WB = '#CB11AB';
+const WB_DARK = '#9A0080';
+const WB_LIGHT = '#F9ECF7';
+const WB_MID = '#F0D6EC';
+
 export default function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const scrollTo = (id: string) => {
@@ -48,37 +66,38 @@ export default function Index() {
   };
 
   const advantages = [
-    { icon: 'Package', label: 'Крупногабарит', desc: 'Принимаем и храним товары любых размеров — мебель, двери, кабели' },
-    { icon: 'MapPin', label: 'Адресное хранение', desc: 'Точная система навигации на складе с цифровой картой мест' },
-    { icon: 'ShieldCheck', label: 'Контроль качества', desc: 'Проверка каждой единицы товара при приёмке и упаковке' },
-    { icon: 'Box', label: 'Усиленная упаковка', desc: 'Специальная защита для хрупких и нестандартных товаров' },
-    { icon: 'Zap', label: 'Быстрая отгрузка', desc: 'Отгрузка в течение 24 часов с момента поступления заказа' },
-    { icon: 'BarChart3', label: 'Прозрачная отчётность', desc: 'Личный кабинет с аналитикой и историей всех операций' },
+    { icon: 'Package2', title: 'Работаем с крупногабаритом', desc: 'Принимаем мебель, двери, кабели и любые нестандартные товары без ограничений по габаритам' },
+    { icon: 'MapPin', title: 'Адресное хранение', desc: 'Цифровая карта склада — каждый товар на своём месте, ни одной потери' },
+    { icon: 'ShieldCheck', title: 'Контроль качества', desc: 'Фотофиксация при приёмке, проверка каждой единицы, отчёт онлайн' },
+    { icon: 'Layers', title: 'Усиленная упаковка', desc: 'Специальные материалы для хрупких и крупных товаров, защита при транспортировке' },
+    { icon: 'Zap', title: 'Быстрая отгрузка', desc: 'Отправляем на маркетплейс в течение 24 часов с момента получения заказа' },
+    { icon: 'BarChart3', title: 'Прозрачная отчётность', desc: 'Личный кабинет с историей операций, остатками и аналитикой в реальном времени' },
   ];
 
   const categories = [
-    { icon: 'Armchair', label: 'Мебель', desc: 'Диваны, шкафы, кровати — принимаем без ограничений по габаритам', tone: 'orange' },
-    { icon: 'DoorOpen', label: 'Двери', desc: 'Межкомнатные и входные двери. Специальная упаковка и стойки хранения', tone: 'cyan' },
-    { icon: 'Cable', label: 'Кабельная продукция', desc: 'Барабаны, бухты, кабель-каналы. Адресное хранение и разукрупнение', tone: 'green' },
-    { icon: 'Dumbbell', label: 'Спорттовары', desc: 'Тренажёры, велосипеды, самокаты — сборка и упаковка по стандартам маркетплейсов', tone: 'orange' },
-    { icon: 'Wrench', label: 'Нестандартные грузы', desc: 'Если другие отказали — мы найдём решение. Работаем с любым форматом', tone: 'cyan' },
+    { icon: 'Armchair', label: 'Мебель', desc: 'Диваны, шкафы, кровати — любые габариты' },
+    { icon: 'DoorOpen', label: 'Двери', desc: 'Межкомнатные и входные, спецупаковка' },
+    { icon: 'Cable', label: 'Кабельная продукция', desc: 'Барабаны, бухты, кабель-каналы' },
+    { icon: 'Dumbbell', label: 'Спорттовары', desc: 'Тренажёры, велосипеды, самокаты' },
+    { icon: 'Hammer', label: 'Металлоконструкции', desc: 'Профили, уголки, нестандартные изделия' },
+    { icon: 'Wrench', label: 'Нестандартные грузы', desc: 'Если отказали другие — мы возьмём' },
   ];
 
   const services = [
-    { icon: 'Truck', title: 'Приёмка товара', desc: 'Разгрузка, проверка количества и качества, фотофиксация, постановка на учёт' },
-    { icon: 'Warehouse', title: 'Хранение', desc: 'Адресное хранение в защищённых зонах. Климат-контроль для чувствительных товаров' },
-    { icon: 'PackageOpen', title: 'Упаковка', desc: 'Усиленная упаковка по требованиям WB и Ozon. Защита от повреждений при транспортировке' },
-    { icon: 'Tag', title: 'Маркировка', desc: 'Нанесение штрихкодов, этикеток, честных знаков по всем стандартам маркетплейсов' },
-    { icon: 'ListChecks', title: 'Комплектация заказов', desc: 'Сборка многотоварных заказов, подарочная упаковка, вложение документов' },
-    { icon: 'Send', title: 'Отгрузка WB / Ozon / ЯМ', desc: 'Синхронизация с API маркетплейсов в реальном времени. Автоматическая передача данных' },
+    { icon: 'Truck', title: 'Приёмка товара', desc: 'Разгрузка, проверка, фото, постановка на учёт' },
+    { icon: 'Warehouse', title: 'Хранение', desc: 'Адресное хранение, климат-контроль для чувствительных товаров' },
+    { icon: 'PackageOpen', title: 'Упаковка', desc: 'По требованиям WB, Ozon, ЯМ. Защита при транспортировке' },
+    { icon: 'Tag', title: 'Маркировка', desc: 'Штрихкоды, честный знак, этикетки по всем стандартам' },
+    { icon: 'ListChecks', title: 'Комплектация', desc: 'Сборка заказов, подарочная упаковка, вложения' },
+    { icon: 'Send', title: 'Отгрузка', desc: 'Синхронизация с API маркетплейсов в реальном времени' },
   ];
 
   const steps = [
-    { num: '01', title: 'Вы привозите товар', desc: 'Или организуем доставку силами наших партнёров' },
-    { num: '02', title: 'Принимаем и размещаем', desc: 'Цифровая приёмка, фото, постановка на адрес хранения' },
-    { num: '03', title: 'Упаковываем и маркируем', desc: 'По стандартам WB, Ozon, Яндекс.Маркет автоматически' },
-    { num: '04', title: 'Отгружаем на маркетплейс', desc: 'Синхронизация с API платформ — заказы уходят в срок' },
-    { num: '05', title: 'Вы получаете прибыль', desc: 'Отслеживайте всё в личном кабинете в реальном времени' },
+    { num: '01', title: 'Вы привозите товар', desc: 'Или организуем доставку через партнёров' },
+    { num: '02', title: 'Принимаем и размещаем', desc: 'Цифровая приёмка, фото, адресное хранение' },
+    { num: '03', title: 'Упаковываем и маркируем', desc: 'По стандартам WB, Ozon, Яндекс.Маркет' },
+    { num: '04', title: 'Отгружаем на маркетплейс', desc: 'API-синхронизация, точные сроки' },
+    { num: '05', title: 'Вы получаете прибыль', desc: 'Отслеживайте всё в личном кабинете' },
   ];
 
   const stats = [
@@ -89,79 +108,64 @@ export default function Index() {
   ];
 
   const blogPosts = [
-    { tag: 'Маркетплейсы', date: '18 февраля 2026', title: 'Как выбрать фулфилмент для крупногабарита: 7 критических вопросов', desc: 'Разбираем ошибки селлеров при выборе склада и что нужно проверить перед подписанием договора' },
-    { tag: 'API интеграции', date: '10 февраля 2026', title: 'API Wildberries 2026: новые требования и как к ним подготовиться', desc: 'Обновлённый протокол синхронизации остатков и изменения в правилах маркировки' },
-    { tag: 'Кейс', date: '3 февраля 2026', title: 'Кейс: 300% рост отгрузок за 3 месяца — история клиента из мебели', desc: 'Как один производитель диванов масштабировал продажи на WB с помощью КГТ-фулфилмента' },
+    { tag: 'Маркетплейсы', date: '18 февраля 2026', title: 'Как выбрать фулфилмент для крупногабарита: 7 критических вопросов', desc: 'Разбираем ошибки селлеров при выборе склада' },
+    { tag: 'API интеграции', date: '10 февраля 2026', title: 'API Wildberries 2026: новые требования и как подготовиться', desc: 'Обновлённый протокол синхронизации остатков и маркировки' },
+    { tag: 'Кейс', date: '3 февраля 2026', title: 'Кейс: рост отгрузок 300% за 3 месяца — мебельный бизнес', desc: 'Как производитель диванов масштабировал продажи на WB' },
   ];
 
-  const toneColors: Record<string, { bg: string; border: string; icon: string; glow: string }> = {
-    orange: { bg: 'rgba(203,17,171,0.07)', border: 'rgba(203,17,171,0.25)', icon: 'text-[#CB11AB]', glow: '#CB11AB' },
-    cyan: { bg: 'rgba(156,39,176,0.06)', border: 'rgba(156,39,176,0.2)', icon: 'text-[#9C27B0]', glow: '#9C27B0' },
-    green: { bg: 'rgba(230,0,126,0.05)', border: 'rgba(230,0,126,0.18)', icon: 'text-[#E6007E]', glow: '#E6007E' },
-  };
-
   return (
-    <div className="min-h-screen bg-[#0D0818] font-golos text-white overflow-x-hidden">
-
-      {/* Background grid */}
-      <div className="fixed inset-0 pointer-events-none z-0" style={{
-        backgroundImage: `linear-gradient(rgba(203,17,171,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(203,17,171,0.03) 1px, transparent 1px)`,
-        backgroundSize: '60px 60px'
-      }} />
-
-      {/* Glow orbs */}
-      <div className="fixed top-0 left-1/4 w-[700px] h-[700px] rounded-full pointer-events-none z-0"
-        style={{ background: 'radial-gradient(circle, rgba(203,17,171,0.1) 0%, transparent 70%)' }} />
-      <div className="fixed top-1/3 right-0 w-[500px] h-[500px] rounded-full pointer-events-none z-0"
-        style={{ background: 'radial-gradient(circle, rgba(139,0,139,0.08) 0%, transparent 70%)' }} />
+    <div className="min-h-screen bg-white font-golos text-gray-900 overflow-x-hidden">
 
       {/* ===== HEADER ===== */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#0D0818]/95 backdrop-blur-xl border-b border-white/5 py-3' : 'py-5'}`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 py-3' : 'bg-white py-4'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)' }}>
-              <Icon name="Package" size={16} className="text-white" />
+          {/* Logo */}
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})` }}>
+              <Icon name="Package" size={18} className="text-white" />
             </div>
-            <span className="font-oswald text-xl font-semibold tracking-wide">
-              ПОЛКА<span style={{ color: '#CB11AB' }}>+</span>
-            </span>
+            <div>
+              <span className="font-oswald text-xl font-bold tracking-wide text-gray-900">ПОЛКА</span>
+              <span className="font-oswald text-xl font-bold" style={{ color: WB }}>+</span>
+            </div>
           </div>
 
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-7">
             {[['Услуги', 'services'], ['Преимущества', 'advantages'], ['О компании', 'about'], ['Контакты', 'contacts']].map(([label, id]) => (
               <button key={id} onClick={() => scrollTo(id)}
-                className="text-sm text-white/60 hover:text-white transition-colors duration-200 tracking-wide">
+                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
                 {label}
               </button>
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
-            <a href="tel:+79001234567" className="text-sm font-medium text-white/80 hover:text-white transition-colors">
+          <div className="hidden md:flex items-center gap-4">
+            <a href="tel:+79001234567" className="text-sm font-semibold text-gray-700 hover:text-gray-900 transition-colors">
               +7 (900) 123-45-67
             </a>
             <button onClick={() => scrollTo('contacts')}
-              className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95"
-              style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)' }}>
+              className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95"
+              style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})` }}>
               Оставить заявку
             </button>
           </div>
 
-          <button className="md:hidden text-white/80" onClick={() => setMenuOpen(!menuOpen)}>
-            <Icon name={menuOpen ? 'X' : 'Menu'} size={24} />
+          <button className="md:hidden p-2 text-gray-600" onClick={() => setMenuOpen(!menuOpen)}>
+            <Icon name={menuOpen ? 'X' : 'Menu'} size={22} />
           </button>
         </div>
 
         {menuOpen && (
-          <div className="md:hidden bg-[#110820]/98 backdrop-blur-xl border-t border-white/5 px-4 py-6 flex flex-col gap-4 animate-fade-in">
+          <div className="md:hidden bg-white border-t border-gray-100 px-4 py-5 flex flex-col gap-3 shadow-lg">
             {[['Услуги', 'services'], ['Преимущества', 'advantages'], ['О компании', 'about'], ['Контакты', 'contacts']].map(([label, id]) => (
-              <button key={id} onClick={() => scrollTo(id)} className="text-left text-white/70 hover:text-white py-2 border-b border-white/5 text-base">
+              <button key={id} onClick={() => scrollTo(id)}
+                className="text-left text-gray-700 hover:text-gray-900 py-2 border-b border-gray-50 font-medium">
                 {label}
               </button>
             ))}
             <button onClick={() => scrollTo('contacts')}
-              className="mt-2 px-5 py-3 rounded-xl text-sm font-semibold text-white"
-              style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)' }}>
+              className="mt-1 px-5 py-3 rounded-xl text-sm font-semibold text-white"
+              style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})` }}>
               Оставить заявку
             </button>
           </div>
@@ -169,101 +173,145 @@ export default function Index() {
       </header>
 
       {/* ===== HERO ===== */}
-      <section className="relative min-h-screen flex items-center pt-24 pb-20 overflow-hidden">
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <div className="absolute bottom-0 left-0 right-0 h-2/3"
-            style={{ background: 'linear-gradient(to top, rgba(13,8,24,1) 0%, transparent 100%)' }} />
-          <div className="absolute inset-0 flex items-center justify-end opacity-[0.06] pr-8 pt-24">
-            <svg viewBox="0 0 600 700" className="h-[80vh] max-h-[700px]" fill="none">
-              {Array.from({ length: 5 }).map((_, col) =>
-                Array.from({ length: 6 }).map((_, row) => (
-                  <rect key={`${col}-${row}`} x={col * 110 + 8} y={row * 110 + 8} width={95} height={95} rx={6}
-                    fill={`rgba(203,17,171,${0.3 + Math.random() * 0.7})`} />
-                ))
-              )}
-            </svg>
-          </div>
-          {[...Array(18)].map((_, i) => (
-            <div key={i} className="absolute rounded-full animate-float"
-              style={{
-                width: `${2 + (i % 3) * 2}px`, height: `${2 + (i % 3) * 2}px`,
-                left: `${(i * 37) % 100}%`, top: `${(i * 53) % 100}%`,
-                background: i % 3 === 0 ? '#CB11AB' : i % 3 === 1 ? '#9C27B0' : '#E6007E',
-                opacity: 0.25 + (i % 4) * 0.1,
-                animationDelay: `${(i * 0.7) % 4}s`,
-                animationDuration: `${3 + (i % 3)}s`
-              }} />
-          ))}
-        </div>
+      <section className="relative pt-28 pb-20 overflow-hidden" style={{ background: `linear-gradient(160deg, ${WB_LIGHT} 0%, #fff 60%)` }}>
+        {/* Decorative blob */}
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-20 pointer-events-none"
+          style={{ background: `radial-gradient(circle at 70% 30%, ${WB}, transparent 70%)`, transform: 'translate(30%, -30%)' }} />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-10 pointer-events-none"
+          style={{ background: `radial-gradient(circle, ${WB}, transparent 70%)`, transform: 'translate(-40%, 40%)' }} />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full">
-          <div className="max-w-4xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#CB11AB]/30 bg-[#CB11AB]/10 mb-8 animate-fade-in"
-              style={{ animationDelay: '0.1s', opacity: 0 }}>
-              <div className="w-2 h-2 rounded-full bg-[#CB11AB] animate-pulse" />
-              <span className="text-sm text-[#CB11AB] font-medium">Работаем с тем, от чего отказывают другие</span>
-            </div>
-
-            <h1 className="font-oswald text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[0.95] mb-6 animate-fade-in"
-              style={{ animationDelay: '0.2s', opacity: 0 }}>
-              ФУЛФИЛМЕНТ<br />
-              <span style={{ background: 'linear-gradient(135deg, #CB11AB 0%, #9C27B0 50%, #E6007E 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                НОВОГО
-              </span>{' '}
-              <span className="relative inline-block">
-                ПОКОЛЕНИЯ
-                <span className="absolute -bottom-2 left-0 right-0 h-[3px] rounded-full"
-                  style={{ background: 'linear-gradient(90deg, #CB11AB, #8B008B)', boxShadow: '0 0 8px #CB11AB' }} />
-              </span>
-            </h1>
-
-            <p className="text-xl md:text-2xl text-white/55 mb-10 max-w-2xl leading-relaxed font-golos animate-fade-in"
-              style={{ animationDelay: '0.35s', opacity: 0 }}>
-              Полный цикл работы с маркетплейсами:<br />
-              <span className="text-white/80">приёмка, хранение, упаковка, отгрузка.</span>
-            </p>
-
-            <div className="flex flex-wrap gap-4 mb-16 animate-fade-in" style={{ animationDelay: '0.5s', opacity: 0 }}>
-              <button onClick={() => scrollTo('contacts')}
-                className="px-8 py-4 rounded-2xl text-base font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95"
-                style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)', boxShadow: '0 0 40px rgba(203,17,171,0.4)' }}>
-                Рассчитать стоимость
-              </button>
-              <button onClick={() => scrollTo('contacts')}
-                className="px-8 py-4 rounded-2xl text-base font-semibold text-white border border-white/20 bg-white/5 backdrop-blur hover:bg-white/10 hover:border-white/30 transition-all duration-200">
-                Оставить заявку
-              </button>
-            </div>
-
-            <div className="flex flex-wrap gap-3 animate-fade-in" style={{ animationDelay: '0.65s', opacity: 0 }}>
-              <span className="text-xs text-white/30 uppercase tracking-widest self-center mr-1">Интеграции:</span>
-              {['Wildberries', 'Ozon', 'Яндекс.Маркет'].map((mp) => (
-                <div key={mp} className="px-4 py-2 rounded-xl border border-white/10 bg-white/5 text-sm text-white/60 font-medium">
-                  {mp}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <FadeIn delay={0}>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-6"
+                  style={{ background: WB_MID, color: WB }}>
+                  <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: WB }} />
+                  Фулфилмент-центр для маркетплейсов
                 </div>
-              ))}
-              <div className="px-3 py-2 rounded-xl border border-[#CB11AB]/25 bg-[#CB11AB]/8 text-sm text-[#CB11AB]/80 font-medium flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#CB11AB] animate-pulse" />
-                API реального времени
-              </div>
-            </div>
-          </div>
-        </div>
+              </FadeIn>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-float opacity-40">
-          <span className="text-xs text-white/50 tracking-widest uppercase">Прокрутить</span>
-          <div className="w-px h-10 bg-gradient-to-b from-white/30 to-transparent" />
+              <FadeIn delay={0.1}>
+                <h1 className="font-oswald text-5xl sm:text-6xl font-bold leading-[1.0] mb-5 text-gray-900">
+                  РАБОТАЕМ<br />С ТЕМ, ОТ ЧЕГО<br />
+                  <span style={{ color: WB }}>ОТКАЗЫВАЮТ</span><br />ДРУГИЕ
+                </h1>
+              </FadeIn>
+
+              <FadeIn delay={0.2}>
+                <p className="text-lg text-gray-500 mb-8 max-w-lg leading-relaxed">
+                  Полка+ — фулфилмент-центр для крупногабаритных товаров. Мебель, двери, кабели, металлоконструкции. Полный цикл: приёмка, хранение, упаковка, отгрузка.
+                </p>
+              </FadeIn>
+
+              <FadeIn delay={0.3}>
+                <div className="flex flex-wrap gap-3 mb-8">
+                  <button onClick={() => scrollTo('contacts')}
+                    className="px-7 py-3.5 rounded-xl font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:scale-[1.02] active:scale-95"
+                    style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})`, boxShadow: `0 8px 30px rgba(203,17,171,0.3)` }}>
+                    Рассчитать стоимость
+                  </button>
+                  <button onClick={() => scrollTo('contacts')}
+                    className="px-7 py-3.5 rounded-xl font-semibold border-2 text-gray-700 hover:bg-gray-50 transition-all"
+                    style={{ borderColor: '#e5e7eb' }}>
+                    Оставить заявку
+                  </button>
+                </div>
+              </FadeIn>
+
+              <FadeIn delay={0.4}>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs text-gray-400 uppercase tracking-wider mr-1">Интеграции:</span>
+                  {['Wildberries', 'Ozon', 'Яндекс.Маркет'].map((mp) => (
+                    <span key={mp} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-gray-200 text-gray-600 shadow-sm">
+                      {mp}
+                    </span>
+                  ))}
+                  <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border" style={{ background: WB_LIGHT, borderColor: WB_MID, color: WB }}>
+                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: WB }} />
+                    API реального времени
+                  </span>
+                </div>
+              </FadeIn>
+            </div>
+
+            {/* Hero visual */}
+            <FadeIn delay={0.2} className="hidden lg:block">
+              <div className="relative">
+                {/* Main card */}
+                <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: WB_LIGHT }}>
+                      <Icon name="Warehouse" size={20} style={{ color: WB }} />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900 text-sm">Склад Полка+</div>
+                      <div className="text-xs text-gray-400">Москва, Складской пр., 1</div>
+                    </div>
+                    <div className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold" style={{ background: '#DCFCE7', color: '#16A34A' }}>
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                      Работаем
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3 mb-6">
+                    {[
+                      { icon: 'Package2', label: 'Приёмка', val: '247' },
+                      { icon: 'Box', label: 'Хранение', val: '3.2к' },
+                      { icon: 'Send', label: 'Отгрузки', val: '189' },
+                    ].map((item) => (
+                      <div key={item.label} className="rounded-2xl p-4 text-center" style={{ background: WB_LIGHT }}>
+                        <Icon name={item.icon} size={20} className="mx-auto mb-2" style={{ color: WB }} />
+                        <div className="font-bold text-gray-900 text-lg">{item.val}</div>
+                        <div className="text-xs text-gray-500">{item.label}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {[
+                      { label: 'Диван угловой 3-местный', mp: 'WB', status: 'Принят', color: '#DCFCE7', tc: '#16A34A' },
+                      { label: 'Дверь межкомнатная 2000×900', mp: 'Ozon', status: 'На хранении', color: '#FEF9C3', tc: '#CA8A04' },
+                      { label: 'Кабель ВВГ 2×2,5 100м', mp: 'ЯМ', status: 'Отгружен', color: WB_LIGHT, tc: WB },
+                    ].map((row) => (
+                      <div key={row.label} className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+                        <div className="w-2 h-2 rounded-full shrink-0" style={{ background: row.tc }} />
+                        <span className="text-xs text-gray-700 flex-1 truncate font-medium">{row.label}</span>
+                        <span className="text-xs font-semibold px-2 py-1 rounded-lg shrink-0" style={{ background: WB_MID, color: WB }}>{row.mp}</span>
+                        <span className="text-xs font-medium px-2 py-1 rounded-lg shrink-0" style={{ background: row.color, color: row.tc }}>{row.status}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Floating badges */}
+                <div className="absolute -top-4 -right-4 bg-white rounded-2xl shadow-lg px-4 py-3 flex items-center gap-2 border border-gray-100">
+                  <Icon name="TrendingUp" size={18} style={{ color: WB }} />
+                  <div>
+                    <div className="font-bold text-gray-900 text-sm">+300%</div>
+                    <div className="text-xs text-gray-400">рост за год</div>
+                  </div>
+                </div>
+                <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-lg px-4 py-3 flex items-center gap-2 border border-gray-100">
+                  <Icon name="Clock" size={18} className="text-green-500" />
+                  <div>
+                    <div className="font-bold text-gray-900 text-sm">24 часа</div>
+                    <div className="text-xs text-gray-400">отгрузка</div>
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+          </div>
         </div>
       </section>
 
       {/* ===== MARQUEE ===== */}
-      <div className="relative overflow-hidden py-5 border-y border-white/5"
-        style={{ background: 'linear-gradient(90deg, rgba(203,17,171,0.04), rgba(203,17,171,0.09), rgba(203,17,171,0.04))' }}>
-        <div className="flex gap-10 animate-marquee whitespace-nowrap">
+      <div className="overflow-hidden border-y border-gray-100 py-4 bg-white">
+        <div className="flex gap-12 animate-marquee whitespace-nowrap">
           {[...Array(2)].map((_, i) =>
             ['КГТ-ФУЛФИЛМЕНТ', 'WILDBERRIES', 'OZON', 'ЯНДЕКС.МАРКЕТ', 'КРУПНОГАБАРИТ', 'МЕБЕЛЬ', 'ДВЕРИ', 'КАБЕЛИ', 'API ИНТЕГРАЦИИ', 'АДРЕСНОЕ ХРАНЕНИЕ'].map((item) => (
-              <span key={`${i}-${item}`} className="font-oswald text-xs font-medium tracking-[0.3em] text-white/25 uppercase flex items-center gap-10">
-                {item} <span style={{ color: '#CB11AB' }}>◆</span>
+              <span key={`${i}-${item}`} className="font-oswald text-xs tracking-[0.25em] text-gray-300 uppercase flex items-center gap-12">
+                {item} <span style={{ color: WB }}>◆</span>
               </span>
             ))
           )}
@@ -271,332 +319,315 @@ export default function Index() {
       </div>
 
       {/* ===== ADVANTAGES ===== */}
-      <section id="advantages" className="py-28 relative z-10">
+      <section id="advantages" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            tag="Преимущества"
-            title={<>Почему выбирают <span style={{ color: '#CB11AB' }}>Полку+</span></>}
-            subtitle="Специализируемся на том, что другие фулфилмент-центры считают слишком сложным"
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <SectionLabel tag="Преимущества" />
+          <FadeIn>
+            <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-3 text-gray-900">
+              Почему выбирают <span style={{ color: WB }}>Полку+</span>
+            </h2>
+            <p className="text-gray-400 text-lg mb-12 max-w-xl">Специализируемся на том, что другие считают слишком сложным</p>
+          </FadeIn>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {advantages.map((adv, i) => (
-              <FadeInCard key={adv.label} delay={i * 0.08}>
-                <div className="p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:border-[#CB11AB]/30 hover:bg-white/[0.05] transition-all duration-300 group h-full">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
-                    style={{ background: 'rgba(203,17,171,0.12)', border: '1px solid rgba(203,17,171,0.2)' }}>
-                    <Icon name={adv.icon} size={22} className="text-[#CB11AB]" />
+              <FadeIn key={adv.title} delay={i * 0.07}>
+                <div className="group p-7 rounded-2xl border border-gray-100 bg-white hover:shadow-lg hover:border-transparent transition-all duration-300 h-full"
+                  style={{ '--hover-border': WB } as React.CSSProperties}>
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110"
+                    style={{ background: WB_LIGHT }}>
+                    <Icon name={adv.icon} size={22} style={{ color: WB }} />
                   </div>
-                  <h3 className="font-oswald text-lg font-semibold mb-2 tracking-wide">{adv.label}</h3>
-                  <p className="text-sm text-white/45 leading-relaxed">{adv.desc}</p>
+                  <h3 className="font-semibold text-gray-900 text-base mb-2">{adv.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{adv.desc}</p>
                 </div>
-              </FadeInCard>
+              </FadeIn>
             ))}
           </div>
         </div>
       </section>
 
       {/* ===== CATEGORIES ===== */}
-      <section className="py-28 relative z-10">
+      <section className="py-24" style={{ background: WB_LIGHT }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            tag="Категории"
-            title={<>С кем мы <span style={{ color: '#CB11AB' }}>работаем</span></>}
-            subtitle="Специализация на нестандартных и крупногабаритных товарах"
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {categories.map((cat, i) => {
-              const c = toneColors[cat.tone];
-              return (
-                <FadeInCard key={cat.label} delay={i * 0.1}>
-                  <div className="relative p-7 rounded-2xl border overflow-hidden group hover:border-white/15 transition-all duration-300 h-full"
-                    style={{ background: c.bg, borderColor: 'rgba(255,255,255,0.06)' }}>
-                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110"
-                      style={{ background: c.bg, border: `1px solid ${c.border}` }}>
-                      <Icon name={cat.icon} size={26} className={c.icon} />
-                    </div>
-                    <h3 className="font-oswald text-xl font-semibold mb-2 tracking-wide">{cat.label}</h3>
-                    <p className="text-sm text-white/45 leading-relaxed">{cat.desc}</p>
-                    <div className="absolute bottom-0 right-0 w-36 h-36 rounded-full opacity-10 blur-3xl -mr-10 -mb-10"
-                      style={{ background: c.glow }} />
+          <SectionLabel tag="Категории товаров" />
+          <FadeIn>
+            <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-3 text-gray-900">
+              С чем мы <span style={{ color: WB }}>работаем</span>
+            </h2>
+            <p className="text-gray-400 text-lg mb-12 max-w-xl">Специализация на нестандартных и крупногабаритных товарах</p>
+          </FadeIn>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {categories.map((cat, i) => (
+              <FadeIn key={cat.label} delay={i * 0.07}>
+                <div className="bg-white rounded-2xl p-6 border border-white/80 hover:shadow-md transition-all duration-300 group h-full">
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
+                    style={{ background: WB_MID }}>
+                    <Icon name={cat.icon} size={22} style={{ color: WB }} />
                   </div>
-                </FadeInCard>
-              );
-            })}
-            <FadeInCard delay={0.55}>
-              <div className="p-7 rounded-2xl border border-dashed border-white/12 flex flex-col items-center justify-center text-center hover:border-[#CB11AB]/30 transition-colors duration-300 cursor-pointer group min-h-[200px]"
-                onClick={() => scrollTo('contacts')}>
-                <div className="w-12 h-12 rounded-full border border-dashed border-white/20 flex items-center justify-center mb-3 group-hover:border-[#CB11AB]/40 transition-colors">
-                  <Icon name="Plus" size={20} className="text-white/30 group-hover:text-[#CB11AB]/60 transition-colors" />
+                  <h3 className="font-semibold text-gray-900 mb-1">{cat.label}</h3>
+                  <p className="text-sm text-gray-500">{cat.desc}</p>
                 </div>
-                <p className="text-sm text-white/30 group-hover:text-white/50 transition-colors">Ваш товар здесь?<br />Напишите нам</p>
-              </div>
-            </FadeInCard>
+              </FadeIn>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ===== SERVICES ===== */}
-      <section id="services" className="py-28 relative z-10">
+      <section id="services" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            tag="Услуги"
-            title={<>Полный цикл <span style={{ color: '#CB11AB' }}>работ</span></>}
-            subtitle="От приёмки до отгрузки — всё под одной крышей"
-          />
+          <SectionLabel tag="Услуги" />
+          <FadeIn>
+            <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-3 text-gray-900">
+              Полный цикл <span style={{ color: WB }}>работ</span>
+            </h2>
+            <p className="text-gray-400 text-lg mb-12 max-w-xl">От приёмки до отгрузки — всё под одной крышей</p>
+          </FadeIn>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
             {services.map((svc, i) => (
-              <FadeInCard key={svc.title} delay={i * 0.08}>
-                <div className="p-6 rounded-2xl border border-white/8 bg-gradient-to-br from-white/[0.04] to-transparent hover:from-white/[0.06] hover:border-[#CB11AB]/25 transition-all duration-300 group h-full">
-                  <div className="flex items-start gap-4">
-                    <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
-                      style={{ background: 'rgba(203,17,171,0.1)', border: '1px solid rgba(203,17,171,0.2)' }}>
-                      <Icon name={svc.icon} size={20} className="text-[#CB11AB]" />
-                    </div>
-                    <div>
-                      <h3 className="font-oswald text-base font-semibold mb-2 tracking-wide">{svc.title}</h3>
-                      <p className="text-sm text-white/40 leading-relaxed">{svc.desc}</p>
-                    </div>
+              <FadeIn key={svc.title} delay={i * 0.07}>
+                <div className="flex gap-4 p-6 rounded-2xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-md hover:border-gray-200 transition-all duration-300 group h-full">
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
+                    style={{ background: WB_LIGHT }}>
+                    <Icon name={svc.icon} size={20} style={{ color: WB }} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-1">{svc.title}</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed">{svc.desc}</p>
                   </div>
                 </div>
-              </FadeInCard>
+              </FadeIn>
             ))}
           </div>
 
-          <FadeInCard delay={0.1}>
-            <div className="p-8 rounded-2xl border border-[#E040FB]/20 relative overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, rgba(224,64,251,0.05), rgba(224,64,251,0.02))' }}>
-              <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-10 blur-3xl -mr-20 -mt-20"
-                style={{ background: '#E040FB' }} />
-              <div className="relative flex flex-col md:flex-row md:items-center gap-6">
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
-                  style={{ background: 'rgba(224,64,251,0.1)', border: '1px solid rgba(224,64,251,0.25)' }}>
-                  <Icon name="Wifi" size={26} className="text-[#E040FB]" />
+          {/* API highlight */}
+          <FadeIn delay={0.1}>
+            <div className="p-8 rounded-2xl border flex flex-col md:flex-row md:items-center gap-6"
+              style={{ background: `linear-gradient(135deg, ${WB_LIGHT}, #fff)`, borderColor: WB_MID }}>
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0" style={{ background: WB_MID }}>
+                <Icon name="Wifi" size={26} style={{ color: WB }} />
+              </div>
+              <div className="flex-1">
+                <div className="flex flex-wrap items-center gap-3 mb-2">
+                  <h3 className="font-bold text-gray-900 text-lg">API-синхронизация в реальном времени</h3>
+                  <span className="px-2.5 py-1 rounded-lg text-xs font-bold" style={{ background: WB, color: 'white' }}>LIVE</span>
                 </div>
-                <div className="flex-1">
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <h3 className="font-oswald text-xl font-semibold tracking-wide">API-синхронизация в реальном времени</h3>
-                    <span className="px-2 py-0.5 rounded-md text-xs font-bold" style={{ background: 'rgba(224,64,251,0.15)', color: '#E040FB', border: '1px solid rgba(224,64,251,0.2)' }}>LIVE</span>
+                <p className="text-sm text-gray-500">Двусторонняя синхронизация остатков, заказов и статусов с Wildberries, Ozon и Яндекс.Маркет. Обновление каждые 60 секунд. Нулевые расхождения данных.</p>
+              </div>
+              <div className="flex gap-2 shrink-0">
+                {['WB', 'Ozon', 'ЯМ'].map((mp) => (
+                  <div key={mp} className="w-12 h-12 rounded-xl flex items-center justify-center text-xs font-bold border"
+                    style={{ background: WB_MID, borderColor: WB_MID, color: WB }}>
+                    {mp}
                   </div>
-                  <p className="text-sm text-white/45">Двусторонняя синхронизация остатков, заказов и статусов с Wildberries, Ozon и Яндекс.Маркет. Обновление каждые 60 секунд. Нулевые расхождения в данных.</p>
-                </div>
-                <div className="flex gap-2 shrink-0">
-                  {['WB', 'Ozon', 'ЯМ'].map((mp) => (
-                    <div key={mp} className="w-10 h-10 rounded-xl flex items-center justify-center text-xs font-bold"
-                      style={{ background: 'rgba(224,64,251,0.08)', border: '1px solid rgba(224,64,251,0.15)', color: '#E040FB' }}>
-                      {mp}
-                    </div>
-                  ))}
-                </div>
+                ))}
               </div>
             </div>
-          </FadeInCard>
+          </FadeIn>
         </div>
       </section>
 
       {/* ===== PROCESS ===== */}
-      <section className="py-28 relative z-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            tag="Процесс"
-            title={<>Как это <span style={{ color: '#CB11AB' }}>работает</span></>}
-            subtitle="Прозрачный процесс от первого звонка до прибыли на счёте"
-          />
-          <div className="relative space-y-4">
-            <div className="absolute left-[27px] top-0 bottom-0 w-px"
-              style={{ background: 'linear-gradient(to bottom, transparent, rgba(203,17,171,0.3) 10%, rgba(203,17,171,0.3) 90%, transparent)' }} />
+      <section className="py-24" style={{ background: '#FAFAFA' }}>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <SectionLabel tag="Как это работает" />
+          <FadeIn>
+            <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-3 text-gray-900">
+              Процесс работы
+            </h2>
+            <p className="text-gray-400 text-lg mb-12 max-w-xl">Прозрачно на каждом шаге</p>
+          </FadeIn>
+          <div className="space-y-3">
             {steps.map((step, i) => (
-              <FadeInCard key={step.num} delay={i * 0.1}>
-                <div className="flex gap-6 items-start">
-                  <div className="w-14 h-14 rounded-full flex items-center justify-center font-oswald font-bold text-sm shrink-0 z-10"
-                    style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)', boxShadow: '0 0 20px rgba(203,17,171,0.35)' }}>
+              <FadeIn key={step.num} delay={i * 0.1}>
+                <div className="flex gap-5 items-start bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-300">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center font-oswald font-bold text-white shrink-0"
+                    style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})` }}>
                     {step.num}
                   </div>
-                  <div className="flex-1 pb-2 pt-3">
-                    <h3 className="font-oswald text-xl font-semibold mb-1 tracking-wide">{step.title}</h3>
-                    <p className="text-sm text-white/45 leading-relaxed">{step.desc}</p>
+                  <div className="flex-1 pt-1">
+                    <h3 className="font-semibold text-gray-900 mb-1">{step.title}</h3>
+                    <p className="text-sm text-gray-500">{step.desc}</p>
                   </div>
                   {i === steps.length - 1 && (
-                    <div className="shrink-0 self-center hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl border border-[#CE93D8]/25 bg-[#CE93D8]/8 text-sm font-medium" style={{ color: '#CE93D8' }}>
+                    <div className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold shrink-0"
+                      style={{ background: '#DCFCE7', color: '#16A34A' }}>
                       <Icon name="TrendingUp" size={14} />
                       Прибыль
                     </div>
                   )}
                 </div>
-              </FadeInCard>
+              </FadeIn>
             ))}
           </div>
         </div>
       </section>
 
       {/* ===== STATS ===== */}
-      <section className="py-24 relative z-10">
+      <section className="py-20" style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})` }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="rounded-3xl border border-white/8 overflow-hidden relative"
-            style={{ background: 'linear-gradient(135deg, rgba(203,17,171,0.08), rgba(13,8,24,0.95) 50%, rgba(139,0,139,0.04))' }}>
-            <div className="absolute top-0 left-0 w-80 h-80 rounded-full blur-3xl opacity-20 pointer-events-none"
-              style={{ background: 'radial-gradient(circle, #CB11AB, transparent)' }} />
-            <div className="absolute bottom-0 right-0 w-60 h-60 rounded-full blur-3xl opacity-10 pointer-events-none"
-              style={{ background: 'radial-gradient(circle, #E040FB, transparent)' }} />
-            <div className="relative grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-white/8">
-              {stats.map((stat) => (
-                <div key={stat.label} className="p-8 md:p-12 text-center">
-                  <div className="font-oswald text-4xl md:text-5xl font-bold mb-2" style={{ color: '#CB11AB' }}>
-                    <AnimatedCounter target={stat.value} suffix={stat.suffix} />
-                  </div>
-                  <div className="text-xs text-white/35 uppercase tracking-widest font-medium">{stat.label}</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-0 divide-x divide-y md:divide-y-0 divide-white/20">
+            {stats.map((stat) => (
+              <div key={stat.label} className="py-10 px-8 text-center">
+                <div className="font-oswald text-5xl font-bold text-white mb-2">
+                  <AnimatedCounter target={stat.value} suffix={stat.suffix} />
                 </div>
-              ))}
-            </div>
+                <div className="text-sm text-white/60 uppercase tracking-widest">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ===== ABOUT / FEDERAL ===== */}
-      <section id="about" className="py-28 relative z-10">
+      <section id="about" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-            <FadeInCard>
-              <div>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#CB11AB]/30 bg-[#CB11AB]/10 mb-6">
-                  <Icon name="Globe" size={14} className="text-[#CB11AB]" />
-                  <span className="text-sm text-[#CB11AB] font-medium uppercase tracking-widest">Федеральная сеть</span>
-                </div>
-                <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-wide">
-                  ПОЛКА+ —<br />
-                  <span style={{ background: 'linear-gradient(135deg, #CB11AB, #FFB347)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                    БУДУЩАЯ ФЕДЕРАЛЬНАЯ
-                  </span><br />
-                  СЕТЬ
-                </h2>
-                <p className="text-white/55 text-lg leading-relaxed mb-5">
-                  Мы строим не просто склад — мы создаём инфраструктуру нового поколения для российских продавцов на маркетплейсах.
-                </p>
-                <p className="text-white/35 leading-relaxed mb-8">
-                  Каждый клиент получает технологического партнёра с полной цифровой интеграцией — от первых 100 до 100 000 отправок в месяц.
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  {[['Москва', true], ['Санкт-Петербург', false], ['Казань', false], ['Новосибирск', false], ['Екатеринбург', false]].map(([city, active]) => (
-                    <div key={city as string} className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-white/5 text-sm">
-                      <div className={`w-2 h-2 rounded-full ${active ? 'bg-[#CB11AB]' : 'bg-white/15'}`} />
-                      <span className={active ? 'text-white/80' : 'text-white/30'}>{city as string}</span>
-                      {!active && <span className="text-[9px] text-white/20 uppercase tracking-wider">скоро</span>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </FadeInCard>
-
-            <FadeInCard delay={0.2}>
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { icon: 'TrendingUp', label: 'Рост 300%', sub: 'средний рост выручки клиентов за год' },
-                  { icon: 'Network', label: '5 городов', sub: 'планируем к 2027 году' },
-                  { icon: 'Clock', label: '24/7', sub: 'поддержка и операции' },
-                  { icon: 'Award', label: 'ТОП-10', sub: 'КГТ-фулфилмент в России' },
-                ].map((item) => (
-                  <div key={item.label} className="p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:border-[#CB11AB]/25 transition-all duration-300">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
-                      style={{ background: 'rgba(203,17,171,0.1)', border: '1px solid rgba(203,17,171,0.15)' }}>
-                      <Icon name={item.icon} size={18} className="text-[#CB11AB]" />
-                    </div>
-                    <div className="font-oswald text-xl font-bold mb-1">{item.label}</div>
-                    <div className="text-xs text-white/35 leading-relaxed">{item.sub}</div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <FadeIn>
+              <SectionLabel tag="О компании" />
+              <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+                Полка+ — будущая<br />
+                <span style={{ color: WB }}>федеральная сеть</span>
+              </h2>
+              <p className="text-gray-500 text-lg leading-relaxed mb-5">
+                Мы строим не просто склад — мы создаём инфраструктуру нового поколения для российских продавцов на маркетплейсах.
+              </p>
+              <p className="text-gray-400 leading-relaxed mb-8">
+                Каждый клиент получает технологического партнёра с полной цифровой интеграцией — от первых 100 до 100 000 отправок в месяц.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {[['Москва', true], ['Санкт-Петербург', false], ['Казань', false], ['Новосибирск', false], ['Екатеринбург', false]].map(([city, active]) => (
+                  <div key={city as string} className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium"
+                    style={active ? { background: WB_LIGHT, borderColor: WB_MID, color: WB } : { background: '#F9FAFB', borderColor: '#F3F4F6', color: '#9CA3AF' }}>
+                    <div className="w-1.5 h-1.5 rounded-full" style={{ background: active ? WB : '#D1D5DB' }} />
+                    {city as string}
+                    {!active && <span className="text-[10px] text-gray-300 uppercase tracking-wider">скоро</span>}
                   </div>
                 ))}
               </div>
-            </FadeInCard>
+            </FadeIn>
+
+            <FadeIn delay={0.15}>
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { icon: 'TrendingUp', label: 'Рост 300%', sub: 'средний рост выручки клиентов за год' },
+                  { icon: 'Network', label: '5 городов', sub: 'планируем открыть к 2027 году' },
+                  { icon: 'Clock', label: '24/7', sub: 'операции и поддержка клиентов' },
+                  { icon: 'Award', label: 'ТОП-10', sub: 'КГТ-фулфилмент по России' },
+                ].map((item, i) => (
+                  <FadeIn key={item.label} delay={i * 0.08}>
+                    <div className="p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-all duration-300 hover:border-gray-200">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style={{ background: WB_LIGHT }}>
+                        <Icon name={item.icon} size={18} style={{ color: WB }} />
+                      </div>
+                      <div className="font-oswald text-2xl font-bold text-gray-900 mb-1">{item.label}</div>
+                      <div className="text-xs text-gray-400 leading-relaxed">{item.sub}</div>
+                    </div>
+                  </FadeIn>
+                ))}
+              </div>
+            </FadeIn>
           </div>
         </div>
       </section>
 
       {/* ===== BLOG ===== */}
-      <section className="py-28 relative z-10">
+      <section className="py-24" style={{ background: '#FAFAFA' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            tag="Блог и новости"
-            title={<>Экспертиза <span style={{ color: '#CB11AB' }}>в деталях</span></>}
-            subtitle="Актуальные материалы о фулфилменте, маркетплейсах и росте бизнеса"
-          />
+          <SectionLabel tag="Блог и новости" />
+          <FadeIn>
+            <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-3 text-gray-900">
+              Экспертиза <span style={{ color: WB }}>в деталях</span>
+            </h2>
+            <p className="text-gray-400 text-lg mb-12 max-w-xl">Актуальные материалы о фулфилменте и маркетплейсах</p>
+          </FadeIn>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {blogPosts.map((post, i) => (
-              <FadeInCard key={post.title} delay={i * 0.1}>
-                <div className="p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:border-[#CB11AB]/25 hover:bg-white/[0.05] transition-all duration-300 cursor-pointer group h-full flex flex-col">
+              <FadeIn key={post.title} delay={i * 0.1}>
+                <div className="bg-white rounded-2xl p-7 border border-gray-100 hover:shadow-lg hover:border-gray-200 transition-all duration-300 cursor-pointer group flex flex-col h-full">
                   <div className="flex items-center gap-3 mb-4">
-                    <span className="px-3 py-1 rounded-lg text-xs font-medium"
-                      style={{ background: 'rgba(203,17,171,0.12)', color: '#CB11AB', border: '1px solid rgba(203,17,171,0.2)' }}>
+                    <span className="px-3 py-1.5 rounded-lg text-xs font-semibold"
+                      style={{ background: WB_LIGHT, color: WB }}>
                       {post.tag}
                     </span>
-                    <span className="text-xs text-white/25">{post.date}</span>
+                    <span className="text-xs text-gray-400">{post.date}</span>
                   </div>
-                  <h3 className="font-oswald text-base font-semibold mb-3 leading-snug tracking-wide group-hover:text-[#CB11AB] transition-colors duration-200">
+                  <h3 className="font-semibold text-gray-900 mb-3 leading-snug group-hover:text-[#CB11AB] transition-colors duration-200">
                     {post.title}
                   </h3>
-                  <p className="text-sm text-white/35 leading-relaxed flex-1">{post.desc}</p>
-                  <div className="flex items-center gap-1.5 mt-5 text-xs text-[#CB11AB]/50 group-hover:text-[#CB11AB] transition-colors duration-200 font-medium">
+                  <p className="text-sm text-gray-500 leading-relaxed flex-1">{post.desc}</p>
+                  <div className="flex items-center gap-1.5 mt-5 text-xs font-semibold transition-colors duration-200 group-hover:gap-2.5"
+                    style={{ color: WB }}>
                     Читать далее <Icon name="ArrowRight" size={12} />
                   </div>
                 </div>
-              </FadeInCard>
+              </FadeIn>
             ))}
           </div>
         </div>
       </section>
 
       {/* ===== BIG CTA ===== */}
-      <section className="py-24 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <FadeInCard>
-            <div className="relative rounded-3xl border border-[#CB11AB]/20 overflow-hidden text-center py-20 px-6"
-              style={{ background: 'linear-gradient(135deg, rgba(203,17,171,0.1), rgba(255,61,0,0.05), rgba(15,15,26,0.85))' }}>
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full blur-3xl opacity-20 pointer-events-none"
-                style={{ background: 'radial-gradient(circle, #CB11AB, transparent)' }} />
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <FadeIn>
+            <div className="rounded-3xl p-14 relative overflow-hidden"
+              style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})` }}>
+              <div className="absolute inset-0 opacity-10"
+                style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.4) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(255,255,255,0.2) 0%, transparent 50%)' }} />
               <div className="relative">
-                <h2 className="font-oswald text-4xl sm:text-5xl md:text-6xl font-bold mb-4 tracking-wide">
-                  ГОТОВЫ МАСШТАБИРОВАТЬ<br />
-                  <span style={{ background: 'linear-gradient(135deg, #CB11AB, #FFB347)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                    ВАШ БИЗНЕС?
-                  </span>
+                <h2 className="font-oswald text-4xl sm:text-5xl font-bold text-white mb-4">
+                  ГОТОВЫ МАСШТАБИРОВАТЬ<br />ВАШ БИЗНЕС?
                 </h2>
-                <p className="text-xl text-white/45 mb-10 max-w-md mx-auto">
-                  Оставьте заявку — менеджер свяжется в течение 15 минут
-                </p>
+                <p className="text-white/70 text-lg mb-8">Оставьте заявку — менеджер свяжется в течение 15 минут</p>
                 <button onClick={() => scrollTo('contacts')}
-                  className="px-12 py-5 rounded-2xl text-lg font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95"
-                  style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)', boxShadow: '0 0 60px rgba(203,17,171,0.5)' }}>
+                  className="px-10 py-4 rounded-xl font-bold text-base bg-white transition-all hover:scale-105 active:scale-95 shadow-xl"
+                  style={{ color: WB }}>
                   Оставить заявку
                 </button>
               </div>
             </div>
-          </FadeInCard>
+          </FadeIn>
         </div>
       </section>
 
       {/* ===== CONTACTS ===== */}
-      <section id="contacts" className="py-28 relative z-10">
+      <section id="contacts" className="py-24" style={{ background: '#FAFAFA' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            tag="Контакты"
-            title={<>Свяжитесь <span style={{ color: '#CB11AB' }}>с нами</span></>}
-            subtitle="Работаем 24/7. Ответим быстро."
-          />
+          <SectionLabel tag="Контакты" />
+          <FadeIn>
+            <h2 className="font-oswald text-4xl md:text-5xl font-bold mb-3 text-gray-900">
+              Свяжитесь <span style={{ color: WB }}>с нами</span>
+            </h2>
+            <p className="text-gray-400 text-lg mb-12">Работаем 24/7. Ответим быстро.</p>
+          </FadeIn>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <FadeInCard>
-              <div className="p-8 rounded-2xl border border-white/8 bg-white/[0.03]">
-                <h3 className="font-oswald text-2xl font-semibold mb-6 tracking-wide">Оставить заявку</h3>
+            {/* Form */}
+            <FadeIn>
+              <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
+                <h3 className="font-oswald text-2xl font-bold mb-6 text-gray-900">Оставить заявку</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="text-xs text-white/35 uppercase tracking-widest mb-2 block">Ваше имя</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Ваше имя</label>
                     <input type="text" placeholder="Иван Иванов"
-                      className="w-full px-4 py-3.5 rounded-xl border border-white/10 bg-white/5 text-white placeholder-white/20 text-sm focus:outline-none focus:border-[#CB11AB]/50 transition-colors duration-200" />
+                      className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder-gray-300 text-sm focus:outline-none transition-colors duration-200"
+                      style={{ '--tw-ring-color': WB } as React.CSSProperties}
+                      onFocus={e => e.target.style.borderColor = WB}
+                      onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
                   </div>
                   <div>
-                    <label className="text-xs text-white/35 uppercase tracking-widest mb-2 block">Телефон</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Телефон</label>
                     <input type="tel" placeholder="+7 (900) 000-00-00"
-                      className="w-full px-4 py-3.5 rounded-xl border border-white/10 bg-white/5 text-white placeholder-white/20 text-sm focus:outline-none focus:border-[#CB11AB]/50 transition-colors duration-200" />
+                      className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder-gray-300 text-sm focus:outline-none transition-colors duration-200"
+                      onFocus={e => e.target.style.borderColor = WB}
+                      onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
                   </div>
                   <div>
-                    <label className="text-xs text-white/35 uppercase tracking-widest mb-2 block">Тип товара</label>
-                    <select className="w-full px-4 py-3.5 rounded-xl border border-white/10 bg-[#0F0F1A] text-white/65 text-sm focus:outline-none focus:border-[#CB11AB]/50 transition-colors duration-200">
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Тип товара</label>
+                    <select className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-700 text-sm focus:outline-none transition-colors duration-200"
+                      onFocus={e => e.target.style.borderColor = WB}
+                      onBlur={e => e.target.style.borderColor = '#e5e7eb'}>
                       <option>Мебель и КГТ</option>
                       <option>Двери</option>
                       <option>Кабельная продукция</option>
@@ -605,113 +636,98 @@ export default function Index() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs text-white/35 uppercase tracking-widest mb-2 block">Комментарий</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Комментарий</label>
                     <textarea rows={3} placeholder="Расскажите о вашем товаре и объёмах..."
-                      className="w-full px-4 py-3.5 rounded-xl border border-white/10 bg-white/5 text-white placeholder-white/20 text-sm focus:outline-none focus:border-[#CB11AB]/50 transition-colors duration-200 resize-none" />
+                      className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder-gray-300 text-sm focus:outline-none transition-colors duration-200 resize-none"
+                      onFocus={e => e.target.style.borderColor = WB}
+                      onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
                   </div>
-                  <button className="w-full py-4 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-95 mt-2"
-                    style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)', boxShadow: '0 0 30px rgba(203,17,171,0.3)' }}>
+                  <button className="w-full py-4 rounded-xl font-bold text-white transition-all hover:scale-[1.01] active:scale-95 shadow-lg"
+                    style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})`, boxShadow: `0 8px 25px rgba(203,17,171,0.3)` }}>
                     Отправить заявку
                   </button>
-                  <p className="text-xs text-white/20 text-center">Нажимая, вы соглашаетесь с политикой конфиденциальности</p>
+                  <p className="text-xs text-gray-400 text-center">Нажимая, вы соглашаетесь с политикой конфиденциальности</p>
                 </div>
               </div>
-            </FadeInCard>
+            </FadeIn>
 
-            <FadeInCard delay={0.15}>
-              <div className="space-y-4">
+            {/* Contact info */}
+            <FadeIn delay={0.12}>
+              <div className="space-y-3">
                 {[
                   { icon: 'Phone', label: 'Телефон', value: '+7 (900) 123-45-67', sub: 'Пн–Вс, 09:00–21:00', href: 'tel:+79001234567' },
                   { icon: 'Send', label: 'Telegram', value: '@polkaplus', sub: 'Ответим в течение 15 минут', href: 'https://t.me/polkaplus' },
                   { icon: 'Mail', label: 'Email', value: 'info@polkaplus.ru', sub: 'Для документов и КП', href: 'mailto:info@polkaplus.ru' },
-                  { icon: 'MapPin', label: 'Адрес', value: 'г. Москва, Складской проезд, 1', sub: 'Координаты на карте', href: '#' },
+                  { icon: 'MapPin', label: 'Адрес', value: 'г. Москва, Складской проезд, 1', sub: 'Схема проезда', href: '#' },
                 ].map((contact) => (
                   <a key={contact.label} href={contact.href}
-                    className="flex items-center gap-5 p-5 rounded-2xl border border-white/8 bg-white/[0.03] hover:border-[#CB11AB]/25 hover:bg-white/[0.05] transition-all duration-300 group">
+                    className="flex items-center gap-4 p-5 rounded-2xl border border-gray-100 bg-white hover:shadow-md hover:border-gray-200 transition-all duration-300 group">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
-                      style={{ background: 'rgba(203,17,171,0.1)', border: '1px solid rgba(203,17,171,0.2)' }}>
-                      <Icon name={contact.icon} size={20} className="text-[#CB11AB]" />
+                      style={{ background: WB_LIGHT }}>
+                      <Icon name={contact.icon} size={20} style={{ color: WB }} />
                     </div>
                     <div>
-                      <div className="text-xs text-white/30 uppercase tracking-widest mb-0.5">{contact.label}</div>
-                      <div className="font-medium text-white/85 group-hover:text-white transition-colors">{contact.value}</div>
-                      <div className="text-xs text-white/30">{contact.sub}</div>
+                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">{contact.label}</div>
+                      <div className="font-semibold text-gray-900">{contact.value}</div>
+                      <div className="text-xs text-gray-400">{contact.sub}</div>
                     </div>
                   </a>
                 ))}
 
-                <div className="p-0 rounded-2xl border border-white/8 overflow-hidden h-44 relative cursor-pointer hover:border-[#CB11AB]/25 transition-all duration-300 group">
-                  <div className="absolute inset-0 flex items-center justify-center"
-                    style={{ background: 'linear-gradient(135deg, rgba(12,12,24,0.9), rgba(18,18,32,0.9))' }}>
-                    <div className="grid grid-cols-12 gap-0.5 opacity-15 absolute inset-2">
-                      {Array.from({ length: 144 }).map((_, i) => (
-                        <div key={i} className="rounded-sm h-3" style={{ background: i % 7 === 0 ? '#CB11AB' : 'rgba(255,255,255,0.08)' }} />
+                {/* Map placeholder */}
+                <div className="rounded-2xl border border-gray-100 overflow-hidden h-44 relative cursor-pointer hover:shadow-md transition-all group bg-gray-50">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="grid grid-cols-14 gap-px opacity-10 absolute inset-0">
+                      {Array.from({ length: 112 }).map((_, i) => (
+                        <div key={i} className="h-full rounded-sm" style={{ background: i % 9 === 0 ? WB : '#E5E7EB' }} />
                       ))}
                     </div>
-                    <div className="relative text-center">
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2"
-                        style={{ background: 'rgba(203,17,171,0.2)', border: '1px solid rgba(203,17,171,0.4)' }}>
-                        <Icon name="MapPin" size={18} className="text-[#CB11AB]" />
+                    <div className="relative text-center z-10">
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2 shadow-lg bg-white"
+                        style={{ border: `2px solid ${WB_MID}` }}>
+                        <Icon name="MapPin" size={20} style={{ color: WB }} />
                       </div>
-                      <p className="text-sm text-white/45 group-hover:text-white/60 transition-colors">Открыть на карте</p>
+                      <p className="text-sm font-medium text-gray-500 group-hover:text-gray-700 transition-colors">Открыть на карте</p>
                     </div>
                   </div>
                 </div>
               </div>
-            </FadeInCard>
+            </FadeIn>
           </div>
         </div>
       </section>
 
       {/* ===== FOOTER ===== */}
-      <footer className="border-t border-white/5 py-10 relative z-10">
+      <footer className="border-t border-gray-100 py-10 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #CB11AB, #8B008B)' }}>
-              <Icon name="Package" size={14} className="text-white" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})` }}>
+              <Icon name="Package" size={15} className="text-white" />
             </div>
-            <span className="font-oswald text-lg font-semibold tracking-wide">
-              ПОЛКА<span style={{ color: '#CB11AB' }}>+</span>
-            </span>
+            <div>
+              <span className="font-oswald text-lg font-bold text-gray-900">ПОЛКА</span>
+              <span className="font-oswald text-lg font-bold" style={{ color: WB }}>+</span>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-6 justify-center">
+          <div className="flex flex-wrap gap-7 justify-center">
             {[['Услуги', 'services'], ['Преимущества', 'advantages'], ['О компании', 'about'], ['Контакты', 'contacts']].map(([label, id]) => (
-              <button key={id} onClick={() => scrollTo(id)} className="text-sm text-white/30 hover:text-white/65 transition-colors">
+              <button key={id} onClick={() => scrollTo(id)} className="text-sm text-gray-400 hover:text-gray-700 transition-colors font-medium">
                 {label}
               </button>
             ))}
           </div>
-          <p className="text-xs text-white/18">© 2026 Полка+. Все права защищены.</p>
+          <p className="text-xs text-gray-300">© 2026 Полка+. Все права защищены.</p>
         </div>
       </footer>
     </div>
   );
 }
 
-function SectionHeader({ tag, title, subtitle }: { tag: string; title: React.ReactNode; subtitle: string }) {
-  const { ref, inView } = useInView();
+function SectionLabel({ tag }: { tag: string }) {
   return (
-    <div ref={ref} className="mb-14 transition-all duration-700"
-      style={{ opacity: inView ? 1 : 0, transform: inView ? 'translateY(0)' : 'translateY(24px)' }}>
-      <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#CB11AB]/25 bg-[#CB11AB]/8 mb-4">
-        <span className="text-xs text-[#CB11AB] font-medium uppercase tracking-[0.15em]">{tag}</span>
-      </div>
-      <h2 className="font-oswald text-3xl sm:text-4xl md:text-5xl font-bold mb-3 leading-tight tracking-wide">{title}</h2>
-      <p className="text-white/40 text-base md:text-lg max-w-xl leading-relaxed">{subtitle}</p>
-    </div>
-  );
-}
-
-function FadeInCard({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  const { ref, inView } = useInView();
-  return (
-    <div ref={ref} className="transition-all duration-700 h-full"
-      style={{
-        opacity: inView ? 1 : 0,
-        transform: inView ? 'translateY(0)' : 'translateY(28px)',
-        transitionDelay: inView ? `${delay}s` : '0s'
-      }}>
-      {children}
+    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-[0.15em] mb-4"
+      style={{ background: WB_LIGHT, color: WB }}>
+      {tag}
     </div>
   );
 }
