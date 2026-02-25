@@ -128,14 +128,9 @@ export default function Index() {
         ${scrolled ? 'py-2 shadow-md' : 'py-3'}
         bg-white border-b border-gray-200`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => scrollTo('hero')}>
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})` }}>
-              <Icon name="Package" size={18} className="text-white" />
-            </div>
-            <span className="font-oswald text-xl font-bold tracking-wide text-gray-900">
-              ПОЛКА<span style={{ color: WB }}>+</span>
-            </span>
+          <div className="cursor-pointer" onClick={() => scrollTo('hero')}>
+            <img src="https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/5f2ba43f-9fb6-48a8-9b35-29ca379aebfb.jpg"
+              alt="Полка+" className="h-10 w-auto object-contain" />
           </div>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -712,13 +707,8 @@ export default function Index() {
       {/* ════════════════ FOOTER ════════════════ */}
       <footer className="border-t border-gray-200 py-10 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-              style={{ background: `linear-gradient(135deg, ${WB}, ${WB_DARK})` }}>
-              <Icon name="Package" size={15} className="text-white" />
-            </div>
-            <span className="font-oswald text-lg font-bold text-gray-900">ПОЛКА<span style={{ color: WB }}>+</span></span>
-          </div>
+          <img src="https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/5f2ba43f-9fb6-48a8-9b35-29ca379aebfb.jpg"
+            alt="Полка+" className="h-9 w-auto object-contain" />
           <div className="flex flex-wrap gap-6 justify-center">
             {navLinks.map(([label, id]) => (
               <button key={id} onClick={() => scrollTo(id)} className="text-sm text-gray-400 hover:text-gray-700 font-medium transition-colors">
