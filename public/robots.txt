@@ -17,4 +17,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://polka-plus.ru/sitemap.xml
+Sitemap: https://xn----7sbacbxlj4bggbck0d.xn--p1ai/sitemap.xml
