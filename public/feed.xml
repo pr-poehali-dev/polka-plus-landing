@@ -14,7 +14,7 @@
       <offer id="1" type="vendor.model">
         <url>https://xn----7sbacbxlj4bggbck0d.xn--p1ai/</url>
         <name>Упаковка товаров для маркетплейсов</name>
-        <description>Профессиональная упаковка товаров по стандартам Wildberries, Ozon и Яндекс.Маркет. Полиэтиленовый пакет, короб, стрейч. Маркировка этикетками. От 18 ₽ за единицу.</description>
+        <description>Профессиональная упаковка товаров по стандартам Wildberries, Ozon и Яндекс.Маркет. Полиэтиленовый пакет, короб, стрейч. Маркировка этикетками. От 18 руб. за единицу.</description>
         <price>18</price>
         <currencyId>RUR</currencyId>
         <categoryId>1</categoryId>
@@ -23,7 +23,7 @@
       <offer id="2" type="vendor.model">
         <url>https://xn----7sbacbxlj4bggbck0d.xn--p1ai/</url>
         <name>Хранение товаров на складе</name>
-        <description>Адресное хранение товаров на складах в Самаре и Смоленске. Первые 3 дня бесплатно. Паллетоместо — 45 ₽/сутки, короб — 15 ₽/сутки. Видеонаблюдение и учёт в системе.</description>
+        <description>Адресное хранение товаров на складах в Самаре и Смоленске. Первые 3 дня бесплатно. Паллетоместо — 45 руб./сутки, короб — 15 руб./сутки. Видеонаблюдение и учёт в системе.</description>
         <price>15</price>
         <currencyId>RUR</currencyId>
         <categoryId>1</categoryId>
@@ -32,7 +32,7 @@
       <offer id="3" type="vendor.model">
         <url>https://xn----7sbacbxlj4bggbck0d.xn--p1ai/</url>
         <name>Маркировка и подготовка поставок</name>
-        <description>Маркировка товаров этикетками по требованиям маркетплейсов. Подготовка поставок на FBO и FBS. Честный знак, штрих-коды, RFID. От 18 ₽ за единицу.</description>
+        <description>Маркировка товаров этикетками по требованиям маркетплейсов. Подготовка поставок на FBO и FBS. Честный знак, штрих-коды, RFID. От 18 руб. за единицу.</description>
         <price>18</price>
         <currencyId>RUR</currencyId>
         <categoryId>1</categoryId>
@@ -50,7 +50,7 @@
       <offer id="5" type="vendor.model">
         <url>https://xn----7sbacbxlj4bggbck0d.xn--p1ai/</url>
         <name>Приёмка и обработка поставок</name>
-        <description>Разгрузка транспортного средства, пересчёт, проверка качества, фотофиксация, постановка на учёт в системе. Приёмка за 24 часа. От 25 ₽ за короб.</description>
+        <description>Разгрузка транспортного средства, пересчёт, проверка качества, фотофиксация, постановка на учёт в системе. Приёмка за 24 часа. От 25 руб. за короб.</description>
         <price>25</price>
         <currencyId>RUR</currencyId>
         <categoryId>1</categoryId>
