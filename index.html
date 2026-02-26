@@ -130,6 +130,145 @@
     }
     </script>
 
+    <!-- Schema.org: Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Полка+ Фулфилмент",
+      "alternateName": "Полка Плюс",
+      "url": "https://xn----7sbacbxlj4bggbck0d.xn--p1ai",
+      "logo": "https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/5f2ba43f-9fb6-48a8-9b35-29ca379aebfb.jpg",
+      "image": "https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/5f2ba43f-9fb6-48a8-9b35-29ca379aebfb.jpg",
+      "description": "Фулфилмент-оператор полного цикла для продавцов на Wildberries, Ozon и Яндекс.Маркет. Склады в Самаре и Смоленске.",
+      "telephone": "+79171010163",
+      "email": "info@polkaplus.ru",
+      "foundingDate": "2020",
+      "areaServed": ["Самара", "Смоленск", "Россия"],
+      "address": [
+        {
+          "@type": "PostalAddress",
+          "streetAddress": "ул. Братьев Корастелевых 3к2",
+          "addressLocality": "Самара",
+          "addressRegion": "Самарская область",
+          "addressCountry": "RU"
+        },
+        {
+          "@type": "PostalAddress",
+          "streetAddress": "Краснинское шоссе 19а",
+          "addressLocality": "Смоленск",
+          "addressRegion": "Смоленская область",
+          "addressCountry": "RU"
+        }
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+79171010163",
+        "contactType": "customer service",
+        "availableLanguage": "Russian",
+        "contactOption": "TollFree"
+      },
+      "sameAs": [
+        "https://t.me/Polka_plus"
+      ]
+    }
+    </script>
+
+    <!-- Schema.org: Services -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Услуги фулфилмента Полка+",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "Service",
+            "name": "Приёмка и обработка поставок",
+            "description": "Разгрузка, пересчёт, проверка качества, фотофиксация и постановка на учёт в системе. Приёмка за 24 часа.",
+            "provider": {"@type": "Organization", "name": "Полка+ Фулфилмент"},
+            "areaServed": "Россия",
+            "offers": {
+              "@type": "Offer",
+              "price": "25",
+              "priceCurrency": "RUB",
+              "priceSpecification": {"@type": "UnitPriceSpecification", "price": "25", "priceCurrency": "RUB", "unitText": "короб"}
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "Service",
+            "name": "Хранение товаров на складе",
+            "description": "Адресное хранение на складах в Самаре и Смоленске. Первые 3 дня бесплатно. Видеонаблюдение и учёт в системе.",
+            "provider": {"@type": "Organization", "name": "Полка+ Фулфилмент"},
+            "areaServed": "Россия",
+            "offers": {
+              "@type": "Offer",
+              "price": "15",
+              "priceCurrency": "RUB",
+              "priceSpecification": {"@type": "UnitPriceSpecification", "price": "15", "priceCurrency": "RUB", "unitText": "сутки"}
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "item": {
+            "@type": "Service",
+            "name": "Упаковка товаров для маркетплейсов",
+            "description": "Упаковка по стандартам Wildberries, Ozon и Яндекс.Маркет. Полиэтиленовый пакет, короб, стрейч.",
+            "provider": {"@type": "Organization", "name": "Полка+ Фулфилмент"},
+            "areaServed": "Россия",
+            "offers": {
+              "@type": "Offer",
+              "price": "18",
+              "priceCurrency": "RUB",
+              "priceSpecification": {"@type": "UnitPriceSpecification", "price": "18", "priceCurrency": "RUB", "unitText": "единица"}
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "item": {
+            "@type": "Service",
+            "name": "Маркировка и подготовка поставок",
+            "description": "Маркировка по требованиям маркетплейсов. Подготовка поставок FBO и FBS. Честный знак, штрих-коды.",
+            "provider": {"@type": "Organization", "name": "Полка+ Фулфилмент"},
+            "areaServed": "Россия",
+            "offers": {
+              "@type": "Offer",
+              "price": "18",
+              "priceCurrency": "RUB",
+              "priceSpecification": {"@type": "UnitPriceSpecification", "price": "18", "priceCurrency": "RUB", "unitText": "единица"}
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "item": {
+            "@type": "Service",
+            "name": "Работа с крупногабаритным товаром (КГТ)",
+            "description": "Приёмка, хранение и отгрузка крупногабаритных товаров. Специализированное оборудование, погрузчики, паллетирование.",
+            "provider": {"@type": "Organization", "name": "Полка+ Фулфилмент"},
+            "areaServed": "Россия",
+            "offers": {
+              "@type": "Offer",
+              "price": "1",
+              "priceCurrency": "RUB"
+            }
+          }
+        }
+      ]
+    }
+    </script>
+
     <!-- Schema.org: WebSite -->
     <script type="application/ld+json">
     {
