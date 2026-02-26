@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<yml_catalog date="2026-02-26">
+  <shop>
+    <name>Полка+ Фулфилмент</name>
+    <company>Полка+</company>
+    <url>https://xn----7sbacbxlj4bggbck0d.xn--p1ai</url>
+    <currencies>
+      <currency id="RUR" rate="1"/>
+    </currencies>
+    <categories>
+      <category id="1">Фулфилмент</category>
+    </categories>
+    <offers>
+      <offer id="1" type="vendor.model">
+        <url>https://xn----7sbacbxlj4bggbck0d.xn--p1ai/</url>
+        <name>Упаковка товаров для маркетплейсов</name>
+        <description>Профессиональная упаковка товаров по стандартам Wildberries, Ozon и Яндекс.Маркет. Полиэтиленовый пакет, короб, стрейч. Маркировка этикетками. От 18 ₽ за единицу.</description>
+        <price>18</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>1</categoryId>
+        <vendor>Полка+</vendor>
+      </offer>
+      <offer id="2" type="vendor.model">
+        <url>https://xn----7sbacbxlj4bggbck0d.xn--p1ai/</url>
+        <name>Хранение товаров на складе</name>
+        <description>Адресное хранение товаров на складах в Самаре и Смоленске. Первые 3 дня бесплатно. Паллетоместо — 45 ₽/сутки, короб — 15 ₽/сутки. Видеонаблюдение и учёт в системе.</description>
+        <price>15</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>1</categoryId>
+        <vendor>Полка+</vendor>
+      </offer>
+      <offer id="3" type="vendor.model">
+        <url>https://xn----7sbacbxlj4bggbck0d.xn--p1ai/</url>
+        <name>Маркировка и подготовка поставок</name>
+        <description>Маркировка товаров этикетками по требованиям маркетплейсов. Подготовка поставок на FBO и FBS. Честный знак, штрих-коды, RFID. От 18 ₽ за единицу.</description>
+        <price>18</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>1</categoryId>
+        <vendor>Полка+</vendor>
+      </offer>
+      <offer id="4" type="vendor.model">
+        <url>https://xn----7sbacbxlj4bggbck0d.xn--p1ai/</url>
+        <name>Работа с крупногабаритным товаром (КГТ)</name>
+        <description>Приёмка, хранение и отгрузка крупногабаритных товаров. Специализированное оборудование, погрузчики, паллетирование. Индивидуальный расчёт стоимости.</description>
+        <price>1</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>1</categoryId>
+        <vendor>Полка+</vendor>
+      </offer>
+      <offer id="5" type="vendor.model">
+        <url>https://xn----7sbacbxlj4bggbck0d.xn--p1ai/</url>
+        <name>Приёмка и обработка поставок</name>
+        <description>Разгрузка транспортного средства, пересчёт, проверка качества, фотофиксация, постановка на учёт в системе. Приёмка за 24 часа. От 25 ₽ за короб.</description>
+        <price>25</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>1</categoryId>
+        <vendor>Полка+</vendor>
+      </offer>
+    </offers>
+  </shop>
+</yml_catalog>
