@@ -7,20 +7,22 @@ import urllib.error
 def send_telegram(text: str):
     token = os.environ.get('TELEGRAM_BOT_TOKEN', '')
     chat_id = os.environ.get('TELEGRAM_CHAT_ID', '')
-    if not token or not chat_id:
+    extra_chat_id = '1003864657040'
+    if not token:
         return
-    payload = json.dumps({'chat_id': chat_id, 'text': text, 'parse_mode': 'HTML'}).encode()
-    req = urllib.request.Request(
-        f'https://api.telegram.org/bot{token}/sendMessage',
-        data=payload,
-        headers={'Content-Type': 'application/json'},
-        method='POST',
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            resp.read()
-    except Exception:
-        pass
+    for cid in filter(None, [chat_id, extra_chat_id]):
+        payload = json.dumps({'chat_id': cid, 'text': text, 'parse_mode': 'HTML'}).encode()
+        req = urllib.request.Request(
+            f'https://api.telegram.org/bot{token}/sendMessage',
+            data=payload,
+            headers={'Content-Type': 'application/json'},
+            method='POST',
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                resp.read()
+        except Exception:
+            pass
 
 
 def handler(event: dict, context) -> dict:
