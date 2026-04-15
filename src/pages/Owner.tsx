@@ -146,7 +146,7 @@ function PaymentCalendar({ records, onAdd, onEdit, onRemove }: {
                 </div>
                 <div className="space-y-0.5">
                   {payments.slice(0, 2).map(p => (
-                    <div key={p.id} className={`text-[10px] leading-tight px-1 py-0.5 rounded truncate font-medium ${p.is_paid ? "bg-green-100 text-green-700" : p.type === "income" ? "bg-blue-100 text-blue-700" : "bg-orange-100 text-orange-700"}`}>
+                    <div key={p.id} className={`text-[10px] leading-tight px-1 py-0.5 rounded truncate font-medium ${p.is_paid ? "bg-green-100 text-green-700" : p.type === "income" ? "bg-blue-100 text-blue-700" : p.type === "salary" ? "bg-purple-100 text-purple-700" : "bg-orange-100 text-orange-700"}`}>
                       {p.contractor}
                     </div>
                   ))}
@@ -174,7 +174,7 @@ function PaymentCalendar({ records, onAdd, onEdit, onRemove }: {
               {selectedPayments.map(p => (
                 <div key={p.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
                   <div className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${p.is_paid ? "bg-green-500" : p.type === "income" ? "bg-blue-500" : "bg-orange-500"}`} />
+                    <div className={`w-2 h-2 rounded-full ${p.is_paid ? "bg-green-500" : p.type === "income" ? "bg-blue-500" : p.type === "salary" ? "bg-purple-500" : "bg-orange-500"}`} />
                     <div>
                       <div className="text-sm font-medium text-slate-700">{p.contractor}</div>
                       {p.description && <div className="text-xs text-slate-400">{p.description}</div>}
@@ -183,8 +183,8 @@ function PaymentCalendar({ records, onAdd, onEdit, onRemove }: {
                   <div className="flex items-center gap-3">
                     <div className="text-right">
                       <div className="text-sm font-semibold text-slate-800">{formatMoney(p.amount)}</div>
-                      <div className={`text-xs ${p.is_paid ? "text-green-600" : p.type === "income" ? "text-blue-600" : "text-orange-600"}`}>
-                        {p.is_paid ? "Оплачено" : p.type === "income" ? "Приход" : "Расход"}
+                      <div className={`text-xs ${p.is_paid ? "text-green-600" : p.type === "income" ? "text-blue-600" : p.type === "salary" ? "text-purple-600" : "text-orange-600"}`}>
+                        {p.is_paid ? "Оплачено" : p.type === "income" ? "Приход" : p.type === "salary" ? "Зарплата" : "Расход"}
                       </div>
                     </div>
                     <div className="flex gap-1">
@@ -383,6 +383,7 @@ export default function Owner() {
                     <select className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" value={f("type")} onChange={e => sf("type", e.target.value)}>
                       <option value="expense">Расход</option>
                       <option value="income">Приход</option>
+                      <option value="salary">Зарплата</option>
                     </select>
                   </div>
                   <div>
