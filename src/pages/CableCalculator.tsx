@@ -495,6 +495,9 @@ export default function CableConverterApp() {
           <div className="flex items-center gap-3">
             {saving && <span className="text-xs text-slate-400">Сохранение...</span>}
             {!saving && saveOk && <span className="text-xs text-emerald-500">Техкарты сохранены ✓</span>}
+            <a href="/owner" className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-90" style={{ backgroundColor: '#E8450A' }}>
+              <Database className="h-4 w-4" /> Финансы
+            </a>
           </div>
         </div>
 
@@ -682,8 +685,6 @@ export default function CableConverterApp() {
           </Card>
         </div>
 
-        {/* Финансовый блок */}
-        <FinanceBlock />
       </div>
     </div>
   );
