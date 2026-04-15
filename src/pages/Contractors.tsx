@@ -107,11 +107,12 @@ export default function Contractors() {
     (c.ogrn || "").includes(search)
   );
 
-  return (
-    <div className="min-h-screen flex bg-slate-50">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-slate-200 flex flex-col">
-        <div className="p-5 border-b border-slate-100">
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const SidebarContent = () => (
+    <>
+      <div className="p-5 border-b border-slate-100">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/f74a2a3e-f940-47c8-9193-d9634773e26c.png" alt="ТКЗ" className="h-12 w-12 object-contain" />
             <div>
@@ -119,29 +120,54 @@ export default function Contractors() {
               <div className="text-xs text-slate-400">Справочник</div>
             </div>
           </div>
+          <button className="md:hidden p-1" onClick={() => setMobileOpen(false)}><Icon name="X" size={20} className="text-slate-500" /></button>
         </div>
-        <nav className="flex-1 p-3 space-y-1">
-          <a href="/owner" className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
-            <Icon name="BarChart3" size={16} /> Финансы
-          </a>
-          <div className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-white" style={{ backgroundColor: "#E8450A" }}>
-            <Icon name="Users" size={16} /> Контрагенты
-          </div>
-        </nav>
-        <div className="p-4 border-t border-slate-100">
-          <a href="/tkz" className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-90" style={{ backgroundColor: "#E8450A" }}>
-            <Icon name="ArrowLeft" size={15} /> К калькулятору
-          </a>
+      </div>
+      <nav className="flex-1 p-3 space-y-1">
+        <a href="/owner" className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+          <Icon name="BarChart3" size={16} /> Финансы
+        </a>
+        <div className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-white" style={{ backgroundColor: "#E8450A" }}>
+          <Icon name="Users" size={16} /> Контрагенты
         </div>
+      </nav>
+      <div className="p-4 border-t border-slate-100">
+        <a href="/tkz" className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-90" style={{ backgroundColor: "#E8450A" }}>
+          <Icon name="ArrowLeft" size={15} /> К калькулятору
+        </a>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="min-h-screen flex bg-slate-50">
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 flex-col">
+        <SidebarContent />
       </aside>
 
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-40 flex md:hidden">
+          <div className="w-72 bg-white flex flex-col shadow-xl h-full overflow-y-auto">
+            <SidebarContent />
+          </div>
+          <div className="flex-1 bg-black/40" onClick={() => setMobileOpen(false)} />
+        </div>
+      )}
+
       {/* Main */}
-      <main className="flex-1 p-8 overflow-auto">
+      <main className="flex-1 p-4 md:p-8 overflow-auto min-w-0">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-800">Справочник контрагентов</h1>
-              <p className="text-sm text-slate-400 mt-1">{list.length} контрагент{list.length === 1 ? "" : list.length < 5 ? "а" : "ов"}</p>
+            <div className="flex items-center gap-3">
+              <button className="md:hidden p-2 rounded-lg bg-white border border-slate-200" onClick={() => setMobileOpen(true)}>
+                <Icon name="Menu" size={18} className="text-slate-600" />
+              </button>
+              <div>
+                <h1 className="text-lg md:text-2xl font-bold text-slate-800">Справочник контрагентов</h1>
+                <p className="text-sm text-slate-400 mt-1">{list.length} контрагент{list.length === 1 ? "" : list.length < 5 ? "а" : "ов"}</p>
+              </div>
             </div>
             <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-90" style={{ backgroundColor: "#E8450A" }}>
               <Icon name="Plus" size={16} /> Добавить

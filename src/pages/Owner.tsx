@@ -259,8 +259,8 @@ export default function Owner() {
   const total = records.reduce((s, r) => s + Number(r.amount || 0), 0);
 
   const navItems: { key: Section; label: string; icon: string }[] = [
-    { key: "receivables", label: "Дебиторка", icon: "TrendingUp" },
-    { key: "payables", label: "Кредиторка", icon: "TrendingDown" },
+    { key: "receivables", label: "Кому мы должны товар", icon: "TrendingUp" },
+    { key: "payables", label: "Кому мы должны деньги", icon: "TrendingDown" },
     { key: "calendar", label: "Календарь платежей", icon: "CalendarDays" },
     { key: "regular", label: "Регулярные платежи", icon: "RefreshCw" },
   ];
@@ -268,11 +268,12 @@ export default function Owner() {
   const f = (k: string) => (form[k] ?? "") as string;
   const sf = (k: string, v: unknown) => setForm(p => ({ ...p, [k]: v }));
 
-  return (
-    <div className="min-h-screen flex bg-slate-50">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-slate-200 flex flex-col">
-        <div className="p-5 border-b border-slate-100">
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const SidebarContent = () => (
+    <>
+      <div className="p-5 border-b border-slate-100">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/f74a2a3e-f940-47c8-9193-d9634773e26c.png" alt="ТКЗ" className="h-12 w-12 object-contain" />
             <div>
@@ -280,40 +281,65 @@ export default function Owner() {
               <div className="text-xs text-slate-400">Кабинет собственника</div>
             </div>
           </div>
+          <button className="md:hidden p-1" onClick={() => setMobileOpen(false)}><Icon name="X" size={20} className="text-slate-500" /></button>
         </div>
-        <nav className="flex-1 p-3">
-          {navItems.map((item) => (
-            <button
-              key={item.key}
-              onClick={() => setSection(item.key)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium mb-1 transition-colors ${section === item.key ? "text-white" : "text-slate-600 hover:bg-slate-50"}`}
-              style={section === item.key ? { backgroundColor: "#E8450A" } : {}}
-            >
-              <Icon name={item.icon} size={16} />
-              {item.label}
-            </button>
-          ))}
-        </nav>
-        <div className="p-4 border-t border-slate-100 space-y-2">
-          <a href="/contractors" className="flex items-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
-            <Icon name="Users" size={15} /> Контрагенты
-          </a>
-          <a href="/tkz" className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-90" style={{ backgroundColor: "#E8450A" }}>
-            <Icon name="ArrowLeft" size={15} /> К калькулятору
-          </a>
-        </div>
+      </div>
+      <nav className="flex-1 p-3">
+        {navItems.map((item) => (
+          <button
+            key={item.key}
+            onClick={() => { setSection(item.key); setMobileOpen(false); }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium mb-1 transition-colors ${section === item.key ? "text-white" : "text-slate-600 hover:bg-slate-50"}`}
+            style={section === item.key ? { backgroundColor: "#E8450A" } : {}}
+          >
+            <Icon name={item.icon} size={16} />
+            {item.label}
+          </button>
+        ))}
+      </nav>
+      <div className="p-4 border-t border-slate-100 space-y-2">
+        <a href="/contractors" className="flex items-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
+          <Icon name="Users" size={15} /> Контрагенты
+        </a>
+        <a href="/tkz" className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-90" style={{ backgroundColor: "#E8450A" }}>
+          <Icon name="ArrowLeft" size={15} /> К калькулятору
+        </a>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="min-h-screen flex bg-slate-50">
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 flex-col">
+        <SidebarContent />
       </aside>
 
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-40 flex md:hidden">
+          <div className="w-72 bg-white flex flex-col shadow-xl h-full overflow-y-auto">
+            <SidebarContent />
+          </div>
+          <div className="flex-1 bg-black/40" onClick={() => setMobileOpen(false)} />
+        </div>
+      )}
+
       {/* Main */}
-      <main className="flex-1 p-8 overflow-auto">
+      <main className="flex-1 p-4 md:p-8 overflow-auto min-w-0">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-800">{navItems.find((n) => n.key === section)?.label}</h1>
-              {section !== "calendar" && records.length > 0 && (
-                <p className="text-sm text-slate-400 mt-1">Итого: <span className="font-semibold text-slate-600">{formatMoney(total)}</span></p>
-              )}
+            <div className="flex items-center gap-3">
+              <button className="md:hidden p-2 rounded-lg bg-white border border-slate-200" onClick={() => setMobileOpen(true)}>
+                <Icon name="Menu" size={18} className="text-slate-600" />
+              </button>
+              <div>
+                <h1 className="text-lg md:text-2xl font-bold text-slate-800">{navItems.find((n) => n.key === section)?.label}</h1>
+                {section !== "calendar" && records.length > 0 && (
+                  <p className="text-sm text-slate-400 mt-1">Итого: <span className="font-semibold text-slate-600">{formatMoney(total)}</span></p>
+                )}
+              </div>
             </div>
             {section !== "calendar" && (
               <button onClick={() => openAdd()} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-90" style={{ backgroundColor: "#E8450A" }}>
