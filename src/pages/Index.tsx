@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   SiteHeader,
   HeroSection,
@@ -71,9 +72,16 @@ const navLinks = [
 ] as const;
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
+const SECRET_PASSWORD = 'ткз2024';
+
 export default function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 40);
@@ -84,6 +92,23 @@ export default function Index() {
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setMenuOpen(false);
+  };
+
+  const openModal = () => {
+    setPassword('');
+    setError(false);
+    setShowModal(true);
+    setTimeout(() => inputRef.current?.focus(), 100);
+  };
+
+  const handleSubmit = () => {
+    if (password === SECRET_PASSWORD) {
+      setShowModal(false);
+      navigate('/production');
+    } else {
+      setError(true);
+      setPassword('');
+    }
   };
 
   return (
@@ -103,6 +128,51 @@ export default function Index() {
       <ContactsSection />
       <SiteFooter scrollTo={scrollTo} navLinks={navLinks} />
       <TelegramPopup />
+
+      {/* Secret button — invisible area in bottom-left corner */}
+      <button
+        onClick={openModal}
+        className="fixed bottom-0 left-0 w-10 h-10 z-50 opacity-0"
+        aria-hidden="true"
+        tabIndex={-1}
+      />
+
+      {/* Password modal */}
+      {showModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}
+        >
+          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm mx-4 space-y-4">
+            <div className="text-lg font-bold text-gray-900">Введите пароль</div>
+            <input
+              ref={inputRef}
+              type="password"
+              value={password}
+              onChange={(e) => { setPassword(e.target.value); setError(false); }}
+              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+              className={`w-full border rounded-xl px-4 py-3 text-sm outline-none transition-colors ${error ? 'border-red-400 bg-red-50' : 'border-gray-300 focus:border-gray-500'}`}
+              placeholder="Пароль"
+            />
+            {error && <div className="text-red-500 text-xs">Неверный пароль</div>}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowModal(false)}
+                className="flex-1 py-2 rounded-xl border border-gray-300 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                Отмена
+              </button>
+              <button
+                onClick={handleSubmit}
+                className="flex-1 py-2 rounded-xl text-sm text-white font-semibold transition-colors"
+                style={{ background: 'linear-gradient(135deg, #1A1228, #2D1640)' }}
+              >
+                Войти
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Floating TG button */}
       <a href="https://t.me/Polka_plus" target="_blank" rel="noopener noreferrer"
