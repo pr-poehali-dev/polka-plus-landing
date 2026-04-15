@@ -287,8 +287,10 @@ export default function CableConverterApp() {
           <div className="flex items-center gap-4">
             <img src="https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/f74a2a3e-f940-47c8-9193-d9634773e26c.png" alt="ТКЗ" className="h-14 w-14 object-contain" />
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Конвертер кабеля</h1>
-              <p className="mt-1 text-sm text-slate-600"></p>
+              <h1 className="text-3xl font-bold tracking-tight" style={{ color: '#1a1a1a' }}>
+                Конвертер <span style={{ color: '#E8450A' }}>кабеля</span>
+              </h1>
+              <p className="mt-1 text-sm text-slate-500">Тульский Кабельный Завод — производственный расчёт</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -300,7 +302,11 @@ export default function CableConverterApp() {
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Левая колонка — расчёт */}
           <Card className="rounded-2xl shadow-sm lg:col-span-1">
-            <CardHeader><CardTitle className="flex items-center gap-2 text-xl"><Calculator className="h-5 w-5" /> Расчет перевода</CardTitle></CardHeader>
+            <CardHeader style={{ borderBottom: '2px solid #E8450A' }}>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Calculator className="h-5 w-5" style={{ color: '#E8450A' }} /> Расчет перевода
+              </CardTitle>
+            </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label>Выбери наш кабель</Label>
@@ -309,13 +315,13 @@ export default function CableConverterApp() {
               <div className="rounded-2xl border bg-white p-4 space-y-3">
                 <div className="rounded-xl bg-slate-50 p-3 text-xs text-slate-600">Расчет идет по счету: {sum.length} строк с чужими кабелями.</div>
                 <div className="flex items-center gap-2 text-sm text-slate-500"><ArrowRightLeft className="h-4 w-4" /> Результат конвертации</div>
-                <div>
-                  <div className="text-3xl font-bold">{whole}</div>
-                  <div className="text-sm text-slate-600">целых единиц можно получить {selM?.name}</div>
-                  <div className="mt-1 text-xs text-slate-500">Точный расчет: {rnd(lim?.possible ?? fallback?.possible ?? 0, 4)}</div>
-                  <div className="mt-1 text-xs text-slate-500">Источник данных: строки из окна «Счет»</div>
+                {/* Главный результат */}
+                <div className="rounded-xl p-4 text-white" style={{ background: 'linear-gradient(135deg, #E8450A, #c73a08)' }}>
+                  <div className="text-5xl font-black tracking-tight">{whole}</div>
+                  <div className="mt-1 text-sm font-medium opacity-90">целых единиц {selM?.name}</div>
+                  <div className="mt-2 text-xs opacity-70">Точный расчет: {rnd(lim?.possible ?? fallback?.possible ?? 0, 4)}</div>
                 </div>
-                {lim && <div className="text-sm">Ограничивающий материал (без учета желтой и салатовой краски): <Badge variant="secondary">{lim.material || "нет"}</Badge></div>}
+                {lim && <div className="text-sm text-slate-600">Ограничивающий материал: <Badge variant="secondary">{lim.material || "нет"}</Badge></div>}
                 {more.length > 0 && <div className="rounded-xl bg-amber-50 p-3"><div className="mb-1 text-xs text-slate-600">Чтобы получить еще +1 ед. {selM?.name}, нужно докупить:</div>{more.map(x => <div key={x!.material} className="flex justify-between gap-3 text-xs"><span>{x!.material}</span><span>{x!.add} {x!.unit}</span></div>)}</div>}
                 {paintMinus.length > 0 && <div className="mt-2 rounded-xl bg-rose-50 p-3"><div className="mb-1 text-xs text-slate-600">Недостача по желтой и салатовой краске:</div>{paintMinus.map(x => <div key={x!.material} className="flex justify-between gap-3 text-xs"><span>{x!.material}</span><span>-{x!.deficit} {x!.unit}</span></div>)}</div>}
                 {left.length > 0 && <div className="mt-2 rounded-xl bg-sky-50 p-3"><div className="mb-1 text-xs text-slate-600">Остатки из счета:</div>{left.map(x => <div key={x.material} className="flex justify-between gap-3 text-xs"><span>{x.material}</span><span>{x.leftover}</span></div>)}</div>}
@@ -325,7 +331,11 @@ export default function CableConverterApp() {
 
           {/* Правая колонка — вкладки */}
           <Card className="rounded-2xl shadow-sm lg:col-span-2">
-            <CardHeader><CardTitle className="flex items-center gap-2 text-xl"><Database className="h-5 w-5" /> Кабели, техкарты и материалы</CardTitle></CardHeader>
+            <CardHeader style={{ borderBottom: '2px solid #E8450A' }}>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Database className="h-5 w-5" style={{ color: '#E8450A' }} /> Кабели, техкарты и материалы
+              </CardTitle>
+            </CardHeader>
             <CardContent>
               <Tabs defaultValue="recipes" className="w-full">
                 <TabsList className="grid w-full grid-cols-5">
@@ -376,7 +386,7 @@ export default function CableConverterApp() {
                     <CardHeader>
                       <CardTitle className="flex items-center justify-between">
                         <span>Строки счета с чужими кабелями</span>
-                        <Button type="button" onClick={addLine} className="gap-2"><Plus className="h-4 w-4" /> Добавить строку</Button>
+                        <Button type="button" onClick={addLine} className="gap-2 text-white" style={{ background: '#E8450A' }}><Plus className="h-4 w-4" /> Добавить строку</Button>
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
@@ -398,7 +408,17 @@ export default function CableConverterApp() {
                   <div className="overflow-x-auto rounded-2xl border">
                     <Table>
                       <TableHeader><TableRow><TableHead>Материал</TableHead><TableHead className="text-right">Доступно из счета</TableHead><TableHead className="text-right">Нужно на 1 ед. {selM?.name}</TableHead><TableHead className="text-right">Хватит на</TableHead></TableRow></TableHeader>
-                      <TableBody>{rows.map(x => <TableRow key={x.material}><TableCell className="font-medium">{x.material}</TableCell><TableCell className="text-right">{x.available}</TableCell><TableCell className="text-right">{x.need}</TableCell><TableCell className="text-right">{x.possible === null ? "—" : x.possible}</TableCell></TableRow>)}</TableBody>
+                      <TableBody>{rows.map(x => {
+                        const lacking = x.possible !== null && x.need > 0 && x.possible < whole + 1 && !IGNORE.has(x.material);
+                        const surplus = x.possible !== null && x.need > 0 && x.possible >= whole + 2;
+                        const rowStyle = lacking ? { background: '#fff5f5' } : surplus ? { background: '#f0fdf4' } : {};
+                        return <TableRow key={x.material} style={rowStyle}>
+                          <TableCell className="font-medium">{x.material}</TableCell>
+                          <TableCell className="text-right">{x.available}</TableCell>
+                          <TableCell className="text-right">{x.need}</TableCell>
+                          <TableCell className="text-right font-semibold" style={{ color: lacking ? '#dc2626' : surplus ? '#16a34a' : undefined }}>{x.possible === null ? "—" : x.possible}</TableCell>
+                        </TableRow>;
+                      })}</TableBody>
                     </Table>
                   </div>
                 </TabsContent>
@@ -413,7 +433,7 @@ export default function CableConverterApp() {
                         <div className="space-y-3">
                           <Input placeholder="Например, Мой кабель 3" value={newMy} onChange={e => setNewMy(e.target.value)} onKeyDown={e => e.key === "Enter" && addMyCable()} />
                           <div className="space-y-1"><Label>Создать на основе техкарты</Label><SelectBox value={newMyBase} onChange={setNewMyBase} items={[{ value: EMPTY, label: "Пустая техкарта" }, ...my.map(x => ({ id: x.id, name: x.name }))]} placeholder="Выбери готовую техкарту" /></div>
-                          <Button type="button" onClick={addMyCable} className="gap-2"><Plus className="h-4 w-4" /> Добавить</Button>
+                          <Button type="button" onClick={addMyCable} className="gap-2 text-white" style={{ background: '#E8450A' }}><Plus className="h-4 w-4" /> Добавить</Button>
                           <div className="text-sm text-slate-600">Сейчас наших кабелей: {my.length}</div>
                         </div>
                         <div className="space-y-3 border-t pt-4">
@@ -429,7 +449,7 @@ export default function CableConverterApp() {
                           <Input placeholder="Например, Чужой кабель 72" value={newF} onChange={e => setNewF(e.target.value)} onKeyDown={e => e.key === "Enter" && addForeignCable()} />
                           <SelectBox value={newFG} onChange={setNewFG} items={GROUPS.map(value => ({ value }))} placeholder="Выбери группу" />
                           <div className="space-y-1"><Label>Создать на основе техкарты</Label><SelectBox value={newFBase} onChange={setNewFBase} items={[{ value: EMPTY, label: "Пустая техкарта" }, ...byGroup(foreign, newFG).map(x => ({ id: x.id, name: x.name }))]} placeholder="Выбери готовую техкарту" /></div>
-                          <Button type="button" onClick={addForeignCable} className="gap-2"><Plus className="h-4 w-4" /> Добавить</Button>
+                          <Button type="button" onClick={addForeignCable} className="gap-2 text-white" style={{ background: '#E8450A' }}><Plus className="h-4 w-4" /> Добавить</Button>
                           <div className="text-sm text-slate-600">Сейчас чужих кабелей: {foreign.length}</div>
                           <div className="text-xs text-slate-500">После добавления кабель сразу попадет в список выбора в «Техкартах».</div>
                         </div>
@@ -449,7 +469,7 @@ export default function CableConverterApp() {
                 <TabsContent value="materials" className="mt-4 space-y-4">
                   <div className="flex gap-2">
                     <Input placeholder="Новый материал" value={newMat} onChange={e => setNewMat(e.target.value)} onKeyDown={e => e.key === "Enter" && addMaterial()} />
-                    <Button type="button" onClick={addMaterial} className="gap-2"><Plus className="h-4 w-4" /> Добавить</Button>
+                    <Button type="button" onClick={addMaterial} className="gap-2 text-white" style={{ background: '#E8450A' }}><Plus className="h-4 w-4" /> Добавить</Button>
                   </div>
                   <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
                     {materials.map(m => <div key={m} className="flex items-center justify-between rounded-2xl border bg-white p-3 gap-3">
