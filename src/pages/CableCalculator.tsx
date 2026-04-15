@@ -232,9 +232,12 @@ export default function CableConverterApp() {
     <div className="min-h-screen bg-slate-50 p-4 md:p-8">
       <div className="mx-auto max-w-7xl space-y-6">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Конвертер кабеля</h1>
-            <p className="mt-1 text-sm text-slate-600">Выбираешь свой кабель, а приложение переводит в него материалы из строк, заполненных в окне «Счет».</p>
+          <div className="flex items-center gap-4">
+            <img src="https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/f74a2a3e-f940-47c8-9193-d9634773e26c.png" alt="ТКЗ" className="h-14 w-14 object-contain" />
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Конвертер кабеля</h1>
+              <p className="mt-1 text-sm text-slate-600">Выбираешь свой кабель, а приложение переводит в него материалы из строк, заполненных в окне «Счет».</p>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             {saving && <span className="text-xs text-slate-400">Сохранение...</span>}
