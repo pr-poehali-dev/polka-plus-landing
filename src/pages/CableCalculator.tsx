@@ -504,6 +504,9 @@ export default function CableConverterApp() {
             <a href="/summary" className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border border-slate-300 text-slate-600 hover:bg-slate-100 transition-colors bg-white">
               <Database className="h-4 w-4" /> Краткая сводка
             </a>
+            <a href="/safety" className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border border-slate-300 text-slate-600 hover:bg-slate-100 transition-colors bg-white">
+              <Database className="h-4 w-4" /> Охрана труда
+            </a>
           </div>
         </div>
 

@@ -352,6 +352,9 @@ export default function Owner() {
         <a href="/summary" className="flex items-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
           <Icon name="FileBarChart" size={15} /> Краткая сводка
         </a>
+        <a href="/safety" className="flex items-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
+          <Icon name="ShieldCheck" size={15} /> Охрана труда
+        </a>
         <a href="/tkz" className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-90" style={{ backgroundColor: "#E8450A" }}>
           <Icon name="ArrowLeft" size={15} /> К калькулятору
         </a>
