@@ -114,13 +114,11 @@ export default function Owner() {
     <div className="min-h-screen flex bg-slate-50">
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-slate-200 flex flex-col">
-        <div className="p-6 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#E8450A" }}>
-              <Icon name="BarChart3" size={16} className="text-white" />
-            </div>
+        <div className="p-5 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <img src="https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/f74a2a3e-f940-47c8-9193-d9634773e26c.png" alt="ТКЗ" className="h-12 w-12 object-contain" />
             <div>
-              <div className="font-bold text-slate-800 text-sm">Финансы ТКЗ</div>
+              <div className="font-bold text-slate-800 leading-tight">Финансы <span style={{ color: "#E8450A" }}>ТКЗ</span></div>
               <div className="text-xs text-slate-400">Кабинет собственника</div>
             </div>
           </div>
@@ -143,9 +141,9 @@ export default function Owner() {
           ))}
         </nav>
         <div className="p-4 border-t border-slate-100">
-          <a href="/tkz" className="flex items-center gap-2 text-sm text-slate-400 hover:text-slate-600 transition-colors">
-            <Icon name="ArrowLeft" size={14} />
-            Назад к калькулятору
+          <a href="/tkz" className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-90" style={{ backgroundColor: "#E8450A" }}>
+            <Icon name="ArrowLeft" size={15} />
+            К калькулятору
           </a>
         </div>
       </aside>
