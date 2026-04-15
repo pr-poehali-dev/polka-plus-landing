@@ -1,0 +1,36 @@
+{
+  "tests": [
+    {
+      "name": "GET receivables",
+      "method": "GET",
+      "path": "/?section=receivables",
+      "expectedStatus": 200,
+      "expectedBody": [],
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "GET payables",
+      "method": "GET",
+      "path": "/?section=payables",
+      "expectedStatus": 200,
+      "expectedBody": [],
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "GET calendar",
+      "method": "GET",
+      "path": "/?section=calendar",
+      "expectedStatus": 200,
+      "expectedBody": [],
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "GET regular",
+      "method": "GET",
+      "path": "/?section=regular",
+      "expectedStatus": 200,
+      "expectedBody": [],
+      "bodyMatcher": "partial"
+    }
+  ]
+}
