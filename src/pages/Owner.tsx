@@ -90,7 +90,6 @@ function PaymentCalendar({ records, onAdd, onEdit, onRemove }: {
       const day = origDate.getDate();
       const dow = origDate.getDay(); // для weekly
       const origMonth = origDate.getMonth();
-      const origYear = origDate.getFullYear();
 
       if (r.recurrence === "monthly") {
         const maxDay = new Date(year, month + 1, 0).getDate();
@@ -130,8 +129,6 @@ function PaymentCalendar({ records, onAdd, onEdit, onRemove }: {
       byDate[orig].push(r);
     }
 
-    // suppress unused warning
-    void origYear;
   });
 
   const prevMonth = () => { if (month === 0) { setMonth(11); setYear(y => y - 1); } else setMonth(m => m - 1); setSelected(null); };
