@@ -10,6 +10,7 @@ import CableCalculator from "./pages/CableCalculator";
 import NotFound from "./pages/NotFound";
 import Owner from "./pages/Owner";
 import Contractors from "./pages/Contractors";
+import Summary from "./pages/Summary";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/tkz" element={<CableCalculator />} />
           <Route path="/owner" element={<Owner />} />
           <Route path="/contractors" element={<Contractors />} />
+          <Route path="/summary" element={<Summary />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
