@@ -1,4 +1,4 @@
-import React,{useEffect,useMemo,useState}from"react";
+import React,{useCallback,useEffect,useMemo,useRef,useState}from"react";
 import{Card,CardContent,CardHeader,CardTitle}from"@/components/ui/card";
 import{Button}from"@/components/ui/button";
 import{Input}from"@/components/ui/input";
@@ -9,7 +9,8 @@ import{Badge}from"@/components/ui/badge";
 import{Select,SelectContent,SelectItem,SelectTrigger,SelectValue}from"@/components/ui/select";
 import Icon from"@/components/ui/icon";
 
-const KEY="cableAppData",ALL="ALL",EMPTY="EMPTY",PAINTS=["Краска желтая","Краска салатовая"];
+const API_URL="https://functions.poehali.dev/184ab8d3-3443-46d0-b473-5501b563a2e1";
+const ALL="ALL",EMPTY="EMPTY",PAINTS=["Краска желтая","Краска салатовая"];
 const UNITS={"Вес меди":"кг","Пластикат ПВХ ИО 20-13":"кг","Краска синяя":"кг","Краска желтая":"кг","Краска салатовая":"кг","Пластикат ПВХ О-40":"кг","Этикетка":"шт","Тальк":"кг","Пленка":"кг","Разбавитель":"граммы","Чернила":"граммы","Лента":"пог. м","Стрейч":"рулон"};
 const MATERIALS=["Вес меди","Пластикат ПВХ ИО 20-13","Краска синяя","Краска желтая","Краска салатовая","Пластикат ПВХ О-40","Этикетка","Тальк","Пленка","Разбавитель","Чернила","Лента","Стрейч"];
 const GROUPS=["КАРАТ","ГЕРМЕС","КАБЕЛЬ-ПРОМ","MARC KAB","VOLT","АльфаКабель","Альянс","АРКАД","АРНА"];
@@ -34,10 +35,31 @@ const NumberField=({value,onChange,step="0.0001"})=><Input type="number" step={s
 const RecipeTable=({materials,cable,onChange})=><div className="overflow-x-auto rounded-2xl border"><Table><TableHeader><TableRow><TableHead>Материал</TableHead><TableHead>Ед. изм.</TableHead><TableHead className="text-right">Расход</TableHead></TableRow></TableHeader><TableBody>{materials.map(m=><TableRow key={m}><TableCell className="font-medium">{m}</TableCell><TableCell className="text-slate-500">{UNITS[m]||"—"}</TableCell><TableCell><NumberField value={cable.recipe[m]??0} onChange={v=>onChange(m,v)}/></TableCell></TableRow>)}</TableBody></Table></div>;
 
 export default function CableCalculator(){
-  const [materials,setMaterials]=useState(defaults.materials),[my,setMy]=useState(defaults.my),[foreign,setForeign]=useState(defaults.foreign),[myId,setMyId]=useState("my-1"),[fId,setFId]=useState("foreign-1"),[gRec,setGRec]=useState(ALL),[gInv,setGInv]=useState(ALL),[newMat,setNewMat]=useState(""),[newMy,setNewMy]=useState(""),[newF,setNewF]=useState(""),[newFG,setNewFG]=useState(GROUPS[0]),[newMyBase,setNewMyBase]=useState(EMPTY),[newFBase,setNewFBase]=useState(EMPTY),[lines,setLines]=useState(defaults.lines),[ready,setReady]=useState(false);
+  const [materials,setMaterials]=useState(defaults.materials),[my,setMy]=useState(defaults.my),[foreign,setForeign]=useState(defaults.foreign),[myId,setMyId]=useState("my-1"),[fId,setFId]=useState("foreign-1"),[gRec,setGRec]=useState(ALL),[gInv,setGInv]=useState(ALL),[newMat,setNewMat]=useState(""),[newMy,setNewMy]=useState(""),[newF,setNewF]=useState(""),[newFG,setNewFG]=useState(GROUPS[0]),[newMyBase,setNewMyBase]=useState(EMPTY),[newFBase,setNewFBase]=useState(EMPTY),[lines,setLines]=useState(defaults.lines),[ready,setReady]=useState(false),[saving,setSaving]=useState(false);
+  const saveTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
 
-  useEffect(()=>{try{const raw=localStorage.getItem(KEY);if(raw){const p=JSON.parse(raw);setMaterials(p.materials||defaults.materials);setMy(p.my||defaults.my);setForeign(normalizeForeign(p.foreign||defaults.foreign));setLines(p.lines||defaults.lines)}}catch(e){console.error(e)}finally{setReady(true)}},[]);
-  useEffect(()=>{if(ready)localStorage.setItem(KEY,JSON.stringify({materials,my,foreign,lines}))},[ready,materials,my,foreign,lines]);
+  useEffect(()=>{
+    fetch(API_URL).then(r=>r.json()).then(({data})=>{
+      if(data&&Object.keys(data).length>0){
+        if(data.materials)setMaterials(data.materials);
+        if(data.my)setMy(data.my);
+        if(data.foreign)setForeign(normalizeForeign(data.foreign));
+        if(data.lines)setLines(data.lines);
+      }
+    }).catch(console.error).finally(()=>setReady(true));
+  },[]);
+
+  const pushToServer=useCallback((payload:{materials:string[],my:unknown[],foreign:unknown[],lines:unknown[]})=>{
+    setSaving(true);
+    fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({data:payload})})
+      .catch(console.error).finally(()=>setSaving(false));
+  },[]);
+
+  useEffect(()=>{
+    if(!ready)return;
+    if(saveTimer.current)clearTimeout(saveTimer.current);
+    saveTimer.current=setTimeout(()=>pushToServer({materials,my,foreign,lines}),1500);
+  },[ready,materials,my,foreign,lines,pushToServer]);
 
   const fRec=useMemo(()=>byGroup(foreign,gRec),[foreign,gRec]),fInv=useMemo(()=>byGroup(foreign,gInv),[foreign,gInv]);
   const selM=pick(my,myId),selF=pick(foreign,fId);
@@ -60,7 +82,7 @@ export default function CableCalculator(){
   const addMyCable=()=>{const name=newMy.trim();if(!name)return;const id=`my-${Date.now()}`,base=my.find(c=>c.id===newMyBase);setMy(p=>[...p,{id,name,recipe:base?{...base.recipe}:emptyRecipe(materials)}]);setMyId(id);setNewMy("");setNewMyBase(EMPTY)};
   const addForeignCable=()=>{const name=newF.trim();if(!name)return;if(foreign.some(c=>c.group===newFG&&c.name.trim().toLowerCase()===name.toLowerCase()))return alert("Такой кабель уже есть в этой группе ❗");const id=`foreign-${Date.now()}`,base=foreign.find(c=>c.id===newFBase);setForeign(p=>[...p,{id,name,group:newFG,recipe:base?{...base.recipe}:emptyRecipe(materials)}]);setFId(id);setGRec(newFG);setNewF("");setNewFBase(EMPTY)};
   const addLine=()=>setLines(p=>[...p,{id:`line-${Date.now()}-${p.length}`,cableId:fInv[0]?.id||foreign[0]?.id||"",qty:"0"}]);
-  const save=()=>{localStorage.setItem(KEY,JSON.stringify({materials,my,foreign,lines}));alert("Сохранено ✅")};
+  const save=()=>{pushToServer({materials,my,foreign,lines});alert("Сохранено ✅")};
   const reset=()=>{setMaterials(defaults.materials);setMy(defaults.my);setForeign(defaults.foreign);setMyId("my-1");setFId("foreign-1");setGRec(ALL);setGInv(ALL);setNewMat("");setNewMy("");setNewF("");setNewFG(GROUPS[0]);setNewMyBase(EMPTY);setNewFBase(EMPTY);setLines(defaults.lines)};
 
   if(!ready)return <div className="p-6 text-sm text-slate-600">Загрузка...</div>;
@@ -71,7 +93,11 @@ export default function CableCalculator(){
         <h1 className="text-3xl font-bold tracking-tight">Конвертер кабеля</h1>
         <p className="mt-1 text-sm text-slate-600">Выбираешь свой кабель, а приложение переводит в него материалы из строк, заполненных в окне «Счет».</p>
       </div>
-      <Button variant="outline" onClick={reset}>Сбросить к примеру</Button>
+      <div className="flex items-center gap-3">
+        {saving&&<span className="text-xs text-slate-400">Сохранение...</span>}
+        {!saving&&ready&&<span className="text-xs text-emerald-500">Сохранено ✓</span>}
+        <Button variant="outline" onClick={reset}>Сбросить к примеру</Button>
+      </div>
     </div>
 
     <div className="grid gap-6 lg:grid-cols-3">

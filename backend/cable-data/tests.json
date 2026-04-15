@@ -1,0 +1,21 @@
+{
+  "tests": [
+    {
+      "name": "GET данные калькулятора",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {"data": {}},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "POST сохранение данных",
+      "method": "POST",
+      "path": "/",
+      "body": {"data": {"materials": ["Вес меди"], "my": [], "foreign": [], "lines": []}},
+      "expectedStatus": 200,
+      "expectedBody": {"ok": true},
+      "bodyMatcher": "partial"
+    }
+  ]
+}
