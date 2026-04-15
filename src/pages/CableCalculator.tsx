@@ -77,7 +77,58 @@ const RecipeTable = ({ materials, cable, onChange }: { materials: string[]; cabl
     </Table>
   </div>;
 
+const SECRET_PASSWORD = 'ткз2024';
+const SESSION_KEY = 'tkz_auth';
+
+function PasswordGate({ onAuth }: { onAuth: () => void }) {
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => { inputRef.current?.focus(); }, []);
+
+  const submit = () => {
+    if (password === SECRET_PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      onAuth();
+    } else {
+      setError(true);
+      setPassword('');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="bg-white rounded-2xl shadow-xl p-10 w-full max-w-sm mx-4 space-y-5">
+        <div className="flex flex-col items-center gap-3">
+          <img src="https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/f74a2a3e-f940-47c8-9193-d9634773e26c.png" alt="ТКЗ" className="h-16 w-16 object-contain" />
+          <div className="text-xl font-bold text-gray-900">Конвертер кабеля</div>
+          <div className="text-sm text-slate-500">Введите пароль для доступа</div>
+        </div>
+        <input
+          ref={inputRef}
+          type="password"
+          value={password}
+          onChange={e => { setPassword(e.target.value); setError(false); }}
+          onKeyDown={e => e.key === 'Enter' && submit()}
+          className={`w-full border rounded-xl px-4 py-3 text-sm outline-none transition-colors ${error ? 'border-red-400 bg-red-50' : 'border-gray-300 focus:border-gray-500'}`}
+          placeholder="Пароль"
+        />
+        {error && <div className="text-red-500 text-xs text-center">Неверный пароль</div>}
+        <button
+          onClick={submit}
+          className="w-full py-3 rounded-xl text-white font-semibold text-sm transition-colors"
+          style={{ background: 'linear-gradient(135deg, #1A1228, #2D1640)' }}
+        >
+          Войти
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function CableConverterApp() {
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem(SESSION_KEY) === '1');
   const [materials, setMaterials] = useState(defaults.materials);
   const [my, setMy] = useState<Cable[]>(defaults.my);
   const [foreign, setForeign] = useState<Cable[]>(defaults.foreign);
@@ -226,6 +277,7 @@ export default function CableConverterApp() {
     setLines([{ id: "line-1", cableId: "foreign-1", qty: "1" }]);
   };
 
+  if (!authed) return <PasswordGate onAuth={() => setAuthed(true)} />;
   if (!ready) return <div className="p-6 text-sm text-slate-600">Загрузка...</div>;
 
   return (
