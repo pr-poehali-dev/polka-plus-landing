@@ -104,7 +104,7 @@ export default function Index() {
   const handleSubmit = () => {
     if (password === SECRET_PASSWORD) {
       setShowModal(false);
-      navigate('/production');
+      navigate('/tkz');
     } else {
       setError(true);
       setPassword('');
