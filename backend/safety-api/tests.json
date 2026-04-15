@@ -1,0 +1,12 @@
+{
+  "tests": [
+    {
+      "name": "GET employees",
+      "method": "GET",
+      "path": "/?section=employees",
+      "expectedStatus": 200,
+      "expectedBody": [],
+      "bodyMatcher": "partial"
+    }
+  ]
+}
