@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import Icon from "@/components/ui/icon";
 
 const API = "https://functions.poehali.dev/9e46b906-33c0-486a-bf86-efd5640d5104";
+const CONTRACTORS_API = "https://functions.poehali.dev/9190b881-e41b-42df-ae0c-62bf6879782c";
+
+interface ContractorOption { id: number; name: string; }
 
 const FREQ_LABELS: Record<string, string> = {
   daily: "Ежедневно",
@@ -206,6 +209,7 @@ export default function Owner() {
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState<Record<string, unknown>>({ ...emptyForms.receivables });
+  const [contractors, setContractors] = useState<ContractorOption[]>([]);
 
   const load = async (sec: Section) => {
     setLoading(true);
@@ -214,6 +218,10 @@ export default function Owner() {
     setRecords(Array.isArray(data) ? data : []);
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetch(CONTRACTORS_API).then(r => r.json()).then(d => setContractors(Array.isArray(d) ? d : []));
+  }, []);
 
   useEffect(() => {
     load(section);
@@ -286,10 +294,12 @@ export default function Owner() {
             </button>
           ))}
         </nav>
-        <div className="p-4 border-t border-slate-100">
+        <div className="p-4 border-t border-slate-100 space-y-2">
+          <a href="/contractors" className="flex items-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
+            <Icon name="Users" size={15} /> Контрагенты
+          </a>
           <a href="/tkz" className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-90" style={{ backgroundColor: "#E8450A" }}>
-            <Icon name="ArrowLeft" size={15} />
-            К калькулятору
+            <Icon name="ArrowLeft" size={15} /> К калькулятору
           </a>
         </div>
       </aside>
@@ -325,7 +335,11 @@ export default function Owner() {
                 {(section === "receivables" || section === "payables") && (<>
                   <div className="col-span-2">
                     <label className="text-xs text-slate-500 mb-1 block">Контрагент</label>
-                    <input className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" value={f("contractor")} onChange={e => sf("contractor", e.target.value)} />
+                    <select className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" value={f("contractor")} onChange={e => sf("contractor", e.target.value)}>
+                      <option value="">— выберите контрагента —</option>
+                      {contractors.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                    </select>
+                    {contractors.length === 0 && <p className="text-xs text-slate-400 mt-1">Нет контрагентов. <a href="/contractors" className="underline" style={{color:"#E8450A"}}>Добавить в справочник</a></p>}
                   </div>
                   <div>
                     <label className="text-xs text-slate-500 mb-1 block">Сумма, ₽</label>
@@ -351,7 +365,10 @@ export default function Owner() {
                 {section === "calendar" && (<>
                   <div className="col-span-2">
                     <label className="text-xs text-slate-500 mb-1 block">Контрагент / получатель</label>
-                    <input className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" value={f("contractor")} onChange={e => sf("contractor", e.target.value)} />
+                    <select className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" value={f("contractor")} onChange={e => sf("contractor", e.target.value)}>
+                      <option value="">— выберите контрагента —</option>
+                      {contractors.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                    </select>
                   </div>
                   <div>
                     <label className="text-xs text-slate-500 mb-1 block">Сумма, ₽</label>
@@ -384,7 +401,10 @@ export default function Owner() {
                   </div>
                   <div>
                     <label className="text-xs text-slate-500 mb-1 block">Контрагент</label>
-                    <input className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" value={f("contractor")} onChange={e => sf("contractor", e.target.value)} />
+                    <select className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" value={f("contractor")} onChange={e => sf("contractor", e.target.value)}>
+                      <option value="">— выберите контрагента —</option>
+                      {contractors.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                    </select>
                   </div>
                   <div>
                     <label className="text-xs text-slate-500 mb-1 block">Сумма, ₽</label>

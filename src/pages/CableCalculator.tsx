@@ -498,6 +498,9 @@ export default function CableConverterApp() {
             <a href="/owner" className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-90" style={{ backgroundColor: '#E8450A' }}>
               <Database className="h-4 w-4" /> Финансы
             </a>
+            <a href="/contractors" className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border border-slate-300 text-slate-600 hover:bg-slate-100 transition-colors bg-white">
+              <Database className="h-4 w-4" /> Контрагенты
+            </a>
           </div>
         </div>
 
