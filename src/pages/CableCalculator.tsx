@@ -294,7 +294,6 @@ export default function CableConverterApp() {
           <div className="flex items-center gap-3">
             {saving && <span className="text-xs text-slate-400">Сохранение...</span>}
             {!saving && saveOk && <span className="text-xs text-emerald-500">Техкарты сохранены ✓</span>}
-            <Button variant="outline" onClick={reset}></Button>
           </div>
         </div>
 
