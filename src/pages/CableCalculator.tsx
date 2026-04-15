@@ -41,10 +41,15 @@ export default function CableCalculator(){
   useEffect(()=>{
     fetch(API_URL).then(r=>r.json()).then(({data})=>{
       if(data&&Object.keys(data).length>0){
+        const myData=data.my||defaults.my;
+        const foreignData=normalizeForeign(data.foreign||defaults.foreign);
+        const linesData=data.lines||defaults.lines;
         if(data.materials)setMaterials(data.materials);
-        if(data.my)setMy(data.my);
-        if(data.foreign)setForeign(normalizeForeign(data.foreign));
-        if(data.lines)setLines(data.lines);
+        setMy(myData);
+        setForeign(foreignData);
+        setLines(linesData);
+        if(myData.length>0)setMyId(myData[0].id);
+        if(foreignData.length>0)setFId(foreignData[0].id);
       }
     }).catch(console.error).finally(()=>setReady(true));
   },[]);
