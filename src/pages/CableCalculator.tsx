@@ -77,7 +77,7 @@ const RecipeTable = ({ materials, cable, onChange }: { materials: string[]; cabl
     </Table>
   </div>;
 
-const SECRET_PASSWORD = 'ткз2024';
+const SECRET_PASSWORD = '1010';
 const SESSION_KEY = 'tkz_auth';
 
 function PasswordGate({ onAuth }: { onAuth: () => void }) {

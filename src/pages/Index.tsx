@@ -72,7 +72,7 @@ const navLinks = [
 ] as const;
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
-const SECRET_PASSWORD = 'ткз2024';
+const SECRET_PASSWORD = '1010';
 
 export default function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
