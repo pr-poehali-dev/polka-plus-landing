@@ -59,8 +59,8 @@ def handler(event: dict, context) -> dict:
                 )
             elif section == 'calendar':
                 cur.execute(
-                    "INSERT INTO payment_calendar (contractor, amount, payment_date, description, type, is_paid) VALUES (%s, %s, %s, %s, %s, %s) RETURNING *",
-                    (body['contractor'], body['amount'], body['payment_date'], body.get('description', ''), body.get('type', 'expense'), body.get('is_paid', False))
+                    "INSERT INTO payment_calendar (contractor, amount, payment_date, description, type, is_paid, is_recurring, recurrence) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING *",
+                    (body['contractor'], body['amount'], body['payment_date'], body.get('description', ''), body.get('type', 'expense'), body.get('is_paid', False), body.get('is_recurring', False), body.get('recurrence'))
                 )
             elif section == 'regular':
                 cur.execute(
@@ -84,8 +84,8 @@ def handler(event: dict, context) -> dict:
                 )
             elif section == 'calendar':
                 cur.execute(
-                    "UPDATE payment_calendar SET contractor=%s, amount=%s, payment_date=%s, description=%s, type=%s, is_paid=%s, updated_at=NOW() WHERE id=%s RETURNING *",
-                    (body['contractor'], body['amount'], body['payment_date'], body.get('description', ''), body.get('type', 'expense'), body.get('is_paid', False), record_id)
+                    "UPDATE payment_calendar SET contractor=%s, amount=%s, payment_date=%s, description=%s, type=%s, is_paid=%s, is_recurring=%s, recurrence=%s, updated_at=NOW() WHERE id=%s RETURNING *",
+                    (body['contractor'], body['amount'], body['payment_date'], body.get('description', ''), body.get('type', 'expense'), body.get('is_paid', False), body.get('is_recurring', False), body.get('recurrence'), record_id)
                 )
             elif section == 'regular':
                 cur.execute(

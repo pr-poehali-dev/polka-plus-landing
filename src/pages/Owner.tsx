@@ -56,7 +56,7 @@ interface FinRecord {
 const emptyForms: Record<Section, object> = {
   receivables: { contractor: "", amount: "", due_date: "", description: "", status: "active" },
   payables: { contractor: "", amount: "", due_date: "", description: "", status: "active" },
-  calendar: { contractor: "", amount: "", payment_date: "", description: "", type: "expense", is_paid: false },
+  calendar: { contractor: "", amount: "", payment_date: "", description: "", type: "expense", is_paid: false, is_recurring: false, recurrence: "monthly" },
   regular: { name: "", contractor: "", amount: "", frequency: "monthly", next_payment_date: "", description: "", is_active: true },
 };
 
@@ -82,9 +82,56 @@ function PaymentCalendar({ records, onAdd, onEdit, onRemove }: {
   const byDate: Record<string, FinRecord[]> = {};
   records.forEach(r => {
     if (!r.payment_date) return;
-    const key = r.payment_date.slice(0, 10);
-    if (!byDate[key]) byDate[key] = [];
-    byDate[key].push(r);
+    const orig = r.payment_date.slice(0, 10);
+    const origDate = new Date(orig);
+
+    if (r.is_recurring && r.recurrence) {
+      // Показываем повторяющийся платёж в текущем месяце на то же число/день
+      const day = origDate.getDate();
+      const dow = origDate.getDay(); // для weekly
+      const origMonth = origDate.getMonth();
+      const origYear = origDate.getFullYear();
+
+      if (r.recurrence === "monthly") {
+        const maxDay = new Date(year, month + 1, 0).getDate();
+        const targetDay = Math.min(day, maxDay);
+        const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(targetDay).padStart(2, "0")}`;
+        if (!byDate[key]) byDate[key] = [];
+        byDate[key].push(r);
+      } else if (r.recurrence === "weekly") {
+        for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) {
+          if (new Date(year, month, d).getDay() === dow) {
+            const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+            if (!byDate[key]) byDate[key] = [];
+            byDate[key].push(r);
+          }
+        }
+      } else if (r.recurrence === "quarterly") {
+        if ((month - origMonth + 12) % 3 === 0) {
+          const maxDay = new Date(year, month + 1, 0).getDate();
+          const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(Math.min(day, maxDay)).padStart(2, "0")}`;
+          if (!byDate[key]) byDate[key] = [];
+          byDate[key].push(r);
+        }
+      } else if (r.recurrence === "yearly") {
+        if (month === origMonth) {
+          const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+          if (!byDate[key]) byDate[key] = [];
+          byDate[key].push(r);
+        }
+      }
+      // Также показываем оригинальную дату если она в текущем месяце
+      if (origDate.getMonth() === month && origDate.getFullYear() === year) {
+        if (!byDate[orig]) byDate[orig] = [];
+        if (!byDate[orig].find(x => x.id === r.id)) byDate[orig].push(r);
+      }
+    } else {
+      if (!byDate[orig]) byDate[orig] = [];
+      byDate[orig].push(r);
+    }
+
+    // suppress unused warning
+    void origYear;
   });
 
   const prevMonth = () => { if (month === 0) { setMonth(11); setYear(y => y - 1); } else setMonth(m => m - 1); setSelected(null); };
@@ -146,8 +193,9 @@ function PaymentCalendar({ records, onAdd, onEdit, onRemove }: {
                 </div>
                 <div className="space-y-0.5">
                   {payments.slice(0, 2).map(p => (
-                    <div key={p.id} className={`text-[10px] leading-tight px-1 py-0.5 rounded truncate font-medium ${p.is_paid ? "bg-green-100 text-green-700" : p.type === "income" ? "bg-blue-100 text-blue-700" : p.type === "salary" ? "bg-purple-100 text-purple-700" : "bg-orange-100 text-orange-700"}`}>
-                      {p.contractor}
+                    <div key={p.id} className={`text-[10px] leading-tight px-1 py-0.5 rounded truncate font-medium flex items-center gap-0.5 ${p.is_paid ? "bg-green-100 text-green-700" : p.type === "income" ? "bg-blue-100 text-blue-700" : p.type === "salary" ? "bg-purple-100 text-purple-700" : "bg-orange-100 text-orange-700"}`}>
+                      {p.is_recurring && <span title="Повторяется">↻</span>}
+                      <span className="truncate">{p.contractor || p.description || "—"}</span>
                     </div>
                   ))}
                   {payments.length > 2 && <div className="text-[10px] text-slate-400 pl-1">+{payments.length - 2} ещё</div>}
@@ -416,6 +464,21 @@ export default function Owner() {
                     <label className="text-xs text-slate-500 mb-1 block">Комментарий</label>
                     <input className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" value={f("description")} onChange={e => sf("description", e.target.value)} />
                   </div>
+                  <div className="col-span-2 flex items-center gap-2">
+                    <input type="checkbox" id="is_recurring" checked={!!form.is_recurring} onChange={e => sf("is_recurring", e.target.checked)} />
+                    <label htmlFor="is_recurring" className="text-sm text-slate-600">Повторяющийся платёж</label>
+                  </div>
+                  {!!form.is_recurring && (
+                    <div className="col-span-2">
+                      <label className="text-xs text-slate-500 mb-1 block">Периодичность</label>
+                      <select className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" value={f("recurrence")} onChange={e => sf("recurrence", e.target.value)}>
+                        <option value="weekly">Еженедельно (каждую неделю в этот день)</option>
+                        <option value="monthly">Ежемесячно (каждый месяц в это число)</option>
+                        <option value="quarterly">Ежеквартально</option>
+                        <option value="yearly">Ежегодно</option>
+                      </select>
+                    </div>
+                  )}
                   <div className="flex items-center gap-2 col-span-2">
                     <input type="checkbox" id="is_paid" checked={!!form.is_paid} onChange={e => sf("is_paid", e.target.checked)} />
                     <label htmlFor="is_paid" className="text-sm text-slate-600">Оплачено</label>
