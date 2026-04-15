@@ -12,7 +12,7 @@ import { ArrowRightLeft, Plus, Trash2, Calculator, Database, TrendingUp, Trendin
 const FINANCE_API = "https://functions.poehali.dev/9e46b906-33c0-486a-bf86-efd5640d5104";
 
 type FinSection = "receivables" | "payables" | "calendar" | "regular";
-interface FinRecord { id: number; contractor?: string; name?: string; amount: number; due_date?: string; payment_date?: string; next_payment_date?: string; description?: string; status?: string; type?: string; is_paid?: boolean; is_active?: boolean; frequency?: string; }
+interface FinRecord { id: number; contractor?: string; name?: string; amount: number; due_date?: string; payment_date?: string; next_payment_date?: string; description?: string; status?: string; type?: string; is_paid?: boolean; is_active?: boolean; frequency?: string; by_meter?: boolean; }
 const FREQ_LABELS: Record<string, string> = { daily: "Ежедневно", weekly: "Еженедельно", monthly: "Ежемесячно", quarterly: "Ежеквартально", yearly: "Ежегодно" };
 const STATUS_COLORS: Record<string, string> = { active: "bg-blue-100 text-blue-700", paid: "bg-green-100 text-green-700", overdue: "bg-red-100 text-red-700" };
 const STATUS_LABELS: Record<string, string> = { active: "Активна", paid: "Погашена", overdue: "Просрочена" };
@@ -21,7 +21,7 @@ const fmtDate = (v?: string) => { if (!v) return "—"; return new Date(v).toLoc
 const FIN_EMPTY: Record<FinSection, Record<string, unknown>> = {
   receivables: { contractor: "", amount: "", due_date: "", description: "", status: "active" },
   payables: { contractor: "", amount: "", due_date: "", description: "", status: "active" },
-  calendar: { contractor: "", amount: "", payment_date: "", description: "", type: "expense", is_paid: false },
+  calendar: { contractor: "", amount: "", payment_date: "", description: "", type: "expense", is_paid: false, by_meter: false },
   regular: { name: "", contractor: "", amount: "", frequency: "monthly", next_payment_date: "", description: "", is_active: true },
 };
 
@@ -115,7 +115,11 @@ function FinanceBlock() {
                 </>}
                 {section === "calendar" && <>
                   <div className="col-span-2"><Label className="text-xs">Контрагент</Label><Input value={f("contractor")} onChange={e => sf("contractor", e.target.value)} /></div>
-                  <div><Label className="text-xs">Сумма, ₽</Label><Input type="number" value={f("amount")} onChange={e => sf("amount", e.target.value)} /></div>
+                  <div className="col-span-2 flex items-center gap-2 py-1">
+                    <input type="checkbox" id="by_meter" checked={!!form.by_meter} onChange={e => sf("by_meter", e.target.checked)} className="w-4 h-4 accent-orange-500" />
+                    <label htmlFor="by_meter" className="text-xs text-slate-600 cursor-pointer">Оплата по счётчику (без фиксированной суммы)</label>
+                  </div>
+                  {!form.by_meter && <div><Label className="text-xs">Сумма, ₽</Label><Input type="number" value={f("amount")} onChange={e => sf("amount", e.target.value)} /></div>}
                   <div><Label className="text-xs">Дата платежа</Label><Input type="date" value={f("payment_date")} onChange={e => sf("payment_date", e.target.value)} /></div>
                   <div><Label className="text-xs">Тип</Label>
                     <Select value={f("type")} onValueChange={v => sf("type", v)}>
@@ -170,7 +174,11 @@ function FinanceBlock() {
                       </>}
                       {section === "calendar" && <>
                         <td className="px-3 py-2 font-medium text-slate-700">{rec.contractor}</td>
-                        <td className="px-3 py-2 text-right font-semibold">{fmtMoney(rec.amount)}</td>
+                        <td className="px-3 py-2 text-right font-semibold">
+                          {rec.by_meter
+                            ? <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">По счётчику</span>
+                            : fmtMoney(rec.amount)}
+                        </td>
                         <td className="px-3 py-2 text-slate-500">{fmtDate(rec.payment_date)}</td>
                         <td className="px-3 py-2"><span className={`inline-flex px-1.5 py-0.5 rounded-full text-xs font-medium ${rec.is_paid ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>{rec.is_paid ? "Оплачено" : "Ожидает"}</span></td>
                       </>}

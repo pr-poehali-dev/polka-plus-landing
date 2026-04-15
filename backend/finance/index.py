@@ -58,9 +58,11 @@ def handler(event: dict, context) -> dict:
                     (body['contractor'], body['amount'], body.get('due_date'), body.get('description', ''), body.get('status', 'active'))
                 )
             elif section == 'calendar':
+                by_meter = body.get('by_meter', False)
+                amount = None if by_meter else body.get('amount')
                 cur.execute(
-                    "INSERT INTO payment_calendar (contractor, amount, payment_date, description, type, is_paid, is_recurring, recurrence) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING *",
-                    (body['contractor'], body['amount'], body['payment_date'], body.get('description', ''), body.get('type', 'expense'), body.get('is_paid', False), body.get('is_recurring', False), body.get('recurrence'))
+                    "INSERT INTO payment_calendar (contractor, amount, payment_date, description, type, is_paid, is_recurring, recurrence, by_meter) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *",
+                    (body['contractor'], amount, body['payment_date'], body.get('description', ''), body.get('type', 'expense'), body.get('is_paid', False), body.get('is_recurring', False), body.get('recurrence'), by_meter)
                 )
             elif section == 'regular':
                 cur.execute(
@@ -83,9 +85,11 @@ def handler(event: dict, context) -> dict:
                     (body['contractor'], body['amount'], body.get('due_date'), body.get('description', ''), body.get('status', 'active'), record_id)
                 )
             elif section == 'calendar':
+                by_meter = body.get('by_meter', False)
+                amount = None if by_meter else body.get('amount')
                 cur.execute(
-                    "UPDATE payment_calendar SET contractor=%s, amount=%s, payment_date=%s, description=%s, type=%s, is_paid=%s, is_recurring=%s, recurrence=%s, updated_at=NOW() WHERE id=%s RETURNING *",
-                    (body['contractor'], body['amount'], body['payment_date'], body.get('description', ''), body.get('type', 'expense'), body.get('is_paid', False), body.get('is_recurring', False), body.get('recurrence'), record_id)
+                    "UPDATE payment_calendar SET contractor=%s, amount=%s, payment_date=%s, description=%s, type=%s, is_paid=%s, is_recurring=%s, recurrence=%s, by_meter=%s, updated_at=NOW() WHERE id=%s RETURNING *",
+                    (body['contractor'], amount, body['payment_date'], body.get('description', ''), body.get('type', 'expense'), body.get('is_paid', False), body.get('is_recurring', False), body.get('recurrence'), by_meter, record_id)
                 )
             elif section == 'regular':
                 cur.execute(
