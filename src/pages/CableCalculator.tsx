@@ -7,7 +7,203 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRightLeft, Plus, Trash2, Calculator, Database } from "lucide-react";
+import { ArrowRightLeft, Plus, Trash2, Calculator, Database, TrendingUp, TrendingDown, CalendarDays, RefreshCw, Pencil } from "lucide-react";
+
+const FINANCE_API = "https://functions.poehali.dev/9e46b906-33c0-486a-bf86-efd5640d5104";
+
+type FinSection = "receivables" | "payables" | "calendar" | "regular";
+interface FinRecord { id: number; contractor?: string; name?: string; amount: number; due_date?: string; payment_date?: string; next_payment_date?: string; description?: string; status?: string; type?: string; is_paid?: boolean; is_active?: boolean; frequency?: string; }
+const FREQ_LABELS: Record<string, string> = { daily: "Ежедневно", weekly: "Еженедельно", monthly: "Ежемесячно", quarterly: "Ежеквартально", yearly: "Ежегодно" };
+const STATUS_COLORS: Record<string, string> = { active: "bg-blue-100 text-blue-700", paid: "bg-green-100 text-green-700", overdue: "bg-red-100 text-red-700" };
+const STATUS_LABELS: Record<string, string> = { active: "Активна", paid: "Погашена", overdue: "Просрочена" };
+const fmtMoney = (v: number | string) => Number(v).toLocaleString("ru-RU", { style: "currency", currency: "RUB", maximumFractionDigits: 0 });
+const fmtDate = (v?: string) => { if (!v) return "—"; return new Date(v).toLocaleDateString("ru-RU"); };
+const FIN_EMPTY: Record<FinSection, Record<string, unknown>> = {
+  receivables: { contractor: "", amount: "", due_date: "", description: "", status: "active" },
+  payables: { contractor: "", amount: "", due_date: "", description: "", status: "active" },
+  calendar: { contractor: "", amount: "", payment_date: "", description: "", type: "expense", is_paid: false },
+  regular: { name: "", contractor: "", amount: "", frequency: "monthly", next_payment_date: "", description: "", is_active: true },
+};
+
+function FinanceBlock() {
+  const [section, setSection] = useState<FinSection>("receivables");
+  const [records, setRecords] = useState<FinRecord[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<number | null>(null);
+  const [form, setForm] = useState<Record<string, unknown>>({ ...FIN_EMPTY.receivables });
+
+  const load = async (sec: FinSection) => {
+    setLoading(true);
+    const res = await fetch(`${FINANCE_API}?section=${sec}`);
+    const data = await res.json();
+    setRecords(Array.isArray(data) ? data : []);
+    setLoading(false);
+  };
+
+  useEffect(() => { load(section); setShowForm(false); setEditId(null); setForm({ ...FIN_EMPTY[section] }); }, [section]);
+
+  const openAdd = () => { setEditId(null); setForm({ ...FIN_EMPTY[section] }); setShowForm(true); };
+  const openEdit = (rec: FinRecord) => { setEditId(rec.id); setForm({ ...rec }); setShowForm(true); };
+  const save = async () => {
+    const method = editId ? "PUT" : "POST";
+    const url = editId ? `${FINANCE_API}?section=${section}&id=${editId}` : `${FINANCE_API}?section=${section}`;
+    await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
+    setShowForm(false);
+    load(section);
+  };
+  const remove = async (id: number) => {
+    if (!confirm("Удалить запись?")) return;
+    await fetch(`${FINANCE_API}?section=${section}&id=${id}`, { method: "DELETE" });
+    load(section);
+  };
+
+  const total = records.reduce((s, r) => s + Number(r.amount || 0), 0);
+  const navItems = [
+    { key: "receivables" as FinSection, label: "Дебиторка", icon: <TrendingUp size={15} /> },
+    { key: "payables" as FinSection, label: "Кредиторка", icon: <TrendingDown size={15} /> },
+    { key: "calendar" as FinSection, label: "Календарь платежей", icon: <CalendarDays size={15} /> },
+    { key: "regular" as FinSection, label: "Регулярные платежи", icon: <RefreshCw size={15} /> },
+  ];
+
+  const f = (k: string) => (form[k] ?? "") as string;
+  const sf = (k: string, v: unknown) => setForm(p => ({ ...p, [k]: v }));
+
+  return (
+    <div className="rounded-2xl border bg-white shadow-sm overflow-hidden">
+      <div className="flex" style={{ borderTop: "2px solid #E8450A" }}>
+        {/* Sidebar */}
+        <aside className="w-48 shrink-0 border-r bg-slate-50 p-2 space-y-1">
+          <div className="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Финансы</div>
+          {navItems.map(item => (
+            <button key={item.key} onClick={() => setSection(item.key)}
+              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${section === item.key ? "text-white" : "text-slate-600 hover:bg-slate-100"}`}
+              style={section === item.key ? { backgroundColor: "#E8450A" } : {}}>
+              {item.icon}{item.label}
+            </button>
+          ))}
+        </aside>
+
+        {/* Content */}
+        <div className="flex-1 p-5 min-w-0">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <div className="font-semibold text-slate-700">{navItems.find(n => n.key === section)?.label}</div>
+              {records.length > 0 && <div className="text-xs text-slate-400 mt-0.5">Итого: <span className="font-medium text-slate-600">{fmtMoney(total)}</span></div>}
+            </div>
+            <Button size="sm" onClick={openAdd} className="gap-1 text-white text-xs" style={{ background: "#E8450A" }}>
+              <Plus size={13} /> Добавить
+            </Button>
+          </div>
+
+          {/* Form */}
+          {showForm && (
+            <div className="bg-slate-50 rounded-xl border p-4 mb-4">
+              <div className="text-sm font-medium text-slate-600 mb-3">{editId ? "Редактировать" : "Новая запись"}</div>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                {(section === "receivables" || section === "payables") && <>
+                  <div className="col-span-2"><Label className="text-xs">Контрагент</Label><Input value={f("contractor")} onChange={e => sf("contractor", e.target.value)} /></div>
+                  <div><Label className="text-xs">Сумма, ₽</Label><Input type="number" value={f("amount")} onChange={e => sf("amount", e.target.value)} /></div>
+                  <div><Label className="text-xs">Срок оплаты</Label><Input type="date" value={f("due_date")} onChange={e => sf("due_date", e.target.value)} /></div>
+                  <div><Label className="text-xs">Статус</Label>
+                    <Select value={f("status")} onValueChange={v => sf("status", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent><SelectItem value="active">Активна</SelectItem><SelectItem value="paid">Погашена</SelectItem><SelectItem value="overdue">Просрочена</SelectItem></SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label className="text-xs">Комментарий</Label><Input value={f("description")} onChange={e => sf("description", e.target.value)} /></div>
+                </>}
+                {section === "calendar" && <>
+                  <div className="col-span-2"><Label className="text-xs">Контрагент</Label><Input value={f("contractor")} onChange={e => sf("contractor", e.target.value)} /></div>
+                  <div><Label className="text-xs">Сумма, ₽</Label><Input type="number" value={f("amount")} onChange={e => sf("amount", e.target.value)} /></div>
+                  <div><Label className="text-xs">Дата платежа</Label><Input type="date" value={f("payment_date")} onChange={e => sf("payment_date", e.target.value)} /></div>
+                  <div><Label className="text-xs">Тип</Label>
+                    <Select value={f("type")} onValueChange={v => sf("type", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent><SelectItem value="expense">Расход</SelectItem><SelectItem value="income">Приход</SelectItem></SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label className="text-xs">Комментарий</Label><Input value={f("description")} onChange={e => sf("description", e.target.value)} /></div>
+                  <div className="flex items-center gap-2 col-span-2"><input type="checkbox" checked={!!form.is_paid} onChange={e => sf("is_paid", e.target.checked)} /><span className="text-xs text-slate-600">Оплачено</span></div>
+                </>}
+                {section === "regular" && <>
+                  <div className="col-span-2"><Label className="text-xs">Название</Label><Input value={f("name")} onChange={e => sf("name", e.target.value)} /></div>
+                  <div><Label className="text-xs">Контрагент</Label><Input value={f("contractor")} onChange={e => sf("contractor", e.target.value)} /></div>
+                  <div><Label className="text-xs">Сумма, ₽</Label><Input type="number" value={f("amount")} onChange={e => sf("amount", e.target.value)} /></div>
+                  <div><Label className="text-xs">Периодичность</Label>
+                    <Select value={f("frequency")} onValueChange={v => sf("frequency", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent><SelectItem value="monthly">Ежемесячно</SelectItem><SelectItem value="weekly">Еженедельно</SelectItem><SelectItem value="quarterly">Ежеквартально</SelectItem><SelectItem value="yearly">Ежегодно</SelectItem></SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label className="text-xs">Следующая дата</Label><Input type="date" value={f("next_payment_date")} onChange={e => sf("next_payment_date", e.target.value)} /></div>
+                  <div className="col-span-2"><Label className="text-xs">Комментарий</Label><Input value={f("description")} onChange={e => sf("description", e.target.value)} /></div>
+                </>}
+              </div>
+              <div className="flex gap-2 mt-3">
+                <Button size="sm" onClick={save} className="text-white text-xs" style={{ background: "#E8450A" }}>Сохранить</Button>
+                <Button size="sm" variant="outline" onClick={() => setShowForm(false)} className="text-xs">Отмена</Button>
+              </div>
+            </div>
+          )}
+
+          {/* Table */}
+          {loading ? <div className="text-center text-slate-400 py-8 text-sm">Загрузка...</div> :
+            records.length === 0 ? <div className="text-center text-slate-400 py-8 text-sm">Нет записей</div> : (
+            <div className="overflow-x-auto rounded-xl border">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="bg-slate-50 border-b">
+                    {(section === "receivables" || section === "payables") && <><th className="text-left px-3 py-2 text-slate-500 font-medium">Контрагент</th><th className="text-right px-3 py-2 text-slate-500 font-medium">Сумма</th><th className="text-left px-3 py-2 text-slate-500 font-medium">Срок</th><th className="text-left px-3 py-2 text-slate-500 font-medium">Статус</th><th className="px-3 py-2"></th></>}
+                    {section === "calendar" && <><th className="text-left px-3 py-2 text-slate-500 font-medium">Контрагент</th><th className="text-right px-3 py-2 text-slate-500 font-medium">Сумма</th><th className="text-left px-3 py-2 text-slate-500 font-medium">Дата</th><th className="text-left px-3 py-2 text-slate-500 font-medium">Статус</th><th className="px-3 py-2"></th></>}
+                    {section === "regular" && <><th className="text-left px-3 py-2 text-slate-500 font-medium">Название</th><th className="text-right px-3 py-2 text-slate-500 font-medium">Сумма</th><th className="text-left px-3 py-2 text-slate-500 font-medium">Периодичность</th><th className="text-left px-3 py-2 text-slate-500 font-medium">Следующий</th><th className="px-3 py-2"></th></>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {records.map(rec => (
+                    <tr key={rec.id} className="border-b last:border-0 hover:bg-slate-50">
+                      {(section === "receivables" || section === "payables") && <>
+                        <td className="px-3 py-2 font-medium text-slate-700">{rec.contractor}</td>
+                        <td className="px-3 py-2 text-right font-semibold">{fmtMoney(rec.amount)}</td>
+                        <td className="px-3 py-2 text-slate-500">{fmtDate(rec.due_date)}</td>
+                        <td className="px-3 py-2"><span className={`inline-flex px-1.5 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[rec.status || "active"]}`}>{STATUS_LABELS[rec.status || "active"]}</span></td>
+                      </>}
+                      {section === "calendar" && <>
+                        <td className="px-3 py-2 font-medium text-slate-700">{rec.contractor}</td>
+                        <td className="px-3 py-2 text-right font-semibold">{fmtMoney(rec.amount)}</td>
+                        <td className="px-3 py-2 text-slate-500">{fmtDate(rec.payment_date)}</td>
+                        <td className="px-3 py-2"><span className={`inline-flex px-1.5 py-0.5 rounded-full text-xs font-medium ${rec.is_paid ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>{rec.is_paid ? "Оплачено" : "Ожидает"}</span></td>
+                      </>}
+                      {section === "regular" && <>
+                        <td className="px-3 py-2 font-medium text-slate-700">{rec.name}</td>
+                        <td className="px-3 py-2 text-right font-semibold">{fmtMoney(rec.amount)}</td>
+                        <td className="px-3 py-2 text-slate-500">{FREQ_LABELS[rec.frequency || ""] || rec.frequency}</td>
+                        <td className="px-3 py-2 text-slate-500">{fmtDate(rec.next_payment_date)}</td>
+                      </>}
+                      <td className="px-3 py-2">
+                        <div className="flex gap-1">
+                          <button onClick={() => openEdit(rec)} className="p-1 rounded hover:bg-slate-100 text-slate-400"><Pencil size={12} /></button>
+                          <button onClick={() => remove(rec.id)} className="p-1 rounded hover:bg-red-50 text-slate-400 hover:text-red-500"><Trash2 size={12} /></button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                {records.length > 1 && (
+                  <tfoot><tr className="bg-slate-50 border-t-2">
+                    <td className="px-3 py-2 text-xs font-semibold text-slate-500">Итого</td>
+                    <td className="px-3 py-2 text-right text-xs font-bold text-slate-700">{fmtMoney(total)}</td>
+                    <td colSpan={10}></td>
+                  </tr></tfoot>
+                )}
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const API_URL = "https://functions.poehali.dev/184ab8d3-3443-46d0-b473-5501b563a2e1";
 const ALL = "ALL", EMPTY = "EMPTY", PAINTS = ["Краска желтая", "Краска салатовая"];
@@ -485,6 +681,9 @@ export default function CableConverterApp() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Финансовый блок */}
+        <FinanceBlock />
       </div>
     </div>
   );
