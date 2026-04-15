@@ -103,45 +103,56 @@ function SummaryTable({
             </tr>
           </thead>
           <tbody>
-            {records.map((r, i) => (
-              <tr key={r.id} className={`border-b border-slate-100 hover:bg-yellow-50/50 transition-colors ${i % 2 === 0 ? "" : "bg-slate-50/30"}`}>
-                <td className="px-3 py-1.5 font-medium text-slate-700 max-w-[120px] truncate">{r.contractor}</td>
-                <td className="px-2 py-1.5 text-slate-500 whitespace-nowrap">{fmtDate(r.invoice_date)}</td>
-                <td className="px-2 py-1.5 text-right text-slate-800 font-medium">{fmtMoney(r.amount)}</td>
-                <td className="px-2 py-1.5 text-center">
-                  <button
-                    onClick={() => onToggle(r.id, "is_paid", !r.is_paid)}
-                    className={`w-6 h-6 rounded flex items-center justify-center mx-auto text-xs font-bold transition-colors ${r.is_paid ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-400 hover:bg-slate-200"}`}
-                  >
-                    {r.is_paid ? "+" : "—"}
-                  </button>
-                </td>
-                <td className="px-2 py-1.5 text-center">
-                  <button
-                    onClick={() => onToggle(r.id, "is_shipped", !r.is_shipped)}
-                    className={`w-6 h-6 rounded flex items-center justify-center mx-auto text-xs font-bold transition-colors ${r.is_shipped ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-400 hover:bg-slate-200"}`}
-                  >
-                    {r.is_shipped ? "✓" : "—"}
-                  </button>
-                </td>
-                <td className="px-2 py-1.5 text-right">
-                  {r.subtotal ? (
-                    <span className="font-semibold text-slate-800">{fmtMoney(r.subtotal)}</span>
-                  ) : (
-                    <input
-                      className="w-20 text-right border-0 bg-transparent text-slate-400 text-xs focus:outline-none focus:bg-slate-50 rounded px-1"
-                      placeholder="—"
-                      onBlur={e => e.target.value && onSubtotal(r.id, e.target.value)}
-                    />
-                  )}
-                </td>
-                <td className="px-1 py-1.5">
-                  <button onClick={() => onDelete(r.id)} className="p-1 rounded hover:bg-red-50 text-slate-300 hover:text-red-400 transition-colors">
-                    <Icon name="X" size={12} />
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {records.map((r, i) => {
+              const isLastOfContractor = records[i + 1]?.contractor !== r.contractor;
+              const contractorTotal = records
+                .filter(x => x.contractor === r.contractor)
+                .reduce((s, x) => s + Number(x.amount || 0), 0);
+              return (
+                <tr key={r.id} className={`border-b border-slate-100 hover:bg-yellow-50/50 transition-colors ${i % 2 === 0 ? "" : "bg-slate-50/30"}`}>
+                  <td className="px-3 py-1.5 font-medium text-slate-700 max-w-[120px] truncate">{r.contractor}</td>
+                  <td className="px-2 py-1.5 text-slate-500 whitespace-nowrap">{fmtDate(r.invoice_date)}</td>
+                  <td className="px-2 py-1.5 text-right text-slate-800 font-medium">{fmtMoney(r.amount)}</td>
+                  <td className="px-2 py-1.5 text-center">
+                    <button
+                      onClick={() => onToggle(r.id, "is_paid", !r.is_paid)}
+                      className={`w-6 h-6 rounded flex items-center justify-center mx-auto text-xs font-bold transition-colors ${r.is_paid ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-400 hover:bg-slate-200"}`}
+                    >
+                      {r.is_paid ? "+" : "—"}
+                    </button>
+                  </td>
+                  <td className="px-2 py-1.5 text-center">
+                    <button
+                      onClick={() => onToggle(r.id, "is_shipped", !r.is_shipped)}
+                      className={`w-6 h-6 rounded flex items-center justify-center mx-auto text-xs font-bold transition-colors ${r.is_shipped ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-400 hover:bg-slate-200"}`}
+                    >
+                      {r.is_shipped ? "✓" : "—"}
+                    </button>
+                  </td>
+                  <td className="px-2 py-1.5 text-right">
+                    {isLastOfContractor ? (
+                      <div className="flex flex-col items-end gap-0.5">
+                        {r.subtotal ? (
+                          <span className="font-semibold text-slate-800">{fmtMoney(r.subtotal)}</span>
+                        ) : null}
+                        <span className="text-[10px] font-bold uppercase tracking-wide whitespace-nowrap" style={{ color }}>
+                          Итого: {fmtMoney(contractorTotal)}
+                        </span>
+                      </div>
+                    ) : (
+                      r.subtotal ? (
+                        <span className="font-semibold text-slate-800">{fmtMoney(r.subtotal)}</span>
+                      ) : null
+                    )}
+                  </td>
+                  <td className="px-1 py-1.5">
+                    <button onClick={() => onDelete(r.id)} className="p-1 rounded hover:bg-red-50 text-slate-300 hover:text-red-400 transition-colors">
+                      <Icon name="X" size={12} />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
 
             {/* Add row form */}
             {adding && (
