@@ -287,9 +287,12 @@ export default function CableConverterApp() {
           <div className="flex items-center gap-4">
             <img src="https://cdn.poehali.dev/projects/48d0f348-e369-40e0-b696-33913aa2ef26/bucket/f74a2a3e-f940-47c8-9193-d9634773e26c.png" alt="ТКЗ" className="h-14 w-14 object-contain" />
             <div>
-              <h1 className="text-3xl font-bold tracking-tight" style={{ color: '#1a1a1a' }}>
-                Конвертер <span style={{ color: '#E8450A' }}>кабеля</span>
-              </h1>
+              <div className="flex items-baseline gap-3">
+                <h1 className="text-3xl font-bold tracking-tight" style={{ color: '#1a1a1a' }}>
+                  Конвертер <span style={{ color: '#E8450A' }}>кабеля</span>
+                </h1>
+                <span className="text-sm text-slate-400 font-normal">by Давыдовы</span>
+              </div>
               <p className="mt-1 text-sm text-slate-500">Тульский Кабельный Завод — производственный расчёт</p>
             </div>
           </div>
