@@ -130,6 +130,9 @@ export default function Contractors() {
         <div className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-white" style={{ backgroundColor: "#E8450A" }}>
           <Icon name="Users" size={16} /> Контрагенты
         </div>
+        <a href="/contracts" className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+          <Icon name="FolderOpen" size={16} /> Договоры
+        </a>
         <a href="/summary" className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
           <Icon name="FileBarChart" size={16} /> Краткая сводка
         </a>

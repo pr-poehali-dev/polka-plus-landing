@@ -346,6 +346,9 @@ export default function Owner() {
         <a href="/contractors" className="flex items-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
           <Icon name="Users" size={15} /> Контрагенты
         </a>
+        <a href="/contracts" className="flex items-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
+          <Icon name="FolderOpen" size={15} /> Договоры
+        </a>
         <a href="/summary" className="flex items-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
           <Icon name="FileBarChart" size={15} /> Краткая сводка
         </a>
