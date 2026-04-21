@@ -379,6 +379,38 @@ export default function CableConverterApp() {
       .finally(() => setReady(true));
   }, []);
 
+  // Загрузка расчётов цены из БД при старте
+  useEffect(() => {
+    fetch(`${API_URL}?section=pricing`)
+      .then(r => r.json())
+      .then(({ rows, globalHourRate: ghr }) => {
+        if (ghr) setGlobalHourRate(ghr);
+        if (rows && rows.length > 0) {
+          setPricingRows(rows.map((r: Record<string, string>) => ({
+            id: r.id,
+            cableId: r.cable_id,
+            normHours: r.norm_hours ?? "",
+            hourRate: r.hour_rate ?? "",
+            costPrice: r.cost_price ?? "",
+          })));
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  // Автосохранение строк расчёта цены (дебаунс 1.5с)
+  const pricingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (pricingTimer.current) clearTimeout(pricingTimer.current);
+    pricingTimer.current = setTimeout(() => {
+      fetch(`${API_URL}?section=pricing`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ section: "pricing", action: "save_rows", rows: pricingRows }),
+      }).catch(console.error);
+    }, 1500);
+  }, [pricingRows]);
+
   // Автосохранение техкарт в БД (с дебаунсом 1.5с)
   const pushToServer = useCallback((payload: { materials: string[]; my: Cable[]; foreign: Cable[] }) => {
     setSaving(true);
@@ -718,6 +750,11 @@ export default function CableConverterApp() {
                           onClick={() => {
                             localStorage.setItem("globalHourRate", globalHourRate);
                             setPricingRows(prev => prev.map(r => ({ ...r, hourRate: globalHourRate })));
+                            fetch(`${API_URL}?section=pricing`, {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ section: "pricing", action: "save_hour_rate", globalHourRate }),
+                            }).catch(console.error);
                           }}>
                           Применить ко всем
                         </Button>
