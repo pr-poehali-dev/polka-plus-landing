@@ -350,6 +350,7 @@ export default function CableConverterApp() {
   const [lines, setLines] = useState<Line[]>([{ id: "line-1", cableId: "foreign-1", qty: "1" }]);
   // Расчёт цены
   const [pricingRows, setPricingRows] = useState<{ id: string; cableId: string; normHours: string; hourRate: string; costPrice: string }[]>([]);
+  const [globalHourRate, setGlobalHourRate] = useState<string>(() => localStorage.getItem("globalHourRate") || "");
   const [ready, setReady] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveOk, setSaveOk] = useState(false);
@@ -703,10 +704,31 @@ export default function CableConverterApp() {
 
                 {/* Расчёт цены */}
                 <TabsContent value="pricing" className="mt-4 space-y-4">
+                  <div className="flex flex-wrap gap-3 items-end p-3 rounded-xl bg-orange-50 border border-orange-100">
+                    <div className="flex flex-col gap-1">
+                      <Label className="text-xs text-orange-700 font-semibold">Стоимость нормо-часа (общая), ₽</Label>
+                      <div className="flex gap-2 items-center">
+                        <Input
+                          className="h-8 text-sm w-44"
+                          type="number" min="0" placeholder="Введите сумму"
+                          value={globalHourRate}
+                          onChange={e => setGlobalHourRate(e.target.value)}
+                        />
+                        <Button type="button" size="sm" className="text-white text-xs" style={{ background: '#E8450A' }}
+                          onClick={() => {
+                            localStorage.setItem("globalHourRate", globalHourRate);
+                            setPricingRows(prev => prev.map(r => ({ ...r, hourRate: globalHourRate })));
+                          }}>
+                          Применить ко всем
+                        </Button>
+                      </div>
+                    </div>
+                    <p className="text-xs text-orange-600/80 self-end pb-1">Устанавливается один раз, сохраняется в браузере</p>
+                  </div>
                   <div className="flex justify-between items-center">
                     <p className="text-sm text-slate-500">Добавьте кабели для расчёта стоимости производства и итоговой цены.</p>
                     <Button type="button" className="gap-2 text-white" style={{ background: '#E8450A' }}
-                      onClick={() => setPricingRows(prev => [...prev, { id: Date.now().toString(), cableId: foreign[0]?.id ?? "", normHours: "", hourRate: "", costPrice: "" }])}>
+                      onClick={() => setPricingRows(prev => [...prev, { id: Date.now().toString(), cableId: foreign[0]?.id ?? "", normHours: "", hourRate: globalHourRate, costPrice: "" }])}>
                       <Plus className="h-4 w-4" /> Добавить кабель
                     </Button>
                   </div>
