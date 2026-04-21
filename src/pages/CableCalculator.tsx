@@ -362,9 +362,9 @@ export default function CableConverterApp() {
       .then(r => r.json())
       .then(({ data }) => {
         if (data && Object.keys(data).length > 0) {
-          const myData: Cable[] = data.my || defaults.my;
-          const foreignData: Cable[] = normalizeForeign(data.foreign || defaults.foreign);
-          const mats: string[] = data.materials || defaults.materials;
+          const myData: Cable[] = (data.my && data.my.length > 0) ? data.my : defaults.my;
+          const foreignData: Cable[] = normalizeForeign((data.foreign && data.foreign.length > 0) ? data.foreign : defaults.foreign);
+          const mats: string[] = (data.materials && data.materials.length > 0) ? data.materials : defaults.materials;
           setMaterials(mats);
           setMy(myData);
           setForeign(foreignData);
@@ -423,6 +423,7 @@ export default function CableConverterApp() {
 
   useEffect(() => {
     if (!ready) return;
+    if (my.length === 0 || foreign.length === 0) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => pushToServer({ materials, my, foreign }), 1500);
   }, [ready, materials, my, foreign, pushToServer]);
