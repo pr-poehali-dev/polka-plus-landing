@@ -9,10 +9,28 @@
       "bodyMatcher": "partial"
     },
     {
-      "name": "POST сохранение данных",
+      "name": "POST сохранение данных (пустые — пропускается)",
       "method": "POST",
       "path": "/",
-      "body": {"data": {"materials": ["Вес меди"], "my": [], "foreign": [], "lines": []}},
+      "body": {"data": {"materials": ["Вес меди"], "my": [], "foreign": []}},
+      "expectedStatus": 200,
+      "expectedBody": {"ok": true},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "POST pricing сохранение строк через body section",
+      "method": "POST",
+      "path": "/",
+      "body": {"section": "pricing", "action": "save_rows", "rows": []},
+      "expectedStatus": 200,
+      "expectedBody": {"ok": true},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "POST pricing сохранение н/ч через body section",
+      "method": "POST",
+      "path": "/",
+      "body": {"section": "pricing", "action": "save_hour_rate", "globalHourRate": "1500"},
       "expectedStatus": 200,
       "expectedBody": {"ok": true},
       "bodyMatcher": "partial"
