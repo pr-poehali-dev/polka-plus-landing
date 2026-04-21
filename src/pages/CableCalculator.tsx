@@ -350,6 +350,7 @@ export default function CableConverterApp() {
   const [lines, setLines] = useState<Line[]>([{ id: "line-1", cableId: "foreign-1", qty: "1" }]);
   // Расчёт цены
   const [pricingRows, setPricingRows] = useState<{ id: string; cableId: string; normHours: string; hourRate: string; costPrice: string }[]>([]);
+  const [globalHourRate, setGlobalHourRate] = useState<string>(() => localStorage.getItem("globalHourRate") || "");
   const [ready, setReady] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveOk, setSaveOk] = useState(false);
@@ -361,9 +362,9 @@ export default function CableConverterApp() {
       .then(r => r.json())
       .then(({ data }) => {
         if (data && Object.keys(data).length > 0) {
-          const myData: Cable[] = data.my || defaults.my;
-          const foreignData: Cable[] = normalizeForeign(data.foreign || defaults.foreign);
-          const mats: string[] = data.materials || defaults.materials;
+          const myData: Cable[] = (data.my && data.my.length > 0) ? data.my : defaults.my;
+          const foreignData: Cable[] = normalizeForeign((data.foreign && data.foreign.length > 0) ? data.foreign : defaults.foreign);
+          const mats: string[] = (data.materials && data.materials.length > 0) ? data.materials : defaults.materials;
           setMaterials(mats);
           setMy(myData);
           setForeign(foreignData);
@@ -378,6 +379,38 @@ export default function CableConverterApp() {
       .finally(() => setReady(true));
   }, []);
 
+  // Загрузка расчётов цены из БД при старте
+  useEffect(() => {
+    fetch(`${API_URL}?section=pricing`)
+      .then(r => r.json())
+      .then(({ rows, globalHourRate: ghr }) => {
+        if (ghr) { setGlobalHourRate(ghr); localStorage.setItem("globalHourRate", ghr); }
+        if (rows && rows.length > 0) {
+          setPricingRows(rows.map((r: Record<string, string>) => ({
+            id: r.id,
+            cableId: r.cable_id,
+            normHours: r.norm_hours != null ? String(r.norm_hours) : "",
+            hourRate: r.hour_rate != null ? String(r.hour_rate) : "",
+            costPrice: r.cost_price != null ? String(r.cost_price) : "",
+          })));
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  // Автосохранение строк расчёта цены (дебаунс 1.5с)
+  const pricingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (pricingTimer.current) clearTimeout(pricingTimer.current);
+    pricingTimer.current = setTimeout(() => {
+      fetch(`${API_URL}?section=pricing`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ section: "pricing", action: "save_rows", rows: pricingRows }),
+      }).catch(console.error);
+    }, 1500);
+  }, [pricingRows]);
+
   // Автосохранение техкарт в БД (с дебаунсом 1.5с)
   const pushToServer = useCallback((payload: { materials: string[]; my: Cable[]; foreign: Cable[] }) => {
     setSaving(true);
@@ -390,6 +423,8 @@ export default function CableConverterApp() {
 
   useEffect(() => {
     if (!ready) return;
+    // Защита: не сохранять если кабели не загружены
+    if (my.length === 0 || foreign.length === 0) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => pushToServer({ materials, my, foreign }), 1500);
   }, [ready, materials, my, foreign, pushToServer]);
@@ -559,7 +594,7 @@ export default function CableConverterApp() {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="recipes" className="w-full">
-                <TabsList className="grid w-full grid-cols-6">
+                <TabsList className="flex flex-wrap h-auto gap-1 w-full justify-start">
                   <TabsTrigger value="recipes">Техкарты</TabsTrigger>
                   <TabsTrigger value="invoice">Счет</TabsTrigger>
                   <TabsTrigger value="conversion">Перевод</TabsTrigger>
@@ -703,10 +738,36 @@ export default function CableConverterApp() {
 
                 {/* Расчёт цены */}
                 <TabsContent value="pricing" className="mt-4 space-y-4">
+                  <div className="flex flex-wrap gap-3 items-end p-3 rounded-xl bg-orange-50 border border-orange-100">
+                    <div className="flex flex-col gap-1">
+                      <Label className="text-xs text-orange-700 font-semibold">Стоимость нормо-часа (общая), ₽</Label>
+                      <div className="flex gap-2 items-center">
+                        <Input
+                          className="h-8 text-sm w-44"
+                          type="number" min="0" placeholder="Введите сумму"
+                          value={globalHourRate}
+                          onChange={e => setGlobalHourRate(e.target.value)}
+                        />
+                        <Button type="button" size="sm" className="text-white text-xs" style={{ background: '#E8450A' }}
+                          onClick={() => {
+                            localStorage.setItem("globalHourRate", globalHourRate);
+                            setPricingRows(prev => prev.map(r => ({ ...r, hourRate: globalHourRate })));
+                            fetch(`${API_URL}?section=pricing`, {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ section: "pricing", action: "save_hour_rate", globalHourRate }),
+                            }).catch(console.error);
+                          }}>
+                          Применить ко всем
+                        </Button>
+                      </div>
+                    </div>
+                    <p className="text-xs text-orange-600/80 self-end pb-1">Устанавливается один раз, сохраняется автоматически</p>
+                  </div>
                   <div className="flex justify-between items-center">
                     <p className="text-sm text-slate-500">Добавьте кабели для расчёта стоимости производства и итоговой цены.</p>
                     <Button type="button" className="gap-2 text-white" style={{ background: '#E8450A' }}
-                      onClick={() => setPricingRows(prev => [...prev, { id: Date.now().toString(), cableId: foreign[0]?.id ?? "", normHours: "", hourRate: "", costPrice: "" }])}>
+                      onClick={() => setPricingRows(prev => [...prev, { id: Date.now().toString(), cableId: foreign[0]?.id ?? "", normHours: "", hourRate: globalHourRate, costPrice: "" }])}>
                       <Plus className="h-4 w-4" /> Добавить кабель
                     </Button>
                   </div>
@@ -714,7 +775,7 @@ export default function CableConverterApp() {
                     <div className="text-center py-12 text-slate-400 text-sm">Нажмите «Добавить кабель» чтобы начать расчёт</div>
                   )}
                   {pricingRows.length > 0 && (
-                    <div className="overflow-x-auto">
+                    <div className="w-full overflow-x-auto overflow-y-visible">
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b bg-slate-50">
@@ -729,6 +790,7 @@ export default function CableConverterApp() {
                         </thead>
                         <tbody>
                           {pricingRows.map(row => {
+                            const resolvedCableId = foreign.some(c => c.id === row.cableId) ? row.cableId : (foreign[0]?.id ?? "");
                             const prodCost = num(row.normHours) * num(row.hourRate);
                             const total = (num(row.costPrice) + prodCost) * 1.03;
                             const upd = (field: string, val: string) =>
@@ -736,9 +798,9 @@ export default function CableConverterApp() {
                             return (
                               <tr key={row.id} className="border-b hover:bg-slate-50/50">
                                 <td className="px-3 py-2 min-w-[180px]">
-                                  <Select value={row.cableId} onValueChange={v => upd("cableId", v)}>
+                                  <Select value={resolvedCableId} onValueChange={v => upd("cableId", v)}>
                                     <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Выбери кабель" /></SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent position="popper" className="z-50">
                                       {foreign.map(c => <SelectItem key={c.id} value={c.id}>{c.name}{c.group ? ` (${c.group})` : ""}</SelectItem>)}
                                     </SelectContent>
                                   </Select>
