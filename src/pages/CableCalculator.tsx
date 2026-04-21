@@ -594,7 +594,7 @@ export default function CableConverterApp() {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="recipes" className="w-full">
-                <TabsList className="grid w-full grid-cols-6">
+                <TabsList className="flex flex-wrap h-auto gap-1 w-full justify-start">
                   <TabsTrigger value="recipes">Техкарты</TabsTrigger>
                   <TabsTrigger value="invoice">Счет</TabsTrigger>
                   <TabsTrigger value="conversion">Перевод</TabsTrigger>
