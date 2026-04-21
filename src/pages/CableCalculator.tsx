@@ -760,7 +760,7 @@ export default function CableConverterApp() {
                         </Button>
                       </div>
                     </div>
-                    <p className="text-xs text-orange-600/80 self-end pb-1">Устанавливается один раз, сохраняется в браузере</p>
+                    <p className="text-xs text-orange-600/80 self-end pb-1"></p>
                   </div>
                   <div className="flex justify-between items-center">
                     <p className="text-sm text-slate-500">Добавьте кабели для расчёта стоимости производства и итоговой цены.</p>
