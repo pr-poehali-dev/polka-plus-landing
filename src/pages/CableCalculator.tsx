@@ -348,6 +348,8 @@ export default function CableConverterApp() {
   const [newFBase, setNewFBase] = useState(EMPTY);
   // Строки счёта — только локально (временные, не нужно синхронизировать)
   const [lines, setLines] = useState<Line[]>([{ id: "line-1", cableId: "foreign-1", qty: "1" }]);
+  // Расчёт цены
+  const [pricingRows, setPricingRows] = useState<{ id: string; cableId: string; normHours: string; hourRate: string; costPrice: string }[]>([]);
   const [ready, setReady] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveOk, setSaveOk] = useState(false);
@@ -557,12 +559,13 @@ export default function CableConverterApp() {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="recipes" className="w-full">
-                <TabsList className="grid w-full grid-cols-5">
+                <TabsList className="grid w-full grid-cols-6">
                   <TabsTrigger value="recipes">Техкарты</TabsTrigger>
                   <TabsTrigger value="invoice">Счет</TabsTrigger>
                   <TabsTrigger value="conversion">Перевод</TabsTrigger>
                   <TabsTrigger value="cables">Кабели</TabsTrigger>
                   <TabsTrigger value="materials">Материалы</TabsTrigger>
+                  <TabsTrigger value="pricing">Расчёт цены</TabsTrigger>
                 </TabsList>
 
                 {/* Техкарты */}
@@ -696,6 +699,79 @@ export default function CableConverterApp() {
                       <Button variant="ghost" size="icon" onClick={() => delMaterial(m)}><Trash2 className="h-4 w-4" /></Button>
                     </div>)}
                   </div>
+                </TabsContent>
+
+                {/* Расчёт цены */}
+                <TabsContent value="pricing" className="mt-4 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm text-slate-500">Добавьте кабели для расчёта стоимости производства и итоговой цены.</p>
+                    <Button type="button" className="gap-2 text-white" style={{ background: '#E8450A' }}
+                      onClick={() => setPricingRows(prev => [...prev, { id: Date.now().toString(), cableId: foreign[0]?.id ?? "", normHours: "", hourRate: "", costPrice: "" }])}>
+                      <Plus className="h-4 w-4" /> Добавить кабель
+                    </Button>
+                  </div>
+                  {pricingRows.length === 0 && (
+                    <div className="text-center py-12 text-slate-400 text-sm">Нажмите «Добавить кабель» чтобы начать расчёт</div>
+                  )}
+                  {pricingRows.length > 0 && (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b bg-slate-50">
+                            <th className="text-left px-3 py-2 text-slate-500 font-medium">Кабель</th>
+                            <th className="text-right px-3 py-2 text-slate-500 font-medium">Норма часов</th>
+                            <th className="text-right px-3 py-2 text-slate-500 font-medium">Стоимость н/ч, ₽</th>
+                            <th className="text-right px-3 py-2 text-slate-500 font-medium">Стоимость производства</th>
+                            <th className="text-right px-3 py-2 text-slate-500 font-medium">Себестоимость, ₽</th>
+                            <th className="text-right px-3 py-2 text-slate-500 font-medium">Итого (×1,03)</th>
+                            <th className="px-3 py-2"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {pricingRows.map(row => {
+                            const prodCost = num(row.normHours) * num(row.hourRate);
+                            const total = (num(row.costPrice) + prodCost) * 1.03;
+                            const upd = (field: string, val: string) =>
+                              setPricingRows(prev => prev.map(r => r.id === row.id ? { ...r, [field]: val } : r));
+                            return (
+                              <tr key={row.id} className="border-b hover:bg-slate-50/50">
+                                <td className="px-3 py-2 min-w-[180px]">
+                                  <Select value={row.cableId} onValueChange={v => upd("cableId", v)}>
+                                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Выбери кабель" /></SelectTrigger>
+                                    <SelectContent>
+                                      {foreign.map(c => <SelectItem key={c.id} value={c.id}>{c.name}{c.group ? ` (${c.group})` : ""}</SelectItem>)}
+                                    </SelectContent>
+                                  </Select>
+                                </td>
+                                <td className="px-3 py-2 w-[120px]">
+                                  <Input className="h-8 text-xs text-right" type="number" min="0" placeholder="0" value={row.normHours} onChange={e => upd("normHours", e.target.value)} />
+                                </td>
+                                <td className="px-3 py-2 w-[140px]">
+                                  <Input className="h-8 text-xs text-right" type="number" min="0" placeholder="0" value={row.hourRate} onChange={e => upd("hourRate", e.target.value)} />
+                                </td>
+                                <td className="px-3 py-2 text-right font-semibold text-slate-700">
+                                  {num(row.normHours) > 0 && num(row.hourRate) > 0 ? prodCost.toLocaleString("ru-RU", { maximumFractionDigits: 2 }) + " ₽" : "—"}
+                                </td>
+                                <td className="px-3 py-2 w-[140px]">
+                                  <Input className="h-8 text-xs text-right" type="number" min="0" placeholder="0" value={row.costPrice} onChange={e => upd("costPrice", e.target.value)} />
+                                </td>
+                                <td className="px-3 py-2 text-right">
+                                  {(num(row.costPrice) > 0 || prodCost > 0)
+                                    ? <span className="font-bold text-orange-600">{total.toLocaleString("ru-RU", { maximumFractionDigits: 2 })} ₽</span>
+                                    : <span className="text-slate-400">—</span>}
+                                </td>
+                                <td className="px-3 py-2">
+                                  <Button variant="ghost" size="icon" onClick={() => setPricingRows(prev => prev.filter(r => r.id !== row.id))}>
+                                    <Trash2 className="h-4 w-4 text-slate-400" />
+                                  </Button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </TabsContent>
               </Tabs>
             </CardContent>
