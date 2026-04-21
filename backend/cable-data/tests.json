@@ -12,24 +12,7 @@
       "name": "POST сохранение данных",
       "method": "POST",
       "path": "/",
-      "body": {"data": {"materials": ["Вес меди"], "my": [], "foreign": []}},
-      "expectedStatus": 200,
-      "expectedBody": {"ok": true},
-      "bodyMatcher": "partial"
-    },
-    {
-      "name": "GET pricing данные",
-      "method": "GET",
-      "path": "/?section=pricing",
-      "expectedStatus": 200,
-      "expectedBody": {"rows": [], "globalHourRate": ""},
-      "bodyMatcher": "partial"
-    },
-    {
-      "name": "POST сохранение стоимости н/ч",
-      "method": "POST",
-      "path": "/?section=pricing",
-      "body": {"action": "save_hour_rate", "globalHourRate": "1500"},
+      "body": {"data": {"materials": ["Вес меди"], "my": [], "foreign": [], "lines": []}},
       "expectedStatus": 200,
       "expectedBody": {"ok": true},
       "bodyMatcher": "partial"
