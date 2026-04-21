@@ -773,7 +773,7 @@ export default function CableConverterApp() {
                     <div className="text-center py-12 text-slate-400 text-sm">Нажмите «Добавить кабель» чтобы начать расчёт</div>
                   )}
                   {pricingRows.length > 0 && (
-                    <div className="overflow-x-auto">
+                    <div className="w-full overflow-x-auto overflow-y-visible">
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b bg-slate-50">
@@ -788,6 +788,7 @@ export default function CableConverterApp() {
                         </thead>
                         <tbody>
                           {pricingRows.map(row => {
+                            const resolvedCableId = foreign.some(c => c.id === row.cableId) ? row.cableId : (foreign[0]?.id ?? "");
                             const prodCost = num(row.normHours) * num(row.hourRate);
                             const total = (num(row.costPrice) + prodCost) * 1.03;
                             const upd = (field: string, val: string) =>
@@ -795,9 +796,9 @@ export default function CableConverterApp() {
                             return (
                               <tr key={row.id} className="border-b hover:bg-slate-50/50">
                                 <td className="px-3 py-2 min-w-[180px]">
-                                  <Select value={row.cableId} onValueChange={v => upd("cableId", v)}>
+                                  <Select value={resolvedCableId} onValueChange={v => upd("cableId", v)}>
                                     <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Выбери кабель" /></SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent position="popper" className="z-50 max-h-60 overflow-y-auto">
                                       {foreign.map(c => <SelectItem key={c.id} value={c.id}>{c.name}{c.group ? ` (${c.group})` : ""}</SelectItem>)}
                                     </SelectContent>
                                   </Select>
